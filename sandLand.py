@@ -13,7 +13,9 @@
 #	scripts. The Civilization 4 webpage states that Civilization 4 is 
 #	"Designed from the ground up for modability" and 2K Games, the 
 #	publisher of the original Windows version, distributes third
-#	party mods at https://www.2kgames.com/civ4/modcentral.htm
+#	party mods at https://www.2kgames.com/civ4/modcentral.htm and
+#       stated they were looking forward to seeing mods at
+#       https://www.2kgames.com/civ4/blog_03.htm
 
 from CvPythonExtensions import *
 import CvUtil
