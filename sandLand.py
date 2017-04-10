@@ -7,6 +7,13 @@
 #	Copyright (c) 2005 Firaxis Games, Inc. All rights reserved.
 #-----------------------------------------------------------------------------
 #
+# 2017 note: While this map script has a proprietary copyright, evidence
+#	indicates that it has always been the intention of Fixaxis that 
+# 	users make and freely distribute modifieds version of their map 
+#	scripts. The Civilization 4 webpage states that Civilization 4 is 
+#	"Designed from the ground up for modability" and 2K Games, the 
+#	publisher of the original Windows version, distributes third
+#	party mods at https://www.2kgames.com/civ4/modcentral.htm
 
 from CvPythonExtensions import *
 import CvUtil
