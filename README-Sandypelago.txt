@@ -22,7 +22,3 @@ with an "arid" climate.
 
 This script has only been tested in Warlords using the Legends of Ancient 
 Arabia mod.  Your mileage may vary.
-
-NOTE: It goes in to an infinite loop when "big arable" is set. I might
-get around to trying to fix it some day. In the meantime, simply do not
-choose "big arable areas" when using this mapscript.

@@ -243,9 +243,9 @@ def assignStartingPlots():
 	# Check for Snaky Continents user option or invalid number of players. If found, use normal start plot finder!
 	userInputLandmass = map.getCustomMapOption(0)
 	iPlayers = gc.getGame().countCivPlayersEverAlive()
-	if userInputLandmass == 0:
-		CyPythonMgr().allowDefaultImpl()
-		return
+	#if userInputLandmass == 0:
+	#	CyPythonMgr().allowDefaultImpl()
+	#	return
 	if iPlayers < 2 or iPlayers > 18:
 		bSuccessFlag = False
 		CyPythonMgr().allowDefaultImpl()
