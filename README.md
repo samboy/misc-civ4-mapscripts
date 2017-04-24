@@ -82,7 +82,7 @@ likely a player will start near the edge of the map.
 
 https://forums.civfanatics.com/threads/sandbar-an-interesting-take-on-perfectworld.464127/
 
-## TotestraBigCoast.py, TotestraDry.py, and qTotestraHUGE.py
+## TotestraBigCoast.py, TotestraDry.py, qTotestraHUGE.py, and TotestraRG32.py
 
 These are forks of Totestra:
 
@@ -90,6 +90,8 @@ These are forks of Totestra:
   (ships without navigation) are more useful.
 * TotestraDry.py: Totestra with more desert
 * qTotestraHUGE.py: Totestra with maps four times bigger
+* TotestraRG32.py: Totestra using RadioGatun[32] instead of 
+  the Mersenne Twister for its random number generator.
 
 https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
 
