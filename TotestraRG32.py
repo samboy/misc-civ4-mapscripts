@@ -257,8 +257,9 @@ OPTION_NoRotate = 8
 OPTION_SmoothPeaks = 9
 OPTION_MAX = OPTION_MapSeed + 1 # Add 1 because it's 1-indexed
 
-# Setting this to 1 will allow the buggy 1:2 ratio; this ratio has
-# problems because of limitations in Civ 4's engine.  You have been warned.
+# Setting this to 1 will allow the buggy 1:2 ratio and the huge 6:4 ratio
+# these ratios have problems because of limitations in Civ 4's engine.  
+# You have been warned.
 ALLOW_EXTREME_RATIOS = 0
 
 # Setting this to 0 will make it so the map does not have a "Service Tag"
@@ -735,7 +736,10 @@ class MapConstants :
 	elif ratioValue == 5: # 3:3, Big square (untested)
 		self.ratioX = 3
 		self.ratioY = 3
-        elif ratioValue == 6: # 1:2; down here because it's buggy
+	elif ratioValue == 6: # 3:2 but twice the size
+		self.ratioX = 6
+		self.ratioY = 4
+        elif ratioValue == 7: # 1:2; down here because it's buggy
 		self.ratioX = 2
 		self.ratioY = 4
 
@@ -5733,7 +5737,7 @@ def getNumCustomMapOptionValues(argsList):
             return 2
         elif optionID == OPTION_MapRatio: # Map ratio
 	    if ALLOW_EXTREME_RATIOS == 1:
-	    	return 7 
+	    	return 8 
 	    else:
                 return 6
         elif optionID == OPTION_Handicap:
@@ -5816,12 +5820,14 @@ def getCustomMapOptionDescAt(argsList):
             return "3:2 (Earth-like)"
         elif selectionID == 3:
             return "2:1 (Wide map)"
-        elif selectionID == 6: 
+        elif selectionID == 7: 
             return "1:2 (BUGGY)" 
         elif selectionID == 4:
             return "7:1 (Ringworld)"
         elif selectionID == 5:
             return "3:3 (Big square)"
+        elif selectionID == 6:
+            return "6:4 (Big earth-like; can be buggy)"
     elif optionID == OPTION_Handicap:
 	if selectionID == 0:
 	    return "None (Player equal to AI)"
