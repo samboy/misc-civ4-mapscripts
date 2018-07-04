@@ -1,6 +1,12 @@
 ##############################################################################
 ## File: Totestra.py version 2017-03-30 (March 30, 2017)
-## HACK: We use RagioGatun[32] instead of MT19937 for RNG
+## RG32 last update 2018-07-04
+## 2018-07-04 Update: Make sure RG32 maps use different service tags
+## than MT19937 maps, so there is no confusion.  Increase number of possible
+## maps from 9007199254740992 to 95428956661682176 
+## The service tag now has the literal base-26 string used as the map seed
+## (more RNGs should have support for string seeds)
+## Note: We use RagioGatun[32] instead of MT19937 for RNG
 ## Note: This is a finished product.  
 ## Original file: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
@@ -852,7 +858,7 @@ class MapConstants :
         mapRString = "Random"
         self.totestra = 0 
         if selectionID == 1: # Totestra
-            self.totestra = 8885098498360902 # Fixed map seed
+            self.totestra = 1 # Fixed map seed
             #mapRstring = "Totestra"
             # Ignore most map parameters
             #self.wrapX = True
@@ -863,7 +869,7 @@ class MapConstants :
             #heightmap_size_factor = 5
             #self.AllowPangeas = False
         elif selectionID == 2: # Cephalo
-            self.totestra = 4316490043753041 # Fixed map seed
+            self.totestra = 2 # Fixed map seed
             #mapRstring = "Cephalo"
             # Ignore most map parameters
             #self.wrapX = True
@@ -874,7 +880,7 @@ class MapConstants :
             #heightmap_size_factor = 3
             #self.AllowPangeas = False
         elif selectionID == 3: # Caulixtla
-            self.totestra = 8939185639133313 # Fixed map seed
+            self.totestra = 3 # Fixed map seed
             #mapRstring = "Caulixtla"
             # Ignore most map parameters
             #self.wrapX = True
@@ -885,9 +891,9 @@ class MapConstants :
             #heightmap_size_factor = 3
             #self.AllowPangeas = False
 	elif selectionID == 4: # En Dotter 1
-            self.totestra = 0x8f3d2735334af # En Dotter's low on resources map 
+            self.totestra = 4 # En Dotter's low on resources map 
 	elif selectionID == 5:
-	    self.totestra = 0x1fcdc6f76b8c1b# En Dotter's nearby starts map
+	    self.totestra = 5 # En Dotter's nearby starts map
 
         #Number of tectonic plates
         self.hmNumberOfPlates = int(float(self.hmWidth * self.hmHeight) * 0.0016)
@@ -1142,16 +1148,18 @@ class PythonRandom :
             print "Detecting network game. Setting UsePythonRandom to False."
             self.usePR = False
         if self.usePR:
-            # Python 'long' has unlimited precision, while the random generator
-            # has 53 bits of precision, so I'm using a 53 bit integer to seed the map!
             seed() #Start with system time
             if(mc.totestra == 0):
-                seedValue = randint(0,9007199254740991)
-                self.seedString = "Random seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
+                seedValue = "R"
+                seedletter="abcdefghijkl7nopqrstuv8xyz" # No wide letters
+                for seedMake in range(12):
+                    seedMe = randint(0,25)
+                    seedValue += seedletter[seedMe:seedMe+1]
+                self.seedString = "Random seed (Using Python rands) for this map is " + seedValue
             else:
-                seedValue = mc.totestra
-                self.seedString = "Fixed seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
-	    mc.serviceTag = (seedValue & 0xffffffffffffff)
+                seedValue = "RT" + str(mc.totestra)
+                self.seedString = "Fixed seed (Using Python rands) for this map is " + seedValue
+	    mc.serviceTag = 0
 	    mc.serviceTag |= (mc.serviceFlags << 60)
 	    mc.serviceTag |= (mc.xtraFlags << 53)
 	    if(mc.noRotate == 0):
@@ -1159,7 +1167,9 @@ class PythonRandom :
 	    if(mc.smoothPeaks == 1):
 		mc.serviceTag |= (1 << 75)
 	    mc.serviceTag |= (a91a15d7(mc.serviceTag) << 53)
+            mc.serviceTag >>= 52
 	    mc.serviceString = ("%x" % mc.serviceTag)
+            mc.serviceString += seedValue
             print "SERVICE TAG: " + mc.serviceString 
             self.rg32 = RadioGatun32(seedValue)
             
