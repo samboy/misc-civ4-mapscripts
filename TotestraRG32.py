@@ -5796,15 +5796,15 @@ def getCustomMapOptionDescAt(argsList):
         if selectionID == 0:
             return "Random"
         elif selectionID == 1:
-            return "Preset #1 (Totestra)"
+            return "T1"
         if selectionID == 2:
-            return "Preset #2 (Cephalo)"
+            return "T2"
         elif selectionID == 3:
-            return "Preset #3 (Caulixtla)"
+            return "T3"
 	elif selectionID == 4:
-	    return "Preset #4 (En Dotter 1)"
+	    return "T4"
 	elif selectionID == 5:
-	    return "Preset #5 (En Dotter 2)"
+	    return "T5"
     elif optionID == OPTION_IslandFactor:
         if selectionID == 0:
             return "Few (faster)"
