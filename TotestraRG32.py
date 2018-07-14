@@ -859,41 +859,14 @@ class MapConstants :
         self.totestra = 0 
         if selectionID == 1: # Totestra
             self.totestra = 5 # Fixed map seed
-            #mapRstring = "Totestra"
-            # Ignore most map parameters
-            #self.wrapX = True
-            #self.wrapY = False
-            #wrapString = "Cylindrical"
-            #self.hmWidth = 240
-            #self.hmHeight = 161
-            #heightmap_size_factor = 5
-            #self.AllowPangeas = False
         elif selectionID == 2: # Cephalo
-            self.totestra = 6 # Fixed map seed
-            #mapRstring = "Cephalo"
-            # Ignore most map parameters
-            #self.wrapX = True
-            #self.wrapY = False
-            #wrapString = "Cylindrical"
-            #self.hmWidth = 144
-            #self.hmHeight = 97
-            #heightmap_size_factor = 3
-            #self.AllowPangeas = False
+            self.totestra = 8 # Fixed map seed
         elif selectionID == 3: # Caulixtla
-            self.totestra = 7 # Fixed map seed
-            #mapRstring = "Caulixtla"
-            # Ignore most map parameters
-            #self.wrapX = True
-            #self.wrapY = False
-            #wrapString = "Cylindrical"
-            #self.hmWidth = 144
-            #self.hmHeight = 97
-            #heightmap_size_factor = 3
-            #self.AllowPangeas = False
+            self.totestra = 10 # Fixed map seed
 	elif selectionID == 4: # En Dotter 1
-            self.totestra = 8 # En Dotter's low on resources map 
+            self.totestra = 11 # En Dotter's low on resources map 
 	elif selectionID == 5:
-	    self.totestra = 9 # En Dotter's nearby starts map
+	    self.totestra = 12 # En Dotter's nearby starts map
 
         #Number of tectonic plates
         self.hmNumberOfPlates = int(float(self.hmWidth * self.hmHeight) * 0.0016)
@@ -5798,13 +5771,13 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 1:
             return "T5"
         if selectionID == 2:
-            return "T6"
+            return "T8"
         elif selectionID == 3:
-            return "T7"
+            return "T10"
 	elif selectionID == 4:
-	    return "T8"
+	    return "T11"
 	elif selectionID == 5:
-	    return "T9"
+	    return "T12"
     elif optionID == OPTION_IslandFactor:
         if selectionID == 0:
             return "Few (faster)"
