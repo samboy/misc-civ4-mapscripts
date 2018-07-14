@@ -1,9 +1,11 @@
 ##############################################################################
 ## File: Totestra.py version 2017-03-30 (March 30, 2017)
-## RG32 last update 2018-07-04
+## RG32 last update 2018-07-14
+## 2018-07-14 Update: Update preset seeds to make good 3:2 maps
 ## 2018-07-04 Update: Make sure RG32 maps use different service tags
 ## than MT19937 maps, so there is no confusion.  Increase number of possible
-## maps from 9007199254740992 to 95428956661682176 
+## maps from 9007199254740992 to 95428956661682176; the preset seed
+## maps use different seeds and will never show up if random seed chosen
 ## The service tag now has the literal base-26 string used as the map seed
 ## (more RNGs should have support for string seeds)
 ## Note: We use RagioGatun[32] instead of MT19937 for RNG
@@ -857,16 +859,29 @@ class MapConstants :
         selectionID = mmap.getCustomMapOption(OPTION_MapSeed)
         mapRString = "Random"
         self.totestra = 0 
-        if selectionID == 1: # Totestra
-            self.totestra = 5 # Fixed map seed
+        if selectionID == 1: 
+            self.totestra = 8 # Preset map seed
         elif selectionID == 2: # Cephalo
-            self.totestra = 8 # Fixed map seed
-        elif selectionID == 3: # Caulixtla
-            self.totestra = 10 # Fixed map seed
-	elif selectionID == 4: # En Dotter 1
-            self.totestra = 11 # En Dotter's low on resources map 
+            self.totestra = 5 # Preset map seed 
+        elif selectionID == 3: 
+            self.totestra = 10 
+	elif selectionID == 4: 
+            self.totestra = 13
 	elif selectionID == 5:
-	    self.totestra = 12 # En Dotter's nearby starts map
+	    self.totestra = 17
+        # Force all fixed-seed maps to be 3:2, because the seeds are
+        # calibrated to make reasonably good maps at that ratio
+        if selectionID != 0: 
+            self.ratioX = 3
+            self.ratioY = 2
+            self.hmWidth  = (self.hmMaxGrain * self.ratioX * 
+                         heightmap_size_factor)
+            self.hmHeight = (self.hmMaxGrain * self.ratioY * 
+                         heightmap_size_factor) + 1
+            self.maxMapWidth = int(self.hmWidth / 4)
+            self.maxMapHeight = int(self.hmHeight / 4)
+	    self.WrapX = True
+	    self.WrapY = False
 
         #Number of tectonic plates
         self.hmNumberOfPlates = int(float(self.hmWidth * self.hmHeight) * 0.0016)
@@ -5724,7 +5739,7 @@ def getNumCustomMapOptionValues(argsList):
 	    if ALLOW_EXTREME_RATIOS == 1:
 	    	return 8 
 	    else:
-                return 6
+                return 7
         elif optionID == OPTION_Handicap:
 	    return 4
 	elif optionID == OPTION_MapResources:
@@ -5769,15 +5784,15 @@ def getCustomMapOptionDescAt(argsList):
         if selectionID == 0:
             return "Random"
         elif selectionID == 1:
-            return "T5"
-        if selectionID == 2:
             return "T8"
+        if selectionID == 2:
+            return "T5"
         elif selectionID == 3:
             return "T10"
 	elif selectionID == 4:
-	    return "T11"
+	    return "T13"
 	elif selectionID == 5:
-	    return "T12"
+	    return "T17"
     elif optionID == OPTION_IslandFactor:
         if selectionID == 0:
             return "Few (faster)"
@@ -5805,14 +5820,14 @@ def getCustomMapOptionDescAt(argsList):
             return "3:2 (Earth-like)"
         elif selectionID == 3:
             return "2:1 (Wide map)"
-        elif selectionID == 7: 
-            return "1:2 (BUGGY)" 
         elif selectionID == 4:
             return "7:1 (Ringworld)"
         elif selectionID == 5:
             return "3:3 (Big square)"
         elif selectionID == 6:
-            return "6:4 (Big earth-like; can be buggy)"
+            return "6:4 (Huge earth-like; can be buggy)"
+        elif selectionID == 7: 
+            return "1:2 (BUGGY)" 
     elif optionID == OPTION_Handicap:
 	if selectionID == 0:
 	    return "None (Player equal to AI)"
