@@ -869,6 +869,8 @@ class MapConstants :
             self.totestra = 13
 	elif selectionID == 5:
 	    self.totestra = 17
+	elif selectionID == 6:
+	    self.totestra = 21
         # Force all fixed-seed maps to be 3:2, because the seeds are
         # calibrated to make reasonably good maps at that ratio
         if selectionID != 0: 
@@ -5729,7 +5731,7 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == OPTION_Wrap:
             return 4
         elif optionID == OPTION_MapSeed: # Map world
-            return 6
+            return 7 # Number of possible map seed to choose
         elif optionID == OPTION_IslandFactor: # Number continents
             return 4
         elif optionID == OPTION_Patience: # Speed/quality tradeoff
@@ -5793,6 +5795,8 @@ def getCustomMapOptionDescAt(argsList):
 	    return "T13"
 	elif selectionID == 5:
 	    return "T17"
+	elif selectionID == 6:
+	    return "T21"
     elif optionID == OPTION_IslandFactor:
         if selectionID == 0:
             return "Few (faster)"
