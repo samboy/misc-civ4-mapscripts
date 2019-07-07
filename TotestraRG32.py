@@ -1,6 +1,6 @@
 ##############################################################################
-## File: Totestra.py version 2017-03-30 (March 30, 2017)
-## RG32 last update 2018-07-14
+## File: TotestraRG32.py version 2019-07-06 (July 6, 2019)
+## 2019-07-06 Update: New preset seed; begin stand alone code
 ## 2018-07-14 Update: Update preset seeds to make good 3:2 maps
 ## 2018-07-04 Update: Make sure RG32 maps use different service tags
 ## than MT19937 maps, so there is no confusion.  Increase number of possible
@@ -240,9 +240,11 @@
 ## bugs that caused deserts to get out of control.
 ##
 
-from CvPythonExtensions import *
-import CvUtil
-import CvMapGeneratorUtil 
+IsStandAlone = False
+if __name__ != "__main__":
+    from CvPythonExtensions import *
+    import CvUtil
+    import CvMapGeneratorUtil 
 
 from array import array
 from random import random,randint,seed
@@ -924,7 +926,6 @@ class MapConstants :
         print str(self.optionsString) + "\n" 
         return
     
-mc = MapConstants()
 
 # Class RadioGatun32 is under different copyright:
 # Copyright (c) 2012-2017 Sam Trenholme
@@ -1124,6 +1125,8 @@ class RadioGatun32:
 		return int(low + (self.random() * range))
 ##### END BSD LICENSED CODE ##############################################
 
+mc = MapConstants()
+
 class PythonRandom :
     def __init__(self):
 	self.rg32 = RadioGatun32('12345678')
@@ -1134,7 +1137,7 @@ class PythonRandom :
             self.usePR = True
         else:
             self.usePR = False
-        if self.usePR and CyGame().isNetworkMultiPlayer():
+        if not IsStandAlone and self.usePR and CyGame().isNetworkMultiPlayer():
             print "Detecting network game. Setting UsePythonRandom to False."
             self.usePR = False
         if self.usePR:
@@ -6598,3 +6601,25 @@ def beforeInit():
 ##rm.printRiverAndTerrainAlign()
 
 ##sm.printHeightMap()
+
+if __name__ == "__main__":
+    IsStandAlone = True
+    mc.UsePythonRandom = True
+    mc.width = 144
+    mc.height = 96
+    mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
+    PRand.seed()
+    hm.performTectonics()
+    hm.generateHeightMap()
+    hm.combineMaps()
+    hm.calculateSeaLevel()
+    hm.fillInLakes()
+    pb.breakPangaeas()
+##    hm.Erode()
+##    hm.printHeightMap()
+    hm.rotateMap()
+    hm.addWaterBands()
+##    hm.printHeightMap()
+    cm.createClimateMaps()
+    sm.initialize()
+    rm.generateRiverMap()
