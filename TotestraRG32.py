@@ -1,6 +1,21 @@
 ##############################################################################
 ## File: TotestraRG32.py version 2019-07-06 (July 6, 2019)
-## 2019-07-06 Update: New preset seed; begin stand alone code
+
+## 2019-07-06 Update: New preset seed; it's now possible to run this
+## generator stand alone.  Make sure to have Python2 installed (yes, I know,
+## but this generator is from the mid-first-2000s-decade), then type in
+## something like: python TotestraRG32.py 5
+## This will generate the "T5" random map, which is the same map as the
+## "T5" pull-down seed option.  Note that, when run standalone, the map
+## generator will generate a plot map then exit.  The map is all of the
+## default options, which can not be changed (in particular, in the stand
+## alone mode, we only generate 144x96 huge medium patience world maps)
+## This allows us to make random worlds without needing Civilization IV
+## installed.  This has two benefits:
+## 1) People without Civilization IV can enjoy this map generator
+## 2) We can now automate the generation of maps to better find really
+##    good random worlds
+
 ## 2018-07-14 Update: Update preset seeds to make good 3:2 maps
 ## 2018-07-04 Update: Make sure RG32 maps use different service tags
 ## than MT19937 maps, so there is no confusion.  Increase number of possible
@@ -2740,8 +2755,9 @@ class SmallMaps :
 
         self.createPlotMap()
         self.printPlotMap()
-        self.createTerrainMap()
-        continentMap.generateContinentMap()
+        if not IsStandAlone:
+            self.createTerrainMap()
+            continentMap.generateContinentMap()
 
     def fillInLakes(self):
         #smaller lakes need to be filled in again because the map
@@ -6604,10 +6620,57 @@ def beforeInit():
 
 if __name__ == "__main__":
     IsStandAlone = True
+    import sys
     mc.UsePythonRandom = True
+    if len(sys.argv) > 1:
+        mc.totestra = int(sys.argv[1])
+    mc.initialize()
+    # This stuff has to be hard coded here
     mc.width = 144
     mc.height = 96
+    mc.landPercent = 0.29
+    mc.tropicsLatitude = 23
+    mc.PeakPercent = 0.12
+    mc.HillPercent = 0.35
+    mc.HillChanceAtOne = .50
+    mc.PeakChanceAtOne = .27
+    mc.DesertPercent = 0.20
+    mc.PlainsPercent = 0.42
+    mc.SnowTemp = .30
+    mc.TundraTemp = .35
+    mc.ForestTemp = .50
+    mc.JungleTemp = .7
+    mc.iceChance = 1.0
+    mc.iceRange = 4
+    mc.iceSlope = 0.66
+    if len(sys.argv) > 2: # Arid map
+        mc.DesertPercent = 0.40
+        mc.PlainsPercent = 0.82
+        mc.iceSlope = 0.33 # Less ice 
+    mc.AllowPangeas = False
+    mc.hmMaxGrain = 2 ** (2 + 2) # Patience is two
+    mc.hmWidth = (mc.hmMaxGrain * 3 * 3)
+    mc.hmHeight =  (mc.hmMaxGrain * 2 * 3) + 1
+    mc.WrapX = True
+    mc.WrapY = False
+    mc.BonusBonus = 1.5 # Full of resources
+    mc.spreadResources = True # Full of resources
+    mc.noRotate = 0
+    mc.smoothPeaks = 1
+    mc.northWaterBand = 10
+    mc.southWaterBand = 10
+    mc.eastWaterBand = 0
+    mc.westWaterBand = 0
+    mc.northCrop = 10
+    mc.southCrop = 10
+    mc.eastCrop = 0
+    mc.westCrop = 0
+    mc.maxMapWidth = int(mc.hmWidth / 4)
+    mc.maxMapHeight = int(mc.hmHeight / 4)
+    mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0016)
+
     mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
+    mc.patience = 2
     PRand.seed()
     hm.performTectonics()
     hm.generateHeightMap()
@@ -6622,4 +6685,3 @@ if __name__ == "__main__":
 ##    hm.printHeightMap()
     cm.createClimateMaps()
     sm.initialize()
-    rm.generateRiverMap()
