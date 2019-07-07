@@ -7,7 +7,7 @@ number of random worlds:
 SEED=1
 while : ; do 
 	echo $SEED 
-	python ../TotestraRG32.py $SEED arid > totestrarg32-T$SEED
+	python2 ../TotestraRG32.py $SEED arid > totestrarg32-T$SEED
 	SEED=$(( $SEED + 1 ))
 done
 ```
