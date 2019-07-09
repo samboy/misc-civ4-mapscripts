@@ -110,7 +110,7 @@ likely a player will start near the edge of the map.
 
 https://forums.civfanatics.com/threads/sandbar-an-interesting-take-on-perfectworld.464127/
 
-## TotestraBigCoast.py, TotestraDry.py, and qTotestraHUGE.py
+## TotestraBigCoast.py, TotestraDry.py, qTotestraHUGE.py, and TotestraStandAlone.py
 
 These are forks of Totestra:
 
@@ -118,6 +118,7 @@ These are forks of Totestra:
   (ships without navigation) are more useful.
 * TotestraDry.py: Totestra with more desert
 * qTotestraHUGE.py: Totestra with maps four times bigger
+* TotestraStandAlone.py: Totestra which can be run stand alone w/o Civ4
 
 https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
 
