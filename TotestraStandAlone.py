@@ -6626,8 +6626,10 @@ if __name__ == "__main__":
     IsStandAlone = True
     import sys
     mc.UsePythonRandom = True
-    if len(sys.argv) > 1:
+    try:
         mc.totestra = int(sys.argv[1])
+    except:
+        mc.totestra = 8939185639133313 # Caulixtla
     mc.initialize()
     # This stuff has to be hard coded here
     mc.width = 144
