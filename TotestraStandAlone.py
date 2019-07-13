@@ -2,7 +2,6 @@
 ## File: TotestraStandAlone.py version 2019-07-08 (July 8, 2019)
 ## This version uses the old "Perfect World" MT19937 random number
 ## generator 
-## This version **WILL NOT** work for multiplayer map generation
 
 ## It's possible to run this
 ## generator stand alone.  Make sure to have Python2 installed (yes, I know,
@@ -1156,7 +1155,7 @@ class PythonRandom :
             self.usePR = True
         else:
             self.usePR = False
-        if self.usePR and 1 == 2:
+        if not IsStandAlone and self.usePR and CyGame().isNetworkMultiPlayer():
             print "Detecting network game. Setting UsePythonRandom to False."
             self.usePR = False
         if self.usePR:
