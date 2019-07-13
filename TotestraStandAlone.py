@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 ##############################################################################
 ## File: TotestraStandAlone.py version 2019-07-08 (July 8, 2019)
 ## This version uses the old "Perfect World" MT19937 random number
@@ -282,6 +283,9 @@ OPTION_Handicap = 7
 OPTION_NoRotate = 8
 OPTION_SmoothPeaks = 9
 OPTION_MAX = OPTION_MapSeed + 1 # Add 1 because it's 1-indexed
+# If this is set to "True" (no quotes), we will use RadioGatun[32] to 
+# make random numbers
+UseRG32 = False
 
 # Setting this to 1 will allow the buggy 1:2 ratio and the huge 6:4 ratio
 # these ratios have problems because of limitations in Civ 4's engine.  
@@ -877,35 +881,22 @@ class MapConstants :
         selectionID = mmap.getCustomMapOption(OPTION_MapSeed)
         mapRString = "Random"
         self.totestra = 0 
-        if selectionID == 1: 
-            self.totestra = 8 # Preset map seed
+        if selectionID > 0 and UseRG32:
+            self.totestra = 285 # Interesting map
+        elif selectionID == 1: 
+            self.totestra = 8885098498360902 # Totestra
         elif selectionID == 2: # Cephalo
-            self.totestra = 5 # Preset map seed 
+            self.totestra = 4316490043753041 # Cephalo 
         elif selectionID == 3: 
-            self.totestra = 10 
+            self.totestra = 8939185639133313 # Caulixtla 
 	elif selectionID == 4: 
-            self.totestra = 13
+            self.totestra = 0x8f3d2735334af
 	elif selectionID == 5:
-	    self.totestra = 17
+	    self.totestra = 0x1fcdc6f76b8c1b
 	elif selectionID == 6:
-	    self.totestra = 21
-        elif selectionID == 7:
-            self.totestra = 285
-        elif selectionID == 8:
-            self.totestra = 324
-        # Force all fixed-seed maps to be 3:2, because the seeds are
-        # calibrated to make reasonably good maps at that ratio
-        if selectionID != 0: 
-            self.ratioX = 3
-            self.ratioY = 2
-            self.hmWidth  = (self.hmMaxGrain * self.ratioX * 
-                         heightmap_size_factor)
-            self.hmHeight = (self.hmMaxGrain * self.ratioY * 
-                         heightmap_size_factor) + 1
-            self.maxMapWidth = int(self.hmWidth / 4)
-            self.maxMapHeight = int(self.hmHeight / 4)
-	    self.WrapX = True
-	    self.WrapY = False
+	    self.totestra = 0x1e52818fad64 # Atlixco
+        elif selectionID > 0:
+            self.totestra = 8939185639133313 # Caulixtla
 
         #Number of tectonic plates
         self.hmNumberOfPlates = int(float(self.hmWidth * self.hmHeight) * 0.0016)
@@ -1162,13 +1153,26 @@ class PythonRandom :
             # Python 'long' has unlimited precision, while the random generator
             # has 53 bits of precision, so I'm using a 53 bit integer to seed the map!
             seed() #Start with system time
-            if(mc.totestra == 0):
-                seedValue = randint(0,9007199254740991)
-                self.seedString = "Random seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
+            if UseRG32:
+                if(mc.totestra == 0):
+                    seedValue = "R"
+                    seedletter="abcdefghijkl7nopqrstuv8xyz" # No wide letters
+                    for seedMake in range(10):
+                        seedMe = randint(0,25)
+                        seedValue += seedletter[seedMe:seedMe+1]
+                    self.seedString = "Random seed (Using Python rands) for this map is " + seedValue
+                else:
+                    seedValue = "RT" + str(mc.totestra)
+                    self.seedString = "Fixed seed (Using Python rands) for this map is " + seedValue
+	        mc.serviceTag = 0
             else:
-                seedValue = mc.totestra
-                self.seedString = "Fixed seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
-	    mc.serviceTag = (seedValue & 0xffffffffffffff)
+                if(mc.totestra == 0):
+                    seedValue = randint(0,9007199254740991)
+                    self.seedString = "Random seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
+                else:
+                    seedValue = mc.totestra
+                    self.seedString = "Fixed seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
+	        mc.serviceTag = (seedValue & 0xffffffffffffff)
 	    mc.serviceTag |= (mc.serviceFlags << 60)
 	    mc.serviceTag |= (mc.xtraFlags << 53)
 	    if(mc.noRotate == 0):
@@ -1176,10 +1180,15 @@ class PythonRandom :
 	    if(mc.smoothPeaks == 1):
 		mc.serviceTag |= (1 << 75)
 	    mc.serviceTag |= (a91a15d7(mc.serviceTag) << 53)
-	    mc.serviceString = ("%x" % mc.serviceTag)
+            if UseRG32:
+                mc.serviceTag >>= 52
+                mc.serviceString = ("%x" % mc.serviceTag)
+                mc.serviceString += seedValue
+                self.rg32 = RadioGatun32(seedValue)
+            else:
+	        mc.serviceString = ("%x" % mc.serviceTag)
+                seed(seedValue)
             print "SERVICE TAG: " + mc.serviceString 
-            seed(seedValue)
-            
         else:
             gc = CyGlobalContext()
             self.mapRand = gc.getGame().getMapRand()
@@ -1196,7 +1205,10 @@ class PythonRandom :
         return
     def random(self):
         if self.usePR:
-            return random()
+            if UseRG32:
+                return self.rg32.random()
+            else:
+                return random()
         else:
             #This formula is identical to the getFloat function in CvRandom. It
             #is not exposed to Python so I have to recreate it.
@@ -1209,7 +1221,10 @@ class PythonRandom :
             return rMin
         #returns a number between rMin and rMax inclusive
         if self.usePR:
-            return randint(rMin,rMax)
+            if UseRG32:
+                return self.rg32.randint(rMin,rMax)
+            else:
+                return randint(rMin,rMax)
         else:
             #mapRand.get() is not inclusive, so we must make it so
             return rMin + self.mapRand.get(rMax + 1 - rMin,"Getting a randint - FairWeather.py")
@@ -5749,7 +5764,7 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == OPTION_Wrap:
             return 4
         elif optionID == OPTION_MapSeed: # Map world
-            return 9 # Number of possible map seed to choose
+            return 7 # Number of possible map seed to choose
         elif optionID == OPTION_IslandFactor: # Number continents
             return 4
         elif optionID == OPTION_Patience: # Speed/quality tradeoff
@@ -5804,21 +5819,19 @@ def getCustomMapOptionDescAt(argsList):
         if selectionID == 0:
             return "Random"
         elif selectionID == 1:
-            return "T8"
+            return "Preset #1 (Totestra)"
         if selectionID == 2:
-            return "T5"
+            return "Preset #2 (Cephalo)"
         elif selectionID == 3:
-            return "T10"
-	elif selectionID == 4:
-	    return "T13"
-	elif selectionID == 5:
-	    return "T17"
-	elif selectionID == 6:
-	    return "T21"
-        elif selectionID == 7:
-            return "T285"
-        elif selectionID == 8:
-            return "T324"
+            return "Preset #3 (Caulixtla)"
+        elif selectionID == 4:
+            return "Preset #4 (En Dotter 1)"
+        elif selectionID == 5:
+            return "Preset #5 (En Dotter 2)"
+        elif selectionID == 6:
+            return "Preset #6 (Atlixco)"
+        else:
+            return "Unknown, using Caulixtla"
     elif optionID == OPTION_IslandFactor:
         if selectionID == 0:
             return "Few (faster)"
@@ -6626,7 +6639,14 @@ if __name__ == "__main__":
     import sys
     mc.UsePythonRandom = True
     try:
-        mc.totestra = int(sys.argv[1])
+        arg1 = sys.argv[1]
+    except:
+        arg1 = "8939185639133313" # Caulixtla
+    if(arg1[0:1] == "T"):
+        arg1 = arg1[1:]
+        UseRG32 = True
+    try:
+        mc.totestra = int(arg1)
     except:
         mc.totestra = 8939185639133313 # Caulixtla
     mc.initialize()
