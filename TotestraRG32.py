@@ -897,7 +897,7 @@ class MapConstants :
         elif selectionID == 10:
             self.totestra = 2235
         elif selectionID == 11:
-            self.totestra = 2297
+            self.totestra = 2997
         # Force all fixed-seed maps to be 3:2, because the seeds are
         # calibrated to make reasonably good maps at that ratio
         if selectionID != 0: 
@@ -5835,7 +5835,7 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 10:
             return "T2235"
         elif selectionID == 11:
-            return "T2297"
+            return "T2997"
     elif optionID == OPTION_IslandFactor:
         if selectionID == 0:
             return "Few (faster)"
