@@ -6607,6 +6607,30 @@ def beforeInit():
     mc.initInGameOptions()
     mc.initialize()
 
+# Add huts to the map
+def addGoodies():
+    # Uncomment the following two lines to have PerfectWorld/Civ4 behavior
+    # This means the huts will change every time the map is made
+    #CyPythonMgr().allowDefaultImpl()
+    #return
+    cigc = CyGlobalContext()
+    gMap = CyMap()
+    nativeHut = cigc.getInfoTypeForString("IMPROVEMENT_GOODY_HUT")
+    for x in range(mc.width):
+        for y in range(mc.height):
+            i = (y * mc.width) + x
+            if(sm.plotMap[i] == mc.HILLS or sm.plotMap[i] == mc.LAND):
+                # Different terrains have different hut chances
+                if(sm.terrainMap[i] == mc.DESERT):
+                    if(PRand.randint(0,999) < 35):
+                        hereGame = gMap.plot(x,y)
+                        hereGame.setImprovementType(nativeHut)
+                elif(sm.terrainMap[i] != mc.SNOW):
+                    if(PRand.randint(0,999) < 20):
+                        hereGame = gMap.plot(x,y)
+                        hereGame.setImprovementType(nativeHut)
+               
+    
 ##mc.initialize()
 ##PRand.seed()
 ##hm.performTectonics()
