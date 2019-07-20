@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 ##############################################################################
 ## File: TotestraRG32.py version 2019-07-06 (July 6, 2019)
 
@@ -877,27 +878,27 @@ class MapConstants :
         mapRString = "Random"
         self.totestra = 0 
         if selectionID == 1: 
-            self.totestra = 8 # Preset map seed
-        elif selectionID == 2: # Cephalo
-            self.totestra = 5 # Preset map seed 
+            self.totestra = 8 
+        elif selectionID == 2: 
+            self.totestra = 5  
         elif selectionID == 3: 
             self.totestra = 10 
 	elif selectionID == 4: 
-            self.totestra = 13
+            self.totestra = 285 # Could use more rivers
 	elif selectionID == 5:
-	    self.totestra = 17
+	    self.totestra = 324 # Could use more rivers
 	elif selectionID == 6:
-	    self.totestra = 21
+	    self.totestra = 2997 # Really nice
         elif selectionID == 7:
-            self.totestra = 285
+            self.totestra = 4677 # Could use more rivers
         elif selectionID == 8:
-            self.totestra = 324
+            self.totestra = 7187 # Small but fun
         elif selectionID == 9:
-            self.totestra = 384
+            self.totestra = 8207 # It's a Chili pepper!
         elif selectionID == 10:
-            self.totestra = 2235
+            self.totestra = 12244 # Very small and fun
         elif selectionID == 11:
-            self.totestra = 2997
+            self.totestra = 14194
         # Force all fixed-seed maps to be 3:2, because the seeds are
         # calibrated to make reasonably good maps at that ratio
         if selectionID != 0: 
@@ -2765,9 +2766,8 @@ class SmallMaps :
 
         self.createPlotMap()
         self.printPlotMap()
-        if not IsStandAlone:
-            self.createTerrainMap()
-            continentMap.generateContinentMap()
+        self.createTerrainMap()
+        continentMap.generateContinentMap()
 
     def fillInLakes(self):
         #smaller lakes need to be filled in again because the map
@@ -5821,21 +5821,21 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 3:
             return "T10"
 	elif selectionID == 4:
-	    return "T13"
+	    return "T285 (Big)"
 	elif selectionID == 5:
-	    return "T17"
+	    return "T324"
 	elif selectionID == 6:
-	    return "T21"
+	    return "T2997 (Nice)"
         elif selectionID == 7:
-            return "T285"
+            return "T4677"
         elif selectionID == 8:
-            return "T324"
+            return "T7187 (Small)"
         elif selectionID == 9:
-            return "T384"
+            return "T8207 (Chili)"
         elif selectionID == 10:
-            return "T2235"
+            return "T12244 (Tiny)"
         elif selectionID == 11:
-            return "T2997"
+            return "T14194"
     elif optionID == OPTION_IslandFactor:
         if selectionID == 0:
             return "Few (faster)"
@@ -6668,6 +6668,10 @@ if __name__ == "__main__":
     mc.UsePythonRandom = True
     if len(sys.argv) > 1:
         mc.totestra = int(sys.argv[1])
+    if(mc.totestra):
+        mySeed = str(mc.totestra)
+    else:
+        mySeed = "Unknown"
     mc.initialize()
     # This stuff has to be hard coded here
     mc.width = 144
@@ -6715,6 +6719,8 @@ if __name__ == "__main__":
 
     mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
     mc.patience = 2
+    mc.AllowNewWorld = True
+    mc.ShareContinent = True
     PRand.seed()
     hm.performTectonics()
     hm.generateHeightMap()
@@ -6729,3 +6735,48 @@ if __name__ == "__main__":
 ##    hm.printHeightMap()
     cm.createClimateMaps()
     sm.initialize()
+    rm.generateRiverMap()
+
+    # Scan the map and give the user a summary of the map
+    floodPlainCount = 0
+    tally = {}
+    bigAM = Areamap(mc.width,mc.height,True,True)
+    bigAM.defineAreas(isNonCoastWaterMatch)
+    maxLandAmount = -1
+    maxLandArea = -1
+    for x in range(mc.width):
+        for y in range(mc.height):
+            i = (y * mc.width) + x
+            #area = continentMap.areaMap.areaMap[i]
+            area = bigAM.areaMap[i]
+            if not area in tally:
+                tally[area] = {
+                    "Land": 0,
+                    "Desert": 0,
+                    "floodPlains": 0,
+                    "Tundra": 0
+                }
+            if sm.terrainMap[i] != mc.OCEAN and sm.terrainMap[i] != mc.COAST:
+                tally[area]["Land"] += 1
+                if(tally[area]["Land"] > maxLandAmount):
+                    maxLandAmount = tally[area]["Land"]
+                    maxLandArea = area
+            if sm.terrainMap[i] == mc.DESERT:
+                tally[area]["Desert"] += 1
+                if rm.riverMap[i] != 5:
+                    floodPlainCount += 1
+                    tally[area]["floodPlains"] += 1
+            if sm.terrainMap[i] == mc.TUNDRA:
+                tally[area]["Tundra"] += 1
+    print("Flood plain count: " + str(floodPlainCount))
+    for area in tally:
+        print("Tally for continent " + str(area) + ": " +
+              str(tally[area]))
+    print("Biggest is " + str(maxLandArea) + " with :"+str(tally[maxLandArea]))
+    if(maxLandArea >= 0 and tally[maxLandArea]["Tundra"] < 10 and
+       tally[maxLandArea]["floodPlains"] > 30 and
+       tally[maxLandArea]["Desert"] > 500 and
+       tally[maxLandArea]["Land"] > 1000):
+        print("Nice land found seed " + mySeed)
+
+
