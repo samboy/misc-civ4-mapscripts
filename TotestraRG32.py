@@ -7,6 +7,8 @@
 ## each desert square has a 3.5% chance of having a hut.  This way, huts
 ## do not vary every time we generate a map with a given seed, and it's
 ## now possible for the user to adjust how many huts a map has.
+## One can change the number of huts by setting desertHutChance and
+## normalHutChance.
 
 ## 2019-07-06 Update: New preset seed; it's now possible to run this
 ## generator stand alone.  Make sure to have Python2 installed (yes, I know,
@@ -389,7 +391,7 @@ class MapConstants :
         self.OasisChance = .08
 
         # The chance out of 1000 that we have a goody hut on a desert 
-        # non-ice land (either flat or hill) square
+        # (either flat or hill) square
         self.desertHutChance = 35 # 3.5 percent
         
         # The chance out of 1000 we will have a goody hut on a non-desert
