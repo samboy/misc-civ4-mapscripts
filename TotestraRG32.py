@@ -4,7 +4,7 @@
 
 ## 2019-07-19 Update: The map generator now places huts on the map;
 ## each non-desert land non-ice square has a 2.5% chance of having a hut; 
-## each desert square has a 4% chance of having a hut.  A hut must be at 
+## each desert square has a 3.7% chance of having a hut.  A hut must be at 
 ## least three squares away from other huts.  This way, huts
 ## do not vary every time we generate a map with a given seed, and it's
 ## now possible for the user to adjust how many huts a map has.
@@ -393,7 +393,7 @@ class MapConstants :
 
         # The chance out of 1000 that we have a goody hut on a desert 
         # (either flat or hill) square
-        self.desertHutChance = 40 # 4 percent
+        self.desertHutChance = 37 # 3.7 percent
         
         # The chance out of 1000 we will have a goody hut on a non-desert
         # non-ice land (flat/hill) square
