@@ -3,8 +3,9 @@
 ## File: TotestraRG32.py version 2019-07-19 (July 19, 2019)
 
 ## 2019-07-19 Update: The map generator now places huts on the map;
-## each non-desert land non-ice square has a 2% chance of having a hut; 
-## each desert square has a 3.5% chance of having a hut.  This way, huts
+## each non-desert land non-ice square has a 2.5% chance of having a hut; 
+## each desert square has a 4% chance of having a hut.  A hut must be at 
+## least three squares away from other huts.  This way, huts
 ## do not vary every time we generate a map with a given seed, and it's
 ## now possible for the user to adjust how many huts a map has.
 ## One can change the number of huts by setting desertHutChance and
@@ -392,11 +393,11 @@ class MapConstants :
 
         # The chance out of 1000 that we have a goody hut on a desert 
         # (either flat or hill) square
-        self.desertHutChance = 35 # 3.5 percent
+        self.desertHutChance = 40 # 4 percent
         
         # The chance out of 1000 we will have a goody hut on a non-desert
         # non-ice land (flat/hill) square
-        self.normalHutChance = 20 # 2 percent
+        self.normalHutChance = 25 # 2.5 percent
 
         #This sets the amount of heat lost at the highest altitude. 1.0 loses all heat
         #0.0 loses no heat.
@@ -6624,14 +6625,35 @@ def beforeInit():
     mc.initialize()
 
 # Add huts to the map
+# Use Civ4-specific code to place the hut
+def placeHut(x,y):
+    cigc = CyGlobalContext()
+    gMap = CyMap()
+    nativeHut = cigc.getInfoTypeForString("IMPROVEMENT_GOODY_HUT")
+    hereGame = gMap.plot(x,y)
+    hereGame.setImprovementType(nativeHut)
+
+# Check to see if we can place a hut on a given square
+def checkHut(hutSeen, x, y):
+    if hutSeen[(y * mc.width) + x] != 0:
+        return False
+    # If we can place a hut, make sure we can not place any future huts
+    # within two squares of this hut
+    for xx in range(-2,3):
+        if x + xx >= 0:
+            for yy in range(-2,3):
+                if y + yy >= 0:
+                    hutSeen[((y + yy) * mc.width) + (x + xx)] = 1 # No hut here
+    hutSeen[(y * mc.width) + x] = 2 # Physical hut
+    placeHut(x,y)
+    return True 
+
 def addGoodies():
     # Uncomment the following two lines to have PerfectWorld/Civ4 behavior
     # This means the huts will change every time the map is made
     #CyPythonMgr().allowDefaultImpl()
     #return
-    cigc = CyGlobalContext()
-    gMap = CyMap()
-    nativeHut = cigc.getInfoTypeForString("IMPROVEMENT_GOODY_HUT")
+    hutSeen = [0 for i in range(mc.width * mc.height)]
     for x in range(mc.width):
         for y in range(mc.height):
             i = (y * mc.width) + x
@@ -6639,12 +6661,10 @@ def addGoodies():
                 # Different terrains have different hut chances
                 if(sm.terrainMap[i] == mc.DESERT):
                     if(PRand.randint(0,999) < mc.desertHutChance):
-                        hereGame = gMap.plot(x,y)
-                        hereGame.setImprovementType(nativeHut)
+                        checkHut(hutSeen, x, y)
                 elif(sm.terrainMap[i] != mc.SNOW):
                     if(PRand.randint(0,999) < mc.normalHutChance):
-                        hereGame = gMap.plot(x,y)
-                        hereGame.setImprovementType(nativeHut)
+                        checkHut(hutSeen, x, y)
                
     
 ##mc.initialize()
