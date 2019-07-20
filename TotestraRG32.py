@@ -1,6 +1,12 @@
 #!/usr/bin/env python2
 ##############################################################################
-## File: TotestraRG32.py version 2019-07-06 (July 6, 2019)
+## File: TotestraRG32.py version 2019-07-19 (July 19, 2019)
+
+## 2019-07-19 Update: The map generator now places huts on the map;
+## each non-desert land non-ice square has a 2% chance of having a hut; 
+## each desert square has a 3.5% chance of having a hut.  This way, huts
+## do not vary every time we generate a map with a given seed, and it's
+## now possible for the user to adjust how many huts a map has.
 
 ## 2019-07-06 Update: New preset seed; it's now possible to run this
 ## generator stand alone.  Make sure to have Python2 installed (yes, I know,
@@ -381,6 +387,14 @@ class MapConstants :
         #The percent chance that an oasis may appear in desert. A tile must be desert and
         #surrounded on all sides by desert.
         self.OasisChance = .08
+
+        # The chance out of 1000 that we have a goody hut on a desert 
+        # non-ice land (either flat or hill) square
+        self.desertHutChance = 35 # 3.5 percent
+        
+        # The chance out of 1000 we will have a goody hut on a non-desert
+        # non-ice land (flat/hill) square
+        self.normalHutChance = 20 # 2 percent
 
         #This sets the amount of heat lost at the highest altitude. 1.0 loses all heat
         #0.0 loses no heat.
@@ -6622,11 +6636,11 @@ def addGoodies():
             if(sm.plotMap[i] == mc.HILLS or sm.plotMap[i] == mc.LAND):
                 # Different terrains have different hut chances
                 if(sm.terrainMap[i] == mc.DESERT):
-                    if(PRand.randint(0,999) < 35):
+                    if(PRand.randint(0,999) < mc.desertHutChance):
                         hereGame = gMap.plot(x,y)
                         hereGame.setImprovementType(nativeHut)
                 elif(sm.terrainMap[i] != mc.SNOW):
-                    if(PRand.randint(0,999) < 20):
+                    if(PRand.randint(0,999) < mc.normalHutChance):
                         hereGame = gMap.plot(x,y)
                         hereGame.setImprovementType(nativeHut)
                
