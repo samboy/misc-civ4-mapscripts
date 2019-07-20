@@ -6640,9 +6640,9 @@ def checkHut(hutSeen, x, y):
     # If we can place a hut, make sure we can not place any future huts
     # within two squares of this hut
     for xx in range(-2,3):
-        if x + xx >= 0:
+        if x + xx >= 0 and x + xx < mc.width:
             for yy in range(-2,3):
-                if y + yy >= 0:
+                if y + yy >= 0 and y + yy < mc.height:
                     hutSeen[((y + yy) * mc.width) + (x + xx)] = 1 # No hut here
     hutSeen[(y * mc.width) + x] = 2 # Physical hut
     placeHut(x,y)
