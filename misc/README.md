@@ -8,7 +8,7 @@ The map is given to the script on standard input.  Standard output
 has the cropped map.
 
 Arguments provide the "square" to crop the new map to; it is four
-arguments in the form x1 x2 y1 y2
+arguments in the form x1 y1 x2 y2
 
 The coordinates for x1 and y1 are the coordinates in the parent map we
 wish to begin cropping at (the lower left corner); x2 and y2 are the
