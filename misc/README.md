@@ -1,7 +1,7 @@
-# This is *not* a map script
+# These are *not* map scripts
 
-This is not a map script.  `CropCiv4Map.py` is a tool to crop an already
-existing Civilization 4 map.
+## CropCiv4Map.py
+`CropCiv4Map.py` is a tool to crop an already existing Civilization 4 map.
 
 This script takes a Civilization IV map file and crops it
 The map is given to the script on standard input.  Standard output
@@ -27,4 +27,19 @@ cat AC.CivWarlordsWBSave|./CropCiv4Map.py 43 13 118 72 >ACx.CivWarlordsWBSave
 Please do not have any player starts off of the cropped portion of the
 map.  Please have x1 be less than x2 and y1 be less than y2.  Otherwise,
 this script will fail with an assertion error.
+
+## RotateCiv4Map.py
+
+This script takes a Civilization IV map file and rotates it to the right
+The map is given to the script on standard input.  Standard output
+has the rotated map.
+
+Arguments provide the rotate the new map to; it is four
+arguments in the form x1
+
+Example usage:
+
+```
+cat AC.CivWarlordsWBSave | ./RotateCiv4Map.py 17 > ACx.CivWarlordsWBSave
+```
 
