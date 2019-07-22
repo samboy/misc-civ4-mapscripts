@@ -20,6 +20,9 @@
 # map.  Please have x1 be less than x2 and y1 be less than y2.  Otherwise,
 # this script will fail with an assertion error.
 
+# Note that if the width and height are not multiples of four, there may
+# be issues with showing the map at the end of the game.
+
 import sys, re
 
 if(len(sys.argv) < 5):

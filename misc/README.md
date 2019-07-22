@@ -28,6 +28,10 @@ Please do not have any player starts off of the cropped portion of the
 map.  Please have x1 be less than x2 and y1 be less than y2.  Otherwise,
 this script will fail with an assertion error.
 
+Note that if the width and height are not multiples of four, there may
+be issues with showing the map at the end of the game.
+
+
 ## RotateCiv4Map.py
 
 This script takes a Civilization IV map file and rotates it to the right
