@@ -6732,7 +6732,8 @@ if __name__ == "__main__":
         mc.PlainsPercent = 0.82
         mc.iceSlope = 0.33 # Less ice 
     mc.AllowPangeas = False
-    mc.hmMaxGrain = 2 ** (2 + 2) # Patience is two
+    mc.patience = 2
+    mc.hmMaxGrain = 2 ** (2 + mc.patience)
     mc.hmWidth = (mc.hmMaxGrain * 3 * 3)
     mc.hmHeight =  (mc.hmMaxGrain * 2 * 3) + 1
     mc.WrapX = True
@@ -6751,10 +6752,16 @@ if __name__ == "__main__":
     mc.westCrop = 0
     mc.maxMapWidth = int(mc.hmWidth / 4)
     mc.maxMapHeight = int(mc.hmHeight / 4)
-    mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0016)
+    if(mc.width > mc.hmWidth):
+        mc.width = mc.hmWidth
+    if(mc.height > mc.hmHeight):
+        mc.height = mc.hmHeight
+    if(mc.patience == 1):
+        mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0024)
+    else: # Patience is assumed to be 2
+        mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0016)
 
     mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
-    mc.patience = 2
     mc.AllowNewWorld = True
     mc.ShareContinent = True
     PRand.seed()
