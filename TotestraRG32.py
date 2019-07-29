@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 ##############################################################################
-## File: TotestraRG32.py version 2019-07-19 (July 19, 2019)
+## File: TotestraRG32.py version 2019-07-28 (July 28, 2019)
 
 ## 2019-07-19 Update: The map generator now places huts on the map;
 ## each non-desert land non-ice square has a 2.5% chance of having a hut; 
@@ -1166,6 +1166,43 @@ class RadioGatun32:
 			return low + (number % range)
 		# int() returns the floor, e.g. int(1.99999) returns 1
 		return int(low + (self.random() * range))
+
+def do_rg32_test(testInput):
+    # 16 16-bit numbers
+    rg32test = RadioGatun32(testInput)
+    line = "16-bit:    "
+    for a in range(16):
+        line += ("%04x" % (rg32test.rng16()))
+    print(line)
+    # 8 32-bit numbers
+    rg32test = RadioGatun32(testInput)
+    line = "32-bit:    "
+    for a in range(8):
+        line += ("%08x" % (rg32test.rng32()))
+    print(line)
+    # 4 64-bit numbers
+    rg32test = RadioGatun32(testInput)
+    line = "64-bit:    "
+    for a in range(4):
+        line += ("%016x" % (rg32test.rng64()))
+    print(line)
+    # 16-bit then 32-bit
+    rg32test = RadioGatun32(testInput)
+    line = "16/32 bit: "
+    for a in range(4):
+        line += ("%04x" % (rg32test.rng16()))
+        line += "----"
+        line += ("%08x" % (rg32test.rng32()))
+    print(line)
+    # 32-bit then 16-bit
+    rg32test = RadioGatun32(testInput)
+    line = "32/16 bit: "
+    for a in range(4):
+        line += ("%08x" % (rg32test.rng32()))
+        line += ("%04x" % (rg32test.rng16()))
+        line += "----"
+    print(line)
+
 ##### END BSD LICENSED CODE ##############################################
 
 mc = MapConstants()
@@ -6703,6 +6740,9 @@ if __name__ == "__main__":
     import sys
     mc.UsePythonRandom = True
     if len(sys.argv) > 1:
+        if(len(sys.argv) > 2 and sys.argv[1] == '--test'):
+            do_rg32_test(sys.argv[2])
+            sys.exit(0)
         mc.totestra = int(sys.argv[1])
     if(mc.totestra):
         mySeed = str(mc.totestra)
@@ -6727,7 +6767,7 @@ if __name__ == "__main__":
     mc.iceChance = 1.0
     mc.iceRange = 4
     mc.iceSlope = 0.66
-    if len(sys.argv) > 2: # Arid map
+    if len(sys.argv) <= 2: # Arid map
         mc.DesertPercent = 0.40
         mc.PlainsPercent = 0.82
         mc.iceSlope = 0.33 # Less ice 
