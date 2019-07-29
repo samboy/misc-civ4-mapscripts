@@ -1202,6 +1202,18 @@ def do_rg32_test(testInput):
         line += ("%04x" % (rg32test.rng16()))
         line += "----"
     print(line)
+    # Mix it up (16,16,32,64,64,32,16,16)
+    rg32test = RadioGatun32(testInput)
+    line = "Mix it up: "
+    line += ("%04x" % (rg32test.rng16()))
+    line += ("%04x" % (rg32test.rng16()))
+    line += ("%08x" % (rg32test.rng32()))
+    line += ("%016x" % (rg32test.rng64()))
+    line += ("%016x" % (rg32test.rng64()))
+    line += ("%08x" % (rg32test.rng32()))
+    line += ("%04x" % (rg32test.rng16()))
+    line += ("%04x" % (rg32test.rng16()))
+    print(line)
 
 ##### END BSD LICENSED CODE ##############################################
 
