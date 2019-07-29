@@ -4179,6 +4179,7 @@ class RiverMap :
                 xx = x
                 yy = y
                 loop = 1
+                hereSeen = {}
                 while(flow != self.L and flow != self.O):
                     loop += 1
                     if(loop > 512):
@@ -4206,6 +4207,9 @@ class RiverMap :
                     self.drainageMap[ii] += rainFall
                     #reset flow
                     flow = self.flowMap[ii]
+                    if ii in hereSeen:
+                        flow = self.O # Break loop
+                    hereSeen[ii] = True
                     
         
         riverThreshold = sm.plainsThreshold * mc.RiverThreshold
