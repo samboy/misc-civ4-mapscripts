@@ -995,8 +995,15 @@ class MapConstants :
 # There is another open-source Python RadioGatun implementation here:
 # https://github.com/doegox/python-cryptoplus
 
-# I would like to thank Lorenzo for his suggestion to use range to speed up
+# I would like to thank Lorenzo for his suggestion to use xrange to speed up
 # the program
+
+# Since range is too slow in Python2, we do this to make the code run in
+# Python2 and Python3
+try:
+    xrange
+except:
+    xrange = range
 
 class RadioGatun32:
         def __init__(self, m):
