@@ -3928,6 +3928,7 @@ class Areamap :
             if debugReport:
                 print("i = %d, seg.y + seg.dy = %d" % (i,seg.y + seg.dy))
                 print("areaMap[i] = %d, matchValue match = %d" % (self.areaMap[i],matchValue == matchFunction(xLeftExtreme,seg.y + seg.dy)))
+            #print("DEBUG: %f %f %f" % (xLeftExtreme,seg.y + seg.dy,i))
             if self.areaMap[int(i)] == 0 and matchValue == matchFunction(xLeftExtreme,seg.y + seg.dy):
                 self.areaMap[int(i)] = areaID
                 self.size += 1
