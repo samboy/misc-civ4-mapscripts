@@ -347,7 +347,7 @@ class MapConstants :
         self.serviceString = "MP No Tag" # No cheating in multiplayer!
         return
     def initialize(self):
-        print "Initializing map constants"
+        print("Initializing map constants")
 ##############################################################################
 ## GLOBAL TUNING VARIABLES: Change these to customize the map results
 
@@ -966,7 +966,7 @@ class MapConstants :
         self.optionsString += "Patience = " + str(patience) + "\n"
         self.optionsString += "Island factor = " + str(heightmap_size_factor) +"\n"
 
-        print str(self.optionsString) + "\n"
+        print(str(self.optionsString) + "\n")
         return
 
 
@@ -995,13 +995,13 @@ class MapConstants :
 # There is another open-source Python RadioGatun implementation here:
 # https://github.com/doegox/python-cryptoplus
 
-# I would like to thank Lorenzo for his suggestion to use xrange to speed up
+# I would like to thank Lorenzo for his suggestion to use range to speed up
 # the program
 
 class RadioGatun32:
         def __init__(self, m):
-                self.wordsize = 32
-                self.millsize = 19
+                self.wordsize = int(32)
+                self.millsize = int(19)
                 self.beltrows = 3
                 self.beltcol = 13
                 self.beltfeed = 12
@@ -1010,21 +1010,21 @@ class RadioGatun32:
                 (self.a, self.b) = self.seed(str(m))
         def mill(self,a):
                 aa = []
-                for g in xrange(self.millsize):
+                for g in range(self.millsize):
                         aa.append(0)
                 x = 0
                 i = 0
                 y = 0
                 r = 0
                 z = 0
-                for i in xrange(self.millsize):
+                for i in range(self.millsize):
                         y = (i * 7) % self.millsize
-                        r = ((i * (i + 1)) / 2) % self.wordsize
+                        r = int(((i * (i + 1)) / 2)) % self.wordsize
                         x = a[y] ^ (a[ ((y + 1) % self.millsize) ] |
                             (a[ ((y + 2) % self.millsize) ] ^ self.mask))
-                        aa[i] = ((x >> r) | (x << (self.wordsize - r))
-                                & self.mask)
-                for i in xrange(self.millsize):
+                        aa[i] = ((x >> r) | (x <<(self.wordsize - r))
+                                 & self.mask)
+                for i in range(self.millsize):
                         y = i
                         r = (i + 1) % self.millsize
                         z = (i + 4) % self.millsize
@@ -1033,34 +1033,34 @@ class RadioGatun32:
                 return a
         def belt(self,a,b):
                 q = []
-                for g in xrange(self.beltrows):
+                for g in range(self.beltrows):
                         q.append(0)
                 s = 0
                 i = 0
                 v = 0
-                for s in xrange(self.beltrows):
+                for s in range(self.beltrows):
                         q[s] = b[((s * self.beltcol) + self.beltcol - 1)]
                 i = self.beltcol - 1
                 while i > 0:
-                        for s in xrange(self.beltrows):
+                        for s in range(self.beltrows):
                                 v = i - 1
                                 if v < 0:
                                         v = self.beltcol - 1
                                 b[((s * self.beltcol) + i)] = (
                                         b[((s * self.beltcol) + v)])
                         i -= 1
-                for s in xrange(self.beltrows):
+                for s in range(self.beltrows):
                         b[(s * self.beltcol)] = q[s]
-                for i in xrange(self.beltfeed):
+                for i in range(self.beltfeed):
                         s = (i + 1) + ((i % self.beltrows) * self.beltcol)
                         b[s] ^= a[(i + 1)]
                 a = self.mill(a)
-                for i in xrange(self.beltrows):
+                for i in range(self.beltrows):
                         a[(i + self.beltcol)] ^= q[i]
                 return (a, b)
         def seed(self,m):
                 p = []
-                for g in xrange(3):
+                for g in range(3):
                         p.append(0)
                 q = 0
                 c = 0
@@ -1070,13 +1070,13 @@ class RadioGatun32:
                 counter = 0
                 a = []
                 b = []
-                for g in xrange(self.millsize):
+                for g in range(self.millsize):
                         a.append(0)
-                for g in xrange(self.beltrows * self.beltcol):
+                for g in range(self.beltrows * self.beltcol):
                         b.append(0)
-                for counter in xrange(16777218): # Infinite loop protection
+                for counter in range(16777218): # Infinite loop protection
                         p[0] = p[1] = p[2] = 0
-                        for r in xrange(3):
+                        for r in range(3):
                                 q = 0
                                 while q < self.wordsize:
                                         x = 0
@@ -1090,15 +1090,15 @@ class RadioGatun32:
                                                 x = 1
                                         p[r] |= x << q
                                         if done == 1:
-                                                for c in xrange(3):
+                                                for c in range(3):
                                                         b[c * 13] ^= p[c]
                                                         a[16 + c] ^= p[c]
                                                 (a,b) = self.belt(a,b)
-                                                for c in xrange(16):
+                                                for c in range(16):
                                                         (a,b) = self.belt(a,b)
                                                 return (a,b)
                                         q += 8
-                        for c in xrange(3):
+                        for c in range(3):
                                 b[c * 13] ^= p[c]
                                 a[16 + c] ^= p[c]
                         (a,b) = self.belt(a,b)
@@ -1230,7 +1230,7 @@ class PythonRandom :
         else:
             self.usePR = False
         if not IsStandAlone and self.usePR and CyGame().isNetworkMultiPlayer():
-            print "Detecting network game. Setting UsePythonRandom to False."
+            print("Detecting network game. Setting UsePythonRandom to False.")
             self.usePR = False
         if self.usePR:
             seed() #Start with system time
@@ -1255,7 +1255,7 @@ class PythonRandom :
             mc.serviceTag >>= 52
             mc.serviceString = ("%x" % mc.serviceTag)
             mc.serviceString += seedValue
-            print "SERVICE TAG: " + mc.serviceString
+            print("SERVICE TAG: " + mc.serviceString)
             self.rg32 = RadioGatun32(seedValue)
 
         else:
@@ -1270,7 +1270,7 @@ class PythonRandom :
 ##            self.mapRand.init(seedValue)
 ##            self.seedString = "Pre-set seed (Using getMapRand) for this map is %(s)20d" % {"s":seedValue}
 
-        print str(self.seedString)
+        print(str(self.seedString))
         return
     def random(self):
         if self.usePR:
@@ -1623,8 +1623,8 @@ def FindValueFromPercent(mmap,width,height,percent,tolerance,greaterThan):
     while not inTolerance:
         iterations += 1
         if(iterations > 500):
-            print "can't find value within tolerance, end value = "
-            print "threshold = %f, thresholdChange = %f" % (threshold, thresholdChange)
+            print("can't find value within tolerance, end value = ")
+            print("threshold = %f, thresholdChange = %f" % (threshold, thresholdChange))
             break #close enough
         matchCount = 0
         for i in range(height*width):
@@ -1710,7 +1710,7 @@ class HeightMap :
             ok = False
 
         if ok == False:
-            raise ValueError, ("height map dimesions not divisible by mc.hmMaxGrain. also check wrapping options Width %d Height %d w %d h %d %s %s" % (mc.hmWidth , mc.hmHeight, width, height, str(mc.WrapX), str(mc.WrapY)))
+            raise(ValueError, ("height map dimesions not divisible by mc.hmMaxGrain. also check wrapping options Width %d Height %d w %d h %d %s %s" % (mc.hmWidth , mc.hmHeight, width, height, str(mc.WrapX), str(mc.WrapY))))
 
         return
 
@@ -1739,7 +1739,7 @@ class HeightMap :
                 dimension = x
                 middle = mc.hmWidth/2
             else:
-                raise ValueError, "bad hmSeparation type"
+                raise(ValueError, "bad hmSeparation type")
 
             if dimension > middle - (mc.hmMaxGrain * mc.hmGrainMargin) \
             and dimension < middle + (mc.hmMaxGrain * mc.hmGrainMargin):
@@ -1786,12 +1786,12 @@ class HeightMap :
         totalNonMargin += len(peaksSEList)
 
         count = max(1,int(float(totalNonMargin) * mc.hmInitialPeakPercent * 0.25))
-        print "peak count = %d" % (count)
+        print("peak count = %d" % (count))
         for n in range(count):
             x,y = peaksNWList[n]
             i = GetHmIndex(x,y)
             self.heightMap[i] = 1.0
-            print "%d,%d = 1.0" % (x,y)
+            print("%d,%d = 1.0" % (x,y))
 
             x,y = peaksNEList[n]
             i = GetHmIndex(x,y)
@@ -1912,7 +1912,7 @@ class HeightMap :
             while(True):
                 iterations += 1
                 if iterations > 10000:
-                    raise ValueError, "endless loop in region seed placement"
+                    raise(ValueError, "endless loop in region seed placement")
                 seedX = PRand.randint(0,mc.hmWidth + 1)
                 seedY = PRand.randint(0,mc.hmHeight + 1)
                 n = GetHmIndex(seedX,seedY)
@@ -1939,8 +1939,8 @@ class HeightMap :
             iterations += 1
             if iterations > 200000:
                 self.printPlateMap(self.plateMap)
-                print "length of growthPlotList = %d" % (len(growthPlotList))
-                raise ValueError, "endless loop in plate growth"
+                print("length of growthPlotList = %d" % (len(growthPlotList)))
+                raise(ValueError, "endless loop in plate growth")
             plot = growthPlotList[0]
             roomLeft = False
             for direction in range(1,5,1):
@@ -2017,8 +2017,8 @@ class HeightMap :
                 if borderMap[i] == True:
                     isBorder = True
                 plateID = self.plateMap[i].plateID
-                for yy in range(y - mc.distanceFilterSize/2,y + mc.distanceFilterSize/2 + 1,1):
-                    for xx in range(x - mc.distanceFilterSize/2,x + mc.distanceFilterSize/2 + 1,1):
+                for yy in range(int(y - mc.distanceFilterSize/2),int(y + mc.distanceFilterSize/2 + 1),1):
+                    for xx in range(int(x - mc.distanceFilterSize/2),int(x + mc.distanceFilterSize/2 + 1),1):
                         ii = GetHmIndex(xx,yy)
                         if ii == -1:
                             continue
@@ -2137,9 +2137,9 @@ class HeightMap :
     def addWaterBands(self):
         #validate water bands. Maps that wrap cannot have one in that direction
         if mc.WrapX and (mc.eastWaterBand != 0 or mc.westWaterBand != 0):
-            raise ValueError,"east/west water bands cannot be used when wrapping in X direction."
+            raise(ValueError,"east/west water bands cannot be used when wrapping in X direction.")
         if mc.WrapY and (mc.northWaterBand != 0 or mc.southWaterBand != 0):
-            raise ValueError,"north/south water bands cannot be used when wrapping in Y direction."
+            raise(ValueError,"north/south water bands cannot be used when wrapping in Y direction.")
 
         newWidth = mc.hmWidth + mc.eastWaterBand + mc.westWaterBand
         newHeight = mc.hmHeight + mc.northWaterBand + mc.southWaterBand
@@ -2175,7 +2175,7 @@ class HeightMap :
         i = GetHmIndex(x,y)
 ##        print "heightMap = %f at %d,%d" % (self.heightMap[i],x,y)
 ##        print "seaLevel = %f" % self.seaLevel
-        if self.heightMap[i] < self.seaLevel:
+        if self.heightMap[int(i)] < self.seaLevel:
 ##            print "True"
             return True
 ##        print "False"
@@ -2263,7 +2263,7 @@ class HeightMap :
 
     def printInitialPeaks(self):
         lineString = "midpoint displacement peaks and margins"
-        print lineString
+        print(lineString)
         if not mc.WrapY:
             adjustedHeight = mc.hmHeight - 1
         else:
@@ -2278,13 +2278,13 @@ class HeightMap :
                     lineString += "1"
                 elif self.heightMap[i] == 0.0:
                     lineString += "0"
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def printHeightMap(self):
         lineString = "Height Map"
-        print lineString
+        print(lineString)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.hmWidth,1):
@@ -2295,13 +2295,13 @@ class HeightMap :
                     lineString += '.'
                 else:
                     lineString += chr(mapLoc + 48)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def printPlateMap(self,plateMap):
         lineString = "Plate Map"
-        print lineString
+        print(lineString)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.hmWidth,1):
@@ -2310,48 +2310,48 @@ class HeightMap :
                 if mapLoc > 40:
                     mapLoc = 41
                 lineString += chr(mapLoc + 48)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def printPreSmoothMap(self,preSmoothMap):
         lineString = "Pre-Smooth Map"
-        print lineString
+        print(lineString)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.hmWidth,1):
                 i = GetHmIndex(x,y)
                 mapLoc = int(preSmoothMap[i] * 40)
                 lineString += chr(mapLoc + 48)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def printPlateHeightMap(self):
         lineString = "Plate Height Map"
-        print lineString
+        print(lineString)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.hmWidth,1):
                 i = GetHmIndex(x,y)
                 mapLoc = int(self.plateHeightMap[i] * 40)
                 lineString += chr(mapLoc + 48)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def printDistanceMap(self,distanceMap,maxDistance):
         lineString = "Plate Height Map"
-        print lineString
+        print(lineString)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.hmWidth,1):
                 i = GetHmIndex(x,y)
                 mapLoc = int((distanceMap[i]/maxDistance) * 40)
                 lineString += chr(mapLoc + 48)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
 class Plate :
     def __init__(self,ID,seedX,seedY):
@@ -2521,14 +2521,14 @@ class ClimateMap :
         for plot in plotList:
             i = GetHmIndex(plot.x,plot.y)
             if bDebug:
-                print "rainplot at %d,%d" % (plot.x,plot.y)
-                print "order = %f" % (plot.order)
-                print "initial moisture = %f" % (self.moistureMap[i])
+                print("rainplot at %d,%d" % (plot.x,plot.y))
+                print("order = %f" % (plot.order))
+                print("initial moisture = %f" % (self.moistureMap[i]))
             #First collect moisture from sea
             if hm.isBelowSeaLevel(plot.x,plot.y):
                 self.moistureMap[i] += tempMap[i]
                 if bDebug:
-                    print "collecting %f moisture from sea" % (tempMap[i])
+                    print("collecting %f moisture from sea" % (tempMap[i]))
 
             nList = list()
             if bGeostrophic:
@@ -2544,7 +2544,7 @@ class ClimateMap :
                         xString = "<"
                     else:
                         xString = ">"
-                    print "Wind direction ------------------------------- %s%s - %s" % (xString,yString,windZones.GetZoneName(zone))
+                    print("Wind direction ------------------------------- %s%s - %s" % (xString,yString,windZones.GetZoneName(zone)))
                 nList.append((plot.x,plot.y + dy))
                 nList.append((plot.x + dx,plot.y))
                 nList.append((plot.x + dx,plot.y + dy))
@@ -2561,7 +2561,7 @@ class ClimateMap :
                     continue #dead end, dump appropriate rain
             moisturePerNeighbor = self.moistureMap[i]/float(len(nList))
             if bDebug:
-                print "moisturePerNeighbor = %f for %d neighbors" % (moisturePerNeighbor,len(nList))
+                print("moisturePerNeighbor = %f for %d neighbors" % (moisturePerNeighbor,len(nList)))
 
             geostrophicFactor = 1.0
             if bGeostrophic:
@@ -2569,8 +2569,8 @@ class ClimateMap :
             for xx,yy in nList:
                 ii = GetHmIndex(xx,yy)
                 if bDebug:
-                    print "  neighbor %d,%d" % (xx,yy)
-                    print "  countRemaining = %d" % countRemaining
+                    print("  neighbor %d,%d" % (xx,yy))
+                    print("  countRemaining = %d" % countRemaining)
                 #Get the rain cost to enter this plot. Cost is
                 #percentage of present moisture available for this
                 #neighbor
@@ -2580,22 +2580,22 @@ class ClimateMap :
                     cost = self.getRainCost(plot.x,plot.y,xx,yy,countRemaining/mc.monsoonUplift)
 
                 if bDebug:
-                    print "  rain cost = %f" % cost
+                    print("  rain cost = %f" % cost)
 
                 #Convert moisture into rain
                 #self.moistureMap[i] -= cost * moisturePerNeighbor (this line is unecessary actually, we are finished with moisture map for this plot)
                 self.rainFallMap[i] += cost * moisturePerNeighbor * geostrophicFactor #geostrophicFactor is not involved with moisture, only to weigh against monsoons
                 if bDebug:
-                    print "  dropping %f rain here" % (cost * moisturePerNeighbor)
+                    print("  dropping %f rain here" % (cost * moisturePerNeighbor))
 
                 #send remaining moisture to neighbor
                 if ii != -1:
                     self.moistureMap[ii] += moisturePerNeighbor - (cost * moisturePerNeighbor)
                     if bDebug:
-                        print "  remaining moisture to neighbor = %f" % (moisturePerNeighbor - (cost * moisturePerNeighbor))
+                        print("  remaining moisture to neighbor = %f" % (moisturePerNeighbor - (cost * moisturePerNeighbor)))
 
             if bDebug:
-                print "total rainfall = %f" % self.rainFallMap[i]
+                print("total rainfall = %f" % self.rainFallMap[i])
             countRemaining -= 1
 
     def getRainCost(self,x1,y1,x2,y2,distanceToUplift):
@@ -2640,7 +2640,7 @@ class ClimateMap :
 
     def printRainFallMap(self,bOcean):
         lineString = "Rainfall Map"
-        print lineString
+        print(lineString)
         wz = WindZones(mc.hmHeight,mc.topLatitude,mc.bottomLatitude)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
@@ -2677,12 +2677,12 @@ class ClimateMap :
             else:
                 lineString += '^'
             lineString += ' ' + wz.GetZoneName(z)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
     def printTempMap(self,tempMap):
         lineString = "Temp Map"
-        print lineString
+        print(lineString)
         wz = WindZones(mc.hmHeight,mc.topLatitude,mc.bottomLatitude)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
@@ -2702,9 +2702,9 @@ class ClimateMap :
             else:
                 lineString += '^'
             lineString += ' ' + wz.GetZoneName(z)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
 class RainPlot :
     def __init__(self,x,y,order,uplift):
@@ -2874,7 +2874,7 @@ class SmallMaps :
 
 
     def createPlotMap(self):
-        print "creating plot map"
+        print("creating plot map")
         self.plotMap = array('i')
         #create height difference map to allow for tuning
         diffMap = array('d')
@@ -2954,7 +2954,7 @@ class SmallMaps :
                     allPeaks = True
                     peakCount = 0
                     nextToOcean = False
-                    #print "peak at %d %d" % (x,y) #DEBUG
+                    #print("peak at %d %d" % (x,y)) #DEBUG
                     # While we're here, let's eliminate seaside peaks
                     for direction in range(1,9,1):
                         xx,yy = GetXYFromDirection(x,y,direction)
@@ -2964,7 +2964,7 @@ class SmallMaps :
                         else:
                             peakCount += 1
                         if self.plotMap[ii] == mc.OCEAN:
-                            #print "nextToOcean %d %d" % (x,y) #DEBUG
+                            #print("nextToOcean %d %d" % (x,y)) #DEBUG
                             nextToOcean = True
                     if allPeaks == True or peakCount > 3:
                         self.plotMap[i] = mc.HILLS
@@ -2973,7 +2973,7 @@ class SmallMaps :
 
         return
     def createTerrainMap(self):
-        print "creating terrain map"
+        print("creating terrain map")
         self.terrainMap = array('i')
         #initialize terrainMap with OCEAN
         for i in range(0,mc.height*mc.width):
@@ -3097,7 +3097,7 @@ class SmallMaps :
 
     def printHeightMap(self):
         lineString = "Height Map"
-        print lineString
+        print(lineString)
         for y in range(mc.height - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.width,1):
@@ -3108,12 +3108,12 @@ class SmallMaps :
                     lineString += '.'
                 else:
                     lineString += chr(mapLoc + 48)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def printPlotMap(self):
-        print "Plot Map"
+        print("Plot Map")
         for y in range(mc.height - 1,-1,-1):
             lineString = ""
             for x in range(mc.width):
@@ -3126,11 +3126,11 @@ class SmallMaps :
                     lineString += '+'
                 else:
                     lineString += '.'
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
     def printTerrainMap(self):
-        print "Terrain Map"
+        print("Terrain Map")
         wz = WindZones(mc.height,80,-80)
         for y in range(mc.height - 1,-1,-1):
             lineString = ""
@@ -3153,9 +3153,9 @@ class SmallMaps :
                 elif mapLoc == mc.SNOW:
                     lineString += 'I'
             lineString += "-" + wz.GetZoneName(wz.GetZone(y))
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
 def isHmWaterMatch(x,y):
     i = GetHmIndex(x,y)
@@ -3183,7 +3183,7 @@ class PangaeaBreaker :
         while not mc.AllowPangeas and self.isPangea() and meteorCount < mc.maximumMeteorCount:
             pangeaDetected = True
             x,y = self.getMeteorStrike()
-            print "A meteor has struck the Earth at %(x)d, %(y)d!!" % {"x":x,"y":y}
+            print("A meteor has struck the Earth at %(x)d, %(y)d!!" % {"x":x,"y":y})
             self.castMeteorUponTheEarth(x,y)
             meteorThrown = True
             meteorCount += 1
@@ -3195,13 +3195,13 @@ class PangaeaBreaker :
 ##            anotherPangaea = False
 
         if meteorThrown:
-            print "The age of dinosours has come to a cataclysmic end."
+            print("The age of dinosours has come to a cataclysmic end.")
         if meteorCount == 15:
-            print "Maximum meteor count of %d has been reached. Pangaea may still exist." % meteorCount
+            print("Maximum meteor count of %d has been reached. Pangaea may still exist." % meteorCount)
         if mc.AllowPangeas:
-            print "Pangeas are allowed on this map and will not be suppressed."
+            print("Pangeas are allowed on this map and will not be suppressed.")
         elif pangeaDetected == False:
-            print "No pangea detected on this map."
+            print("No pangea detected on this map.")
 ##        self.areaMap.PrintAreaMap()
     def isPangea(self):
 ##        starttime = time.clock()
@@ -3221,13 +3221,13 @@ class PangaeaBreaker :
         if 0.70 < float(biggestSize)/float(totalLand):
 ##            endtime = time.clock()
 ##            elapsed = endtime - starttime
-##            print "isPangea time = %(t)s" % {"t":str(elapsed)}
+##            print("isPangea time = %(t)s" % {"t":str(elapsed)})
             return True
 ##        endtime = time.clock()
 ##        elapsed = endtime - starttime
-##        print "isPangea time = "
-##        print elapsed
-##        print
+##        print("isPangea time = ")
+##        print(elapsed)
+##        print()
         return False
     def getMeteorStrike(self):
 ##        starttime = time.clock()
@@ -3254,7 +3254,7 @@ class PangaeaBreaker :
 ##                if self.areaMap.areaMap[i] == biggestContinentID and\
 ##                not hm.isBelowSeaLevel(x,y): #this helps narrow the search
 ##                    if self.isChokePoint(x,y,biggestContinentID):
-####                        print "chokepoint area at %d,%d = %d" % (x,y,biggestContinentID)
+####                        print("chokepoint area at %d,%d = %d" % (x,y,biggestContinentID))
 ##                        ap = AreaPlot(x,y)
 ##                        chokeList.append(ap)
 ##        #calculate distances to center
@@ -3272,9 +3272,9 @@ class PangaeaBreaker :
 ##        if len(chokeList) == 0:#return bad value if no chokepoints
 ####            endtime = time.clock()
 ####            elapsed = endtime - starttime
-####            print "getMeteorStrike time = "
-####            print elapsed
-####            print
+####            print("getMeteorStrike time = ")
+####            print(elapsed)
+####            print()
 ##            return -1,-1
 ##
 ####        endtime = time.clock()
@@ -3510,7 +3510,7 @@ class PangaeaBreaker :
 
     def printDistanceMap(self):
         lineString = "Pangaea Breaker distance map"
-        print lineString
+        print(lineString)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.hmWidth,1):
@@ -3521,9 +3521,9 @@ class PangaeaBreaker :
                     lineString += '.'
                 else:
                     lineString += chr(mapLoc + 48)
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def getHighestCentrality(self,ID):
         C = self.createCentralityList(ID)
@@ -3538,7 +3538,7 @@ class PangaeaBreaker :
         for y in range(0,mc.hmHeight):
             for x in range(0,mc.hmWidth):
                 i = GetHmIndex(x,y)
-##                print "h %% gap = %d, w %% gap = %d" % (y % gap,y % gap)
+##                print("h %% gap = %d, w %% gap = %d" % (y % gap,y % gap))
                 if y % gap == 0 and x % gap == 0 and \
                 self.areaMap.areaMap[i] == ID:
                     C.append(CentralityScore(x,y))
@@ -3549,7 +3549,7 @@ class PangaeaBreaker :
 
         n = 0
         for s in C:
-##            print "s at %d,%d index %d is neighbors with" % (s.x,s.y,n)
+##            print("s at %d,%d index %d is neighbors with" % (s.x,s.y,n))
             #Check 4 nieghbors
             xx = s.x - gap
             if xx < 0:
@@ -3557,28 +3557,28 @@ class PangaeaBreaker :
             i = GetHmIndex(xx,s.y)
             if i != -1 and self.areaMap.areaMap[i] == ID:
                 s.neighborList.append(indexMap[i])
-##                print "%d,%d index %d" % (xx,s.y,indexMap[i])
+##                print("%d,%d index %d" % (xx,s.y,indexMap[i]))
             xx = s.x + gap
             if xx >= mc.hmWidth:
                 xx = 0
             i = GetHmIndex(xx,s.y)
             if i != -1 and self.areaMap.areaMap[i] == ID:
                 s.neighborList.append(indexMap[i])
-##                print "%d,%d index %d" % (xx,s.y,indexMap[i])
+##                print("%d,%d index %d" % (xx,s.y,indexMap[i]))
             yy = s.y - gap
             if yy < 0:
                 yy = mc.hmHeight/gap * gap
             i = GetHmIndex(s.x,yy)
             if i != -1 and self.areaMap.areaMap[i] == ID:
                 s.neighborList.append(indexMap[i])
-##                print "%d,%d index %d" % (s.x,yy,indexMap[i])
+##                print("%d,%d index %d" % (s.x,yy,indexMap[i]))
             yy = s.y + gap
             if yy > mc.hmHeight:
                 yy = 0
             i = GetHmIndex(s.x,yy)
             if i != -1 and self.areaMap.areaMap[i] == ID:
                 s.neighborList.append(indexMap[i])
-##                print "%d,%d index %d" % (s.x,yy,indexMap[i])
+##                print("%d,%d index %d" % (s.x,yy,indexMap[i]))
 
             n += 1
 
@@ -3589,7 +3589,7 @@ class PangaeaBreaker :
 
     def printContinentList(self,ID,gap):
         lineString = "Continent neighbor map"
-        print lineString
+        print(lineString)
         for y in range(mc.hmHeight - 1,-1,-1):
             lineString = ""
             for x in range(0,mc.hmWidth,1):
@@ -3601,9 +3601,9 @@ class PangaeaBreaker :
                     lineString += '*'
                 else:
                     lineString += '.'
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
 
     def createCentralityList(self,ID):
@@ -3718,9 +3718,9 @@ class ContinentMap :
         continentList.sort(lambda x,y:cmp(x.size,y.size))
         continentList.reverse()
 
-        print ''
-        print "All continents"
-        print self.areaMap.PrintList(continentList)
+        print('')
+        print("All continents")
+        print(self.areaMap.PrintList(continentList))
 
         #now remove a percentage of the landmass to be considered 'Old World'
         oldWorldSize = 0
@@ -3756,9 +3756,9 @@ class ContinentMap :
         continentList.append(biggestNewWorld)
 
         #what remains in the list will be considered 'New World'
-        print ''
-        print "New World Continents"
-        print self.areaMap.PrintList(continentList)
+        print('')
+        print("New World Continents")
+        print(self.areaMap.PrintList(continentList))
 
         #get ID for the next continent, we will use this ID for 'New World'
         #designation
@@ -3912,11 +3912,11 @@ class Areamap :
         lineFound = False
         #first scan and fill any left overhang
         if debugReport:
-            print ""
-            print "areaID = %(a)4d" % {"a":areaID}
-            print "matchValue = %(w)2d, landOffset = %(l)2d" % {"w":matchValue,"l":landOffset}
-            print str(seg)
-            print "Going left"
+            print("")
+            print("areaID = %(a)4d" % {"a":areaID})
+            print("matchValue = %(w)2d, landOffset = %(l)2d" % {"w":matchValue,"l":landOffset})
+            print(str(seg))
+            print("Going left")
         if mc.WrapX == True:
             xStop = 0 - (self.mapWidth*20)
         else:
@@ -3924,12 +3924,12 @@ class Areamap :
         for xLeftExtreme in range(seg.xLeft - landOffset,xStop,-1):
             i = self.getIndex(xLeftExtreme,seg.y + seg.dy)
             if debugReport:
-                print "xLeftExtreme = %(xl)4d" % {'xl':xLeftExtreme}
+                print("xLeftExtreme = %(xl)4d" % {'xl':xLeftExtreme})
             if debugReport:
-                print "i = %d, seg.y + seg.dy = %d" % (i,seg.y + seg.dy)
-                print "areaMap[i] = %d, matchValue match = %d" % (self.areaMap[i],matchValue == matchFunction(xLeftExtreme,seg.y + seg.dy))
-            if self.areaMap[i] == 0 and matchValue == matchFunction(xLeftExtreme,seg.y + seg.dy):
-                self.areaMap[i] = areaID
+                print("i = %d, seg.y + seg.dy = %d" % (i,seg.y + seg.dy))
+                print("areaMap[i] = %d, matchValue match = %d" % (self.areaMap[i],matchValue == matchFunction(xLeftExtreme,seg.y + seg.dy)))
+            if self.areaMap[int(i)] == 0 and matchValue == matchFunction(xLeftExtreme,seg.y + seg.dy):
+                self.areaMap[int(i)] = areaID
                 self.size += 1
                 lineFound = True
             else:
@@ -3940,8 +3940,8 @@ class Areamap :
                     xLeftExtreme += 1
                 break
         if debugReport:
-            print "xLeftExtreme finally = %(xl)4d" % {'xl':xLeftExtreme}
-            print "Going Right"
+            print("xLeftExtreme finally = %(xl)4d" % {'xl':xLeftExtreme})
+            print("Going Right")
         #now scan right to find extreme right, place each found segment on stack
 #        xRightExtreme = seg.xLeft - landOffset #needed sometimes? one time it was not initialized before use.
         xRightExtreme = seg.xLeft #needed sometimes? one time it was not initialized before use.
@@ -3951,65 +3951,65 @@ class Areamap :
             xStop = self.mapWidth
         for xRightExtreme in range(seg.xLeft + lineFound - landOffset,xStop,1):
             if debugReport:
-                print "xRightExtreme = %(xr)4d" % {'xr':xRightExtreme}
+                print("xRightExtreme = %(xr)4d" % {'xr':xRightExtreme})
             i = self.getIndex(xRightExtreme,seg.y + seg.dy)
             if debugReport:
-                print "i = %d, seg.y + seg.dy = %d" % (i,seg.y + seg.dy)
-                print "areaMap[i] = %d, matchValue match = %d" % (self.areaMap[i],matchValue == matchFunction(xRightExtreme,seg.y + seg.dy))
-            if self.areaMap[i] == 0 and matchValue == matchFunction(xRightExtreme,seg.y + seg.dy):
-                self.areaMap[i] = areaID
+                print("i = %d, seg.y + seg.dy = %d" % (i,seg.y + seg.dy))
+                print("areaMap[i] = %d, matchValue match = %d" % (self.areaMap[i],matchValue == matchFunction(xRightExtreme,seg.y + seg.dy)))
+            if self.areaMap[int(i)] == 0 and matchValue == matchFunction(xRightExtreme,seg.y + seg.dy):
+                self.areaMap[int(i)] = areaID
                 self.size += 1
                 if lineFound == False:
                     lineFound = True
                     xLeftExtreme = xRightExtreme #starting new line
                     if debugReport:
-                        print "starting new line at xLeftExtreme= %(xl)4d" % {'xl':xLeftExtreme}
+                        print("starting new line at xLeftExtreme= %(xl)4d" % {'xl':xLeftExtreme})
             elif lineFound == True: #found the right end of a line segment!
                 lineFound = False
                 #put same direction on stack
                 newSeg = LineSegment(seg.y + seg.dy,xLeftExtreme,xRightExtreme - 1,seg.dy)
                 self.segStack.append(newSeg)
                 if debugReport:
-                    print "same direction to stack",str(newSeg)
+                    print("same direction to stack",str(newSeg))
                 #determine if we must put reverse direction on stack
                 if xLeftExtreme < seg.xLeft or xRightExtreme >= seg.xRight:
                     #out of shadow so put reverse direction on stack also
                     newSeg = LineSegment(seg.y + seg.dy,xLeftExtreme,xRightExtreme - 1,-seg.dy)
                     self.segStack.append(newSeg)
                     if debugReport:
-                        print "opposite direction to stack",str(newSeg)
+                        print("opposite direction to stack",str(newSeg))
                 if xRightExtreme >= seg.xRight + landOffset:
                     if debugReport:
-                        print "finished with line"
+                        print("finished with line")
                     break; #past the end of the parent line and this line ends
             elif lineFound == False and xRightExtreme >= seg.xRight + landOffset:
                 if debugReport:
-                    print "no additional lines found"
+                    print("no additional lines found")
                 break; #past the end of the parent line and no line found
             else:
                 continue #keep looking for more line segments
         if lineFound == True: #still a line needing to be put on stack
             if debugReport:
-                print "still needing to stack some segs"
+                print("still needing to stack some segs")
             lineFound = False
             #put same direction on stack
             newSeg = LineSegment(seg.y + seg.dy,xLeftExtreme,xRightExtreme - 1,seg.dy)
             self.segStack.append(newSeg)
             if debugReport:
-                print str(newSeg)
+                print(str(newSeg))
             #determine if we must put reverse direction on stack
             if xLeftExtreme < seg.xLeft or xRightExtreme - 1 > seg.xRight:
                 #out of shadow so put reverse direction on stack also
                 newSeg = LineSegment(seg.y + seg.dy,xLeftExtreme,xRightExtreme - 1,-seg.dy)
                 self.segStack.append(newSeg)
                 if debugReport:
-                    print str(newSeg)
+                    print(str(newSeg))
 
         return
     #for debugging
     def PrintAreaMap(self):
 
-        print "Area Map"
+        print("Area Map")
         for y in range(self.mapHeight - 1,-1,-1):
             lineString = ""
             for x in range(self.mapWidth):
@@ -4018,21 +4018,21 @@ class Areamap :
                     mapLoc = 127 - 34
                 lineString += chr(mapLoc + 34)
             lineString += "-" + str(y)
-            print lineString
+            print(lineString)
         oid = self.getOceanID()
         if oid == None or oid + 34 > 255:
-            print "Ocean ID is unknown"
+            print("Ocean ID is unknown")
         else:
-            print "Ocean ID is %(oid)4d or %(c)s" % {'oid':oid,'c':chr(oid + 34)}
+            print("Ocean ID is %(oid)4d or %(c)s" % {'oid':oid,'c':chr(oid + 34)})
         lineString = " "
-        print lineString
+        print(lineString)
 
         return
     def PrintList(self,s):
         for a in s:
             char = chr(a.ID + 34)
             lineString = str(a) + ' ' + char
-            print lineString
+            print(lineString)
 
 class LineSegment :
     def __init__(self,y,xLeft,xRight,dy):
@@ -4164,7 +4164,7 @@ class RiverMap :
 
                     if count > 0:
                         choice = int(PRand.random()*count)
-#                        print count,choice
+#                        print(count,choice)
                         self.flowMap[i] = drainList[choice]
 
         #Create average rainfall map so that each intersection is an average
@@ -4182,7 +4182,7 @@ class RiverMap :
 
         #Now use the flowMap as a guide to distribute average rainfall.
         #Wherever the most rainfall ends up is where the rivers will be.
-        print "Distributing rainfall"
+        print("Distributing rainfall")
         for y in range(mc.height):
             for x in range(mc.width):
                 i = GetIndex(x,y)
@@ -4195,7 +4195,7 @@ class RiverMap :
                 while(flow != self.L and flow != self.O):
                     loop += 1
                     if(loop > 512):
-                        raise ValueError, "Rainfall infinite loop"
+                        raise(ValueError, "Rainfall infinite loop")
 
                     if(flow == self.N):
                         yy += 1
@@ -4242,7 +4242,7 @@ class RiverMap :
             return x - 1,y
         if direction == self.SE:
             return x,y
-        raise ValueError,"rxFromPlot using bad direction input"
+        raise(ValueError,"rxFromPlot using bad direction input")
 
     def siltifyLakes(self):
         lakeList = []
@@ -4325,7 +4325,7 @@ class RiverMap :
 
 
     def printRiverMap(self):
-        print "River Map"
+        print("River Map")
         wz = WindZones(mc.height,80,-80)
         for y in range(mc.height - 1,-1,-1):
             lineString = ""
@@ -4344,12 +4344,12 @@ class RiverMap :
                 elif mapLoc == self.W:
                     lineString += 'W'
             lineString += "-" + wz.GetZoneName(wz.GetZone(y))
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
 
     def printFlowMap(self):
-        print "Flow Map"
+        print("Flow Map")
         wz = WindZones(mc.height,80,-80)
         for y in range(mc.height - 1,-1,-1):
             lineString = ""
@@ -4368,11 +4368,11 @@ class RiverMap :
                 elif mapLoc == self.W:
                     lineString += 'W'
             lineString += "-" + wz.GetZoneName(wz.GetZone(y))
-            print lineString
+            print(lineString)
         lineString = " "
-        print lineString
+        print(lineString)
     def printRiverAndTerrainAlign(self):
-        print "River Alignment Check"
+        print("River Alignment Check")
         for y in range(mc.height - 1,-1,-1):
             lineString1 = ""
             lineString2 = ""
@@ -4409,10 +4409,10 @@ class RiverMap :
                     lineString2 += '.<'
 ##            lineString1 += "-" + wz.GetZoneName(wz.GetZone(y))
 ##            lineString2 += "-" + wz.GetZoneName(wz.GetZone(y))
-            print lineString1
-            print lineString2
+            print(lineString1)
+            print(lineString2)
         lineString1 = " "
-        print lineString1
+        print(lineString1)
 class EuropeMap :
     def __init__(self):
         return
@@ -4468,7 +4468,7 @@ class BonusPlacer :
             bonus = self.bonusList[i]
             if bonus.currentBonusCount == 0 and bonus.desiredBonusCount > 0:
                 bonusInfo = gc.getBonusInfo(bonus.eBonus)
-                print "No room at all found for %(bt)s!!!" % {"bt":bonusInfo.getType()}
+                print("No room at all found for %(bt)s!!!" % {"bt":bonusInfo.getType()})
         return
     def AddEmergencyBonus(self,bonus,ignoreClass):
         gc = CyGlobalContext()
@@ -4498,7 +4498,7 @@ class BonusPlacer :
                 if featureEnum == featureForest:
                     if bonusInfo == None or bonusInfo.isFeature(featureEnum):
                         plot.setFeatureType(featureEnum,featureVariety)
-                print "Emergency placement of 1 %(bt)s" % {"bt":bonusInfo.getType()}
+                print("Emergency placement of 1 %(bt)s" % {"bt":bonusInfo.getType()})
                 break
 
         return
@@ -4543,7 +4543,7 @@ class BonusPlacer :
                             loopPlot = self.plotXY(x,y,dx,dy)
                             if loopPlot != None:
                                 if loopPlot.getX() == -1:
-                                    raise ValueError, "plotXY returns invalid plots plot= %(x)d, %(y)d" % {"x":x,"y":y}
+                                    raise(ValueError, "plotXY returns invalid plots plot= %(x)d, %(y)d" % {"x":x,"y":y})
                                 if self.CanPlaceBonusAt(loopPlot,eBonus,False,False):
                                     if PRand.randint(0,99) < bonusInfo.getGroupRand():
                                         #temporarily remove any feature
@@ -4601,7 +4601,7 @@ class BonusPlacer :
             eBonus = self.bonusList[i].eBonus
             if bonusInfo.isOneArea() == False:
                 continue #Only assign areas to area bonuses
-##            print "Trying to find room for %(bt)s, desiredCount=%(dc)d" % {"bt":bonusInfo.getType(),"dc":self.bonusList[i].desiredBonusCount}
+##            print("Trying to find room for %(bt)s, desiredCount=%(dc)d" % {"bt":bonusInfo.getType(),"dc":self.bonusList[i].desiredBonusCount})
             areaSuitabilityList = list()
             for area in self.areas:
                 if area.getNumTiles() >= minLandAreaSize:
@@ -4876,7 +4876,7 @@ class StartingPlotFinder :
             #get old/new world status
             areaOldWorld = self.setupOldWorldAreaList()
 
-            print "len(areaOldWorld) = %d" % len(areaOldWorld)
+            print("len(areaOldWorld) = %d" % len(areaOldWorld))
 
             #Shuffle players so the same player doesn't always get the first pick.
             #lifted from Highlands.py that ships with Civ.
@@ -4933,13 +4933,13 @@ class StartingPlotFinder :
 
             #Now we want best first
             self.startingAreaList.reverse()
-            print "number of starting areas is %(s)3d" % {"s":len(self.startingAreaList)}
+            print("number of starting areas is %(s)3d" % {"s":len(self.startingAreaList)})
 
             iterations = 0
             while True:
                 iterations += 1
                 if iterations > 20:
-                    raise ValueError, "Too many iterations in starting area choosing loop."
+                    raise(ValueError, "Too many iterations in starting area choosing loop.")
                 chosenStartingAreas = list()
                 playersPlaced = 0
                 #add up idealNumbers
@@ -4971,7 +4971,7 @@ class StartingPlotFinder :
                 startingArea.FindStartingPlots()
 
             if len(shuffledPlayers) > 0:
-                raise ValueError,"Some players not placed in starting plot finder!"
+                raise(ValueError,"Some players not placed in starting plot finder!")
 
             #Now set up for normalization
             self.plotList = list()
@@ -4993,7 +4993,7 @@ class StartingPlotFinder :
             self.plotList.sort(lambda x,y:cmp(x.totalValue,y.totalValue))
             self.plotList.reverse()
             bestTotalValue = self.plotList[0].totalValue
-            print "bestTotalValue = %(b)6d" % {"b":bestTotalValue}
+            print("bestTotalValue = %(b)6d" % {"b":bestTotalValue})
             for i in range(len(self.plotList)):
                 if self.plotList[i].vacant == True:
                     continue
@@ -5001,16 +5001,15 @@ class StartingPlotFinder :
                 percentLacking = 1.0 - (float(currentTotalValue)/float(bestTotalValue))
                 if percentLacking > 0:
                     bonuses = min(5,int(percentLacking/0.2))
-                    print "boosting plot by %(bv)d" % \
-                    {"bv":bonuses}
+                    print("boosting plot by %(bv)d" % {"bv":bonuses})
                     self.boostCityPlotValue(self.plotList[i].x,self.plotList[i].y,bonuses,self.plotList[i].isCoast())
 
             #add bonuses due to player difficulty settings
             self.addHandicapBonus()
 
-        except Exception, e:
+        except:
             errorPopUp("PerfectWorld's starting plot finder has failed due to a rarely occuring bug, and this map likely has unfair starting locations. You may wish to quit this game and generate a new map.")
-            raise Exception, e
+            raise(Exception, e)
         return
 
     def setupOldWorldAreaList(self):
@@ -5021,7 +5020,7 @@ class StartingPlotFinder :
         areas = CvMapGeneratorUtil.getAreas()
         areaOldWorld = list()
 
-        print "number of map areas = %d" % len(areas)
+        print("number of map areas = %d" % len(areas))
         for i in range(len(areas)):
             for pI in range(mc.height*mc.width):
                 plot = gameMap.plotByIndex(pI)
@@ -5087,12 +5086,11 @@ class StartingPlotFinder :
         food = 0
         production = 0
         plot = gameMap.plot(x,y)
-        if debugOut: print "Evaluating plot x = %(x)d, y = %(y)d" % {"x":x,"y":y}
+        if debugOut: print("Evaluating plot x = %(x)d, y = %(y)d" % {"x":x,"y":y})
         commerce += plot.calculateBestNatureYield(YieldTypes.YIELD_COMMERCE,TeamTypes.NO_TEAM)
         food += plot.calculateBestNatureYield(YieldTypes.YIELD_FOOD,TeamTypes.NO_TEAM)
         production += plot.calculateBestNatureYield(YieldTypes.YIELD_PRODUCTION,TeamTypes.NO_TEAM)
-        if debugOut: print "Natural yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % \
-        {"f":food,"p":production,"c":commerce}
+        if debugOut: print("Natural yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f":food,"p":production,"c":commerce})
         #Get best bonus improvement score. Test tachnology era of bonus
         #first, then test each improvement
         bestImp = None
@@ -5103,14 +5101,13 @@ class StartingPlotFinder :
         (gc.getTechInfo(bonusInfo.getTechReveal()) == None or \
         gc.getTechInfo(bonusInfo.getTechReveal()).getEra() <= game.getStartEra()):
             if bonusInfo == None:
-                if debugOut: print "Bonus Type = None"
+                if debugOut: print("Bonus Type = None")
             else:
-                if debugOut: print "Bonus Type = %(b)s <------------------------------------------------------------" % {"b":bonusInfo.getType()}
+                if debugOut: print("Bonus Type = %(b)s <------------------------------------------------------------" % {"b":bonusInfo.getType()})
             commerce += bonusInfo.getYieldChange(YieldTypes.YIELD_COMMERCE)
             food += bonusInfo.getYieldChange(YieldTypes.YIELD_FOOD)
             production += bonusInfo.getYieldChange(YieldTypes.YIELD_PRODUCTION)
-            if debugOut: print "Bonus yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % \
-            {"f":food,"p":production,"c":commerce}
+            if debugOut: print("Bonus yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f":food,"p":production,"c":commerce})
         else:
             bonusEnum = -1
             bonusInfo = None
@@ -5124,12 +5121,12 @@ class StartingPlotFinder :
                 continue
             #some mods use improvements for other things, so if there's no tech requirement we still don't want it factored in.
             if buildInfo.getTechPrereq() == TechTypes.NO_TECH or gc.getTechInfo(buildInfo.getTechPrereq()).getEra() > game.getStartEra():
-                if debugOut: print "Tech era not high enough for %(s)s" % {"s":impInfo.getType()}
+                if debugOut: print("Tech era not high enough for %(s)s" % {"s":impInfo.getType()})
                 continue
             else:
-                if debugOut: print "Tech is high enough for %(s)s" % {"s":impInfo.getType()}
+                if debugOut: print("Tech is high enough for %(s)s" % {"s":impInfo.getType()})
             if plot.canHaveImprovement(impEnum,TeamTypes.NO_TEAM,True) == True:
-                if debugOut: print "Plot can have %(s)s" % {"s":impInfo.getType()}
+                if debugOut: print("Plot can have %(s)s" % {"s":impInfo.getType()})
                 #This function will not find bonus yield changes for NO_PLAYER much to my annoyance
                 impCommerce = plot.calculateImprovementYieldChange(impEnum,YieldTypes.YIELD_COMMERCE,PlayerTypes.NO_PLAYER,False)
                 impFood = plot.calculateImprovementYieldChange(impEnum,YieldTypes.YIELD_FOOD,PlayerTypes.NO_PLAYER,False)
@@ -5144,7 +5141,7 @@ class StartingPlotFinder :
                 featureEnum = plot.getFeatureType()
                 if featureEnum != -1 and buildInfo.isFeatureRemove(featureEnum) == True:
                     featureInfo = gc.getFeatureInfo(featureEnum)
-                    if debugOut: print "Removing feature %(s)s" % {"s":featureInfo.getType()}
+                    if debugOut: print("Removing feature %(s)s" % {"s":featureInfo.getType()})
                     impCommerce -= (featureInfo.getYieldChange(YieldTypes.YIELD_COMMERCE) + \
                     featureInfo.getRiverYieldChange(YieldTypes.YIELD_COMMERCE) + \
                     featureInfo.getHillsYieldChange(YieldTypes.YIELD_COMMERCE))
@@ -5159,10 +5156,9 @@ class StartingPlotFinder :
 
                 imp = Improvement(impEnum,impFood,impProduction,impCommerce,0)
                 improvementList.append(imp)
-                if debugOut: print "Improv yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % \
-                {"f":impFood,"p":impProduction,"c":impCommerce}
+                if debugOut: print("Improv yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f":impFood,"p":impProduction,"c":impCommerce})
             else:
-                if debugOut: print "Plot can not have %(s)s" % {"s":impInfo.getType()}
+                if debugOut: print("Plot can not have %(s)s" % {"s":impInfo.getType()})
 
         for i in range(len(improvementList)):
             impCommerce = improvementList[i].commerce + commerce
@@ -5181,15 +5177,14 @@ class StartingPlotFinder :
             improvementList.sort(lambda x,y:cmp(x.value,y.value))
             improvementList.reverse()
             bestImp = improvementList[0]
-            if debugOut: print "bestImp.value=%(b)d" % {"b":bestImp.value}
+            if debugOut: print("bestImp.value=%(b)d" % {"b":bestImp.value})
             commerce += bestImp.commerce
             food += bestImp.food
             production += bestImp.production
         else:
-            if debugOut: print "no improvement possible here"
+            if debugOut: print("no improvement possible here")
         value = commerce * mc.CommerceValue + food * mc.FoodValue + production * mc.ProductionValue
-        if debugOut: print "Evaluating. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % \
-        {"f":food,"p":production,"c":commerce}
+        if debugOut: print("Evaluating. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f":food,"p":production,"c":commerce})
         #Try to avoid included water food resources for non-coastal starts. It confuses the AI.
         if not coastalCity and plot.isWater():
             value = 0
@@ -5201,15 +5196,15 @@ class StartingPlotFinder :
             value *= 2
         if food + commerce + production < 3:
             value = 0
-        if debugOut: print "Final Value = %(v)d" % {"v":value}
-        if debugOut: print "****************************************************************"
+        if debugOut: print("Final Value = %(v)d" % {"v":value})
+        if debugOut: print("****************************************************************")
 
         return food,value
     def boostCityPlotValue(self,x,y,bonuses,isCoastalCity):
         mapGen = CyMapGenerator()
         food,value = self.getCityPotentialValue(x,y)
         debugOut = False
-        if debugOut: print "Value before boost = %(v)d" % {"v":value}
+        if debugOut: print("Value before boost = %(v)d" % {"v":value})
         gc = CyGlobalContext()
         gameMap = CyMap()
         game = gc.getGame()
@@ -5226,7 +5221,7 @@ class StartingPlotFinder :
             del bonusList[n]
 
         if len(shuffledBonuses) != numBonuses:
-            raise ValueError, "Bad bonus shuffle. Learn 2 shuffle."
+            raise(ValueError, "Bad bonus shuffle. Learn 2 shuffle.")
 
         bonusCount = 0
 
@@ -5246,10 +5241,10 @@ class StartingPlotFinder :
                 if usablePlots <= gc.getNUM_CITY_PLOTS()/2:
                     yields[n] = YieldTypes.YIELD_FOOD
 
-                if debugOut: print "value now at %(v)d" % {"v":value}
+                if debugOut: print("value now at %(v)d" % {"v":value})
                 if bonusCount >= bonuses:
-                    if debugOut: print "Placed all bonuses."
-                    if debugOut: print "****************************************************"
+                    if debugOut: print("Placed all bonuses.")
+                    if debugOut: print("****************************************************")
                     return
                 plot = plotCity(x,y,i)
                 if plot.getX() == x and plot.getY() == y:
@@ -5275,10 +5270,9 @@ class StartingPlotFinder :
                     if bonusInfo.getTechCityTrade() == TechTypes.NO_TECH or \
                     gc.getTechInfo(bonusInfo.getTechCityTrade()).getEra() <= game.getStartEra():
                         if bp.PlotCanHaveBonus(plot,bonusEnum,False,False) == False:
-                            if debugOut: print "Plot can't have %(b)s" % {"b":bonusInfo.getType()}
+                            if debugOut: print("Plot can't have %(b)s" % {"b":bonusInfo.getType()})
                             continue
-                        if debugOut: print "Setting bonus type at %(x)d,%(y)d to %(b)s" % \
-                        {"x":plot.getX(),"y":plot.getY(),"b":bonusInfo.getType()}
+                        if debugOut: print("Setting bonus type at %(x)d,%(y)d to %(b)s" % {"x":plot.getX(),"y":plot.getY(),"b":bonusInfo.getType()})
                         plot.setBonusType(bonusEnum)
                         bonusCount += 1
                         break
@@ -5288,8 +5282,8 @@ class StartingPlotFinder :
                     if bonusInfo == None or bonusInfo.isFeature(featureEnum):
                         plot.setFeatureType(featureEnum,featureVariety)
 
-        if debugOut: print "Failed to boost city value. value= %(v)d" % {"v":value}
-        if debugOut: print "****************************************************"
+        if debugOut: print("Failed to boost city value. value= %(v)d" % {"v":value})
+        if debugOut: print("****************************************************")
         return
     def ensureMinimumHills(self,x,y):
         gc = CyGlobalContext()
@@ -5326,7 +5320,7 @@ class StartingPlotFinder :
             if plot.getBonusType(TeamTypes.NO_TEAM) != BonusTypes.NO_BONUS:
                 continue
             plotList.append(plot)
-        print "badFeaturesFound=%d" % badFeaturesFound
+        print("badFeaturesFound=%d" % badFeaturesFound)
         plotList = ShuffleList(plotList)
         #ensure maximum number of peaks
         if peaksFound > mc.MaxPeaksInFC:
@@ -5352,7 +5346,7 @@ class StartingPlotFinder :
                         totalYield += featureInfo.getYieldChange(YieldTypes(yi))
                     if totalYield <= 0:#bad feature
                         badFeaturesFound -= 1
-                        print "clearing bad feature from hill"
+                        print("clearing bad feature from hill")
                         plot.setFeatureType(FeatureTypes.NO_FEATURE,-1)
 
             #loop for flat tiles, this way land is cleared on both hills and flats in FC
@@ -5366,13 +5360,13 @@ class StartingPlotFinder :
                         totalYield += featureInfo.getYieldChange(YieldTypes(yi))
                     if totalYield <= 0:#bad feature
                         badFeaturesFound -= 1
-                        print "clearing bad feature from flat land"
+                        print("clearing bad feature from flat land")
                         plot.setFeatureType(FeatureTypes.NO_FEATURE,-1)
 
         #Ensure minimum number of hills
         plotList = ShuffleList(plotList) #need to re-shuffle so that hills are not the same as removed bad features
         hillsNeeded = mc.MinHillsInFC - hillsFound
-        print "hills found = %d, hills needed = %d" % (hillsFound,hillsNeeded)
+        print("hills found = %d, hills needed = %d" % (hillsFound,hillsNeeded))
         if hillsNeeded > 0:
             for plot in plotList:
                 if hillsNeeded <= 0:
@@ -5385,9 +5379,9 @@ class StartingPlotFinder :
                 (bonusInfo == None or not bonusInfo.isRequiresFlatlands()):
                     plot.setPlotType(PlotTypes.PLOT_HILLS,True,True)
                     hillsNeeded -= 1
-                    print "adding hill"
+                    print("adding hill")
             if hillsNeeded > 0:
-                print "failed to add minimum hills!!!!!!!!!!"
+                print("failed to add minimum hills!!!!!!!!!!")
 
     def addHandicapBonus(self):
         gc = CyGlobalContext()
@@ -5399,39 +5393,39 @@ class StartingPlotFinder :
                 sPlot = StartPlot(startPlot.getX(),startPlot.getY(),0)
                 if eHandicap == gc.getInfoTypeForString("HANDICAP_SETTLER"):
                     if mc.SettlerBonus > 0:
-                        print "Human player at Settler difficulty, adding %d resources" % mc.SettlerBonus
+                        print("Human player at Settler difficulty, adding %d resources" % mc.SettlerBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.SettlerBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_CHIEFTAIN"):
                     if mc.ChieftainBonus > 0:
-                        print "Human player at Chieftain difficulty, adding %d resources" % mc.ChieftainBonus
+                        print("Human player at Chieftain difficulty, adding %d resources" % mc.ChieftainBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.ChieftainBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_WARLORD"):
                     if mc.WarlordBonus > 0:
-                        print "Human player at Warlord difficulty, adding %d resources" % mc.WarlordBonus
+                        print("Human player at Warlord difficulty, adding %d resources" % mc.WarlordBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.WarlordBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_NOBLE"):
                     if mc.NobleBonus > 0:
-                        print "Human player at Noble difficulty, adding %d resources" % mc.NobleBonus
+                        print("Human player at Noble difficulty, adding %d resources" % mc.NobleBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.NobleBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_PRINCE"):
                     if mc.PrinceBonus > 0:
-                        print "Human player at Prince difficulty, adding %d resources" % mc.PrinceBonus
+                        print("Human player at Prince difficulty, adding %d resources" % mc.PrinceBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.PrinceBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_MONARCH"):
                     if mc.MonarchBonus > 0:
-                        print "Human player at Monarch difficulty, adding %d resources" % mc.MonarchBonus
+                        print("Human player at Monarch difficulty, adding %d resources" % mc.MonarchBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.MonarchBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_EMPEROR"):
                     if mc.EmperorBonus > 0:
-                        print "Human player at Emperor difficulty, adding %d resources" % mc.EmperorBonus
+                        print("Human player at Emperor difficulty, adding %d resources" % mc.EmperorBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.EmperorBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_IMMORTAL"):
                     if mc.ImmortalBonus > 0:
-                        print "Human player at Immortal difficulty, adding %d resources" % mc.ImmortalBonus
+                        print("Human player at Immortal difficulty, adding %d resources" % mc.ImmortalBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.ImmortalBonus,sPlot.isCoast())
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_DEITY"):
                     if mc.DeityBonus > 0:
-                        print "Human player at Deity Difficulty, adding %d resources" % mc.DeityBonus
+                        print("Human player at Deity Difficulty, adding %d resources" % mc.DeityBonus)
                         self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.DeityBonus,sPlot.isCoast())
 
 
@@ -5474,7 +5468,7 @@ class StartingArea :
                     if value > 0:
                         startPlot = StartPlot(x,y,value)
                         if plot.isWater() == True:
-                            raise ValueError, "potential start plot is water!"
+                            raise(ValueError, "potential start plot is water!")
                         self.plotList.append(startPlot)
         #Sort plots by local value
         self.plotList.sort(lambda x, y: cmp(x.localValue, y.localValue))
@@ -5503,7 +5497,7 @@ class StartingArea :
                         continue
                     xx = xx % mc.width#wrap xx
                     if xx < 0:
-                        raise ValueError, "xx value not wrapping properly in StartingArea.CalculatePlotList"
+                        raise(ValueError, "xx value not wrapping properly in StartingArea.CalculatePlotList")
                     for m in range(n,len(self.plotList)):
                         #At some point the length of plot list will be much shorter than at
                         #the beginning of the loop, so it can never end normally
@@ -5599,7 +5593,7 @@ class StartingArea :
             if self.plotList[m].vacant == False:
                 sPlot = gameMap.plot(self.plotList[m].x,self.plotList[m].y)
                 if sPlot.isWater() == True:
-                    raise ValueError, "Start plot is water!"
+                    raise(ValueError, "Start plot is water!")
                 sPlot.setImprovementType(gc.getInfoTypeForString("NO_IMPROVEMENT"))
                 playerID = self.playerList[n]
                 player = gc.getPlayer(playerID)
@@ -5657,7 +5651,7 @@ class StartingArea :
         return distance
     def PrintPlotMap(self):
         gameMap = CyMap()
-        print "Starting Plot Map"
+        print("Starting Plot Map")
         for y in range(hm.mapHeight - 1,-1,-1):
             lineString = ""
             for x in range(hm.mapWidth):
@@ -5684,30 +5678,30 @@ class StartingArea :
                         lineString += '[]'
 
             lineString += "-" + str(y)
-            print lineString
+            print(lineString)
 
         lineString = " "
-        print lineString
+        print(lineString)
 
         return
     def PrintPlotList(self):
         for n in range(len(self.plotList)):
-            print str(n) + ' ' + str(self.plotList[n])
+            print(str(n) + ' ' + str(self.plotList[n]))
         return
 
     def PrintDistanceTable(self):
-        print "Distance Table"
+        print("Distance Table")
         lineString = "%(n)05d" % {"n":0} + ' '
         for n in range(len(self.plotList)):
             lineString += "%(n)05d" % {"n":n} + ' '
-        print lineString
+        print(lineString)
         lineString = ""
         for n in range(len(self.plotList)):
             lineString = "%(n)05d" % {"n":n} + ' '
             for m in range(len(self.plotList)):
                 i = n * len(self.plotList) + m
                 lineString += "%(d)05d" % {"d":self.distanceTable[i]} + ' '
-            print lineString
+            print(lineString)
         return
 
 class StartPlot :
@@ -5773,7 +5767,7 @@ def getWrapX():
         return mc.WrapX
 
 def getWrapY():
-    print "mc.WrapY == %d at getWrapY" % mc.WrapY
+    print("mc.WrapY == %d at getWrapY" % mc.WrapY)
     return mc.WrapY
 
 def getNumCustomMapOptions():
@@ -6103,12 +6097,12 @@ def generatePlotTypes():
             plotTypes[i] = PlotTypes.PLOT_LAND
         else:
             plotTypes[i] = PlotTypes.PLOT_OCEAN
-    print "Finished generating plot types."
+    print("Finished generating plot types.")
     return plotTypes
 
 def generateTerrainTypes():
     NiTextOut("Generating Terrain  ...")
-    print "Adding Terrain"
+    print("Adding Terrain")
     gc = CyGlobalContext()
     terrainDesert = gc.getInfoTypeForString("TERRAIN_DESERT")
     terrainPlains = gc.getInfoTypeForString("TERRAIN_PLAINS")
@@ -6136,12 +6130,12 @@ def generateTerrainTypes():
             terrainTypes[i] = terrainTundra
         elif sm.terrainMap[i] == mc.SNOW:
             terrainTypes[i] = terrainIce
-    print "Finished generating terrain types."
+    print("Finished generating terrain types.")
     return terrainTypes
 
 def addRivers():
     NiTextOut("Adding Rivers....")
-    print "Adding Rivers"
+    print("Adding Rivers")
     gc = CyGlobalContext()
     pmap = gc.getMap()
     for y in range(mc.height):
@@ -6492,28 +6486,28 @@ def expandLake(x,y,riversIntoLake,oceanMap):
                 yy = currentLakePlot.y
                 ii = oceanMap.getIndex(xx,yy)
             else:
-                raise ValueError, "too many cardinal directions"
+                raise(ValueError, "too many cardinal directions")
             if ii != -1:
                 #if this neighbor is in water area, then quit
                 areaID = oceanMap.areaMap[ii]
                 if areaID == 0:
-                    raise ValueError, "areaID = 0 while generating lakes. This is a bug"
+                    raise(ValueError, "areaID = 0 while generating lakes. This is a bug")
                 for n in range(len(oceanMap.areaList)):
                     if oceanMap.areaList[n].ID == areaID:
                         if oceanMap.areaList[n].water == True:
-#                            print "lake touched waterID = %(id)3d with %(ls)3d squares unused" % {'id':areaID,'ls':lakeSize}
-#                            print "n = %(n)3d" % {"n":n}
-#                            print str(oceanMap.areaList[n])
+#                            print("lake touched waterID = %(id)3d with %(ls)3d squares unused" % {'id':areaID,'ls':lakeSize})
+#                            print("n = %(n)3d" % {"n":n})
+#                            print(str(oceanMap.areaList[n]))
                             return
                 if rm.riverMap[ii] != rm.L and mmap.plot(xx,yy).isWater() == False:
                     lakeNeighbors.append(LakePlot(xx,yy,sm.heightMap[ii]))
 
         lakeSize -= 1
-#    print "lake finished normally at %(x)2d,%(y)2d" % {"x":x,"y":y}
+#    print("lake finished normally at %(x)2d,%(y)2d" % {"x":x,"y":y})
     return
 
 def addLakes():
-    print "Adding Lakes"
+    print("Adding Lakes")
     gc = CyGlobalContext()
     mmap = gc.getMap()
     terrainCoast = gc.getInfoTypeForString("TERRAIN_COAST")
@@ -6551,7 +6545,7 @@ def addLakes():
 
 def addFeatures():
     NiTextOut("Generating Features  ...")
-    print "Adding Features"
+    print("Adding Features")
     gc = CyGlobalContext()
     mmap = gc.getMap()
     featureIce = gc.getInfoTypeForString("FEATURE_ICE")
@@ -6640,7 +6634,7 @@ def createIce():
     signadded = 0 # We add the "Service Tag" sign while drawing ice
     if(ADD_SERVICE_TAG != 1):
         signadded = 1 # WARNING: NO SERVICE TAG MEANS NO SUPPORT
-    print "SERVICE TAG: " + mc.serviceString # Always log it, of course
+    print("SERVICE TAG: " + mc.serviceString) # Always log it, of course
     for y in range(iceRange):
         for x in range(mc.width):
             plot = mmap.plot(x,y)
@@ -6655,14 +6649,14 @@ def createIce():
                 plot.setFeatureType(featureIce,0)
                 if signadded == 0:
                         CyEngine().addSign(plot, -1, mc.serviceString)
-                        print "Sign added at %d %d" % (x,y)
+                        print("Sign added at %d %d" % (x,y))
                         signadded = 1
         iceChance *= iceSlope
     # Make sure the service tag gets added to the map
     if signadded == 0:
         plot = mmap.plot(0,0)
         CyEngine().addSign(plot, -1, mc.serviceString)
-        print "Sign added at 0 0" % (x,y)
+        print("Sign added at 0 0" % (x,y))
 
 def addBonuses():
     bp.AddBonuses()
@@ -6673,7 +6667,7 @@ def assignStartingPlots():
     iPlayers = gc.getGame().countCivPlayersEverAlive()
     spf.SetStartingPlots()
 def beforeInit():
-    print "Initializing Custom Map Options"
+    print("Initializing Custom Map Options")
     mc.initInGameOptions()
     mc.initialize()
 
