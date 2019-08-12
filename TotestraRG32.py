@@ -1010,21 +1010,21 @@ class RadioGatun32:
                 (self.a, self.b) = self.seed(str(m))
         def mill(self,a):
                 aa = []
-                for g in range(self.millsize):
+                for g in xrange(self.millsize):
                         aa.append(0)
                 x = 0
                 i = 0
                 y = 0
                 r = 0
                 z = 0
-                for i in range(self.millsize):
+                for i in xrange(self.millsize):
                         y = (i * 7) % self.millsize
                         r = int(((i * (i + 1)) / 2)) % self.wordsize
                         x = a[y] ^ (a[ ((y + 1) % self.millsize) ] |
                             (a[ ((y + 2) % self.millsize) ] ^ self.mask))
                         aa[i] = ((x >> r) | (x <<(self.wordsize - r))
                                  & self.mask)
-                for i in range(self.millsize):
+                for i in xrange(self.millsize):
                         y = i
                         r = (i + 1) % self.millsize
                         z = (i + 4) % self.millsize
@@ -1033,34 +1033,34 @@ class RadioGatun32:
                 return a
         def belt(self,a,b):
                 q = []
-                for g in range(self.beltrows):
+                for g in xrange(self.beltrows):
                         q.append(0)
                 s = 0
                 i = 0
                 v = 0
-                for s in range(self.beltrows):
+                for s in xrange(self.beltrows):
                         q[s] = b[((s * self.beltcol) + self.beltcol - 1)]
                 i = self.beltcol - 1
                 while i > 0:
-                        for s in range(self.beltrows):
+                        for s in xrange(self.beltrows):
                                 v = i - 1
                                 if v < 0:
                                         v = self.beltcol - 1
                                 b[((s * self.beltcol) + i)] = (
                                         b[((s * self.beltcol) + v)])
                         i -= 1
-                for s in range(self.beltrows):
+                for s in xrange(self.beltrows):
                         b[(s * self.beltcol)] = q[s]
-                for i in range(self.beltfeed):
+                for i in xrange(self.beltfeed):
                         s = (i + 1) + ((i % self.beltrows) * self.beltcol)
                         b[s] ^= a[(i + 1)]
                 a = self.mill(a)
-                for i in range(self.beltrows):
+                for i in xrange(self.beltrows):
                         a[(i + self.beltcol)] ^= q[i]
                 return (a, b)
         def seed(self,m):
                 p = []
-                for g in range(3):
+                for g in xrange(3):
                         p.append(0)
                 q = 0
                 c = 0
@@ -1070,13 +1070,13 @@ class RadioGatun32:
                 counter = 0
                 a = []
                 b = []
-                for g in range(self.millsize):
+                for g in xrange(self.millsize):
                         a.append(0)
-                for g in range(self.beltrows * self.beltcol):
+                for g in xrange(self.beltrows * self.beltcol):
                         b.append(0)
-                for counter in range(16777218): # Infinite loop protection
+                for counter in xrange(16777218): # Infinite loop protection
                         p[0] = p[1] = p[2] = 0
-                        for r in range(3):
+                        for r in xrange(3):
                                 q = 0
                                 while q < self.wordsize:
                                         x = 0
@@ -1090,15 +1090,15 @@ class RadioGatun32:
                                                 x = 1
                                         p[r] |= x << q
                                         if done == 1:
-                                                for c in range(3):
+                                                for c in xrange(3):
                                                         b[c * 13] ^= p[c]
                                                         a[16 + c] ^= p[c]
                                                 (a,b) = self.belt(a,b)
-                                                for c in range(16):
+                                                for c in xrange(16):
                                                         (a,b) = self.belt(a,b)
                                                 return (a,b)
                                         q += 8
-                        for c in range(3):
+                        for c in xrange(3):
                                 b[c * 13] ^= p[c]
                                 a[16 + c] ^= p[c]
                         (a,b) = self.belt(a,b)
