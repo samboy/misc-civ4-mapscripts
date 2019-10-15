@@ -1719,7 +1719,7 @@ class HeightMap :
             ok = False
 
         if ok == False:
-            raise(ValueError, ("height map dimesions not divisible by mc.hmMaxGrain. also check wrapping options Width %d Height %d w %d h %d %s %s" % (mc.hmWidth , mc.hmHeight, width, height, str(mc.WrapX), str(mc.WrapY))))
+            raise ValueError("height map dimesions not divisible by mc.hmMaxGrain. also check wrapping options Width %d Height %d w %d h %d %s %s" % (mc.hmWidth , mc.hmHeight, width, height, str(mc.WrapX), str(mc.WrapY)))
 
         return
 
@@ -1748,7 +1748,7 @@ class HeightMap :
                 dimension = x
                 middle = mc.hmWidth/2
             else:
-                raise(ValueError, "bad hmSeparation type")
+                raise ValueError("bad hmSeparation type")
 
             if dimension > middle - (mc.hmMaxGrain * mc.hmGrainMargin) \
             and dimension < middle + (mc.hmMaxGrain * mc.hmGrainMargin):
@@ -1921,7 +1921,7 @@ class HeightMap :
             while(True):
                 iterations += 1
                 if iterations > 10000:
-                    raise(ValueError, "endless loop in region seed placement")
+                    raise ValueError("endless loop in region seed placement")
                 seedX = PRand.randint(0,mc.hmWidth + 1)
                 seedY = PRand.randint(0,mc.hmHeight + 1)
                 n = GetHmIndex(seedX,seedY)
@@ -1949,7 +1949,7 @@ class HeightMap :
             if iterations > 200000:
                 self.printPlateMap(self.plateMap)
                 print("length of growthPlotList = %d" % (len(growthPlotList)))
-                raise(ValueError, "endless loop in plate growth")
+                raise ValueError("endless loop in plate growth")
             plot = growthPlotList[0]
             roomLeft = False
             for direction in range(1,5,1):
@@ -2146,9 +2146,9 @@ class HeightMap :
     def addWaterBands(self):
         #validate water bands. Maps that wrap cannot have one in that direction
         if mc.WrapX and (mc.eastWaterBand != 0 or mc.westWaterBand != 0):
-            raise(ValueError,"east/west water bands cannot be used when wrapping in X direction.")
+            raise ValueError("east/west water bands cannot be used when wrapping in X direction.")
         if mc.WrapY and (mc.northWaterBand != 0 or mc.southWaterBand != 0):
-            raise(ValueError,"north/south water bands cannot be used when wrapping in Y direction.")
+            raise ValueError("north/south water bands cannot be used when wrapping in Y direction.")
 
         newWidth = mc.hmWidth + mc.eastWaterBand + mc.westWaterBand
         newHeight = mc.hmHeight + mc.northWaterBand + mc.southWaterBand
@@ -4205,7 +4205,7 @@ class RiverMap :
                 while(flow != self.L and flow != self.O):
                     loop += 1
                     if(loop > 512):
-                        raise(ValueError, "Rainfall infinite loop")
+                        raise ValueError("Rainfall infinite loop")
 
                     if(flow == self.N):
                         yy += 1
@@ -4252,7 +4252,7 @@ class RiverMap :
             return x - 1,y
         if direction == self.SE:
             return x,y
-        raise(ValueError,"rxFromPlot using bad direction input")
+        raise ValueError("rxFromPlot using bad direction input")
 
     def siltifyLakes(self):
         lakeList = []
@@ -4553,7 +4553,7 @@ class BonusPlacer :
                             loopPlot = self.plotXY(x,y,dx,dy)
                             if loopPlot != None:
                                 if loopPlot.getX() == -1:
-                                    raise(ValueError, "plotXY returns invalid plots plot= %(x)d, %(y)d" % {"x":x,"y":y})
+                                    raise ValueError("plotXY returns invalid plots plot= %(x)d, %(y)d" % {"x":x,"y":y})
                                 if self.CanPlaceBonusAt(loopPlot,eBonus,False,False):
                                     if PRand.randint(0,99) < bonusInfo.getGroupRand():
                                         #temporarily remove any feature
@@ -4949,7 +4949,7 @@ class StartingPlotFinder :
             while True:
                 iterations += 1
                 if iterations > 20:
-                    raise(ValueError, "Too many iterations in starting area choosing loop.")
+                    raise ValueError("Too many iterations in starting area choosing loop.")
                 chosenStartingAreas = list()
                 playersPlaced = 0
                 #add up idealNumbers
@@ -4981,7 +4981,7 @@ class StartingPlotFinder :
                 startingArea.FindStartingPlots()
 
             if len(shuffledPlayers) > 0:
-                raise(ValueError,"Some players not placed in starting plot finder!")
+                raise ValueError("Some players not placed in starting plot finder!")
 
             #Now set up for normalization
             self.plotList = list()
@@ -5231,7 +5231,7 @@ class StartingPlotFinder :
             del bonusList[n]
 
         if len(shuffledBonuses) != numBonuses:
-            raise(ValueError, "Bad bonus shuffle. Learn 2 shuffle.")
+            raise ValueError("Bad bonus shuffle. Learn 2 shuffle.")
 
         bonusCount = 0
 
@@ -5478,7 +5478,7 @@ class StartingArea :
                     if value > 0:
                         startPlot = StartPlot(x,y,value)
                         if plot.isWater() == True:
-                            raise(ValueError, "potential start plot is water!")
+                            raise ValueError("potential start plot is water!")
                         self.plotList.append(startPlot)
         #Sort plots by local value
         self.plotList.sort(lambda x, y: cmp(x.localValue, y.localValue))
@@ -5507,7 +5507,7 @@ class StartingArea :
                         continue
                     xx = xx % mc.width#wrap xx
                     if xx < 0:
-                        raise(ValueError, "xx value not wrapping properly in StartingArea.CalculatePlotList")
+                        raise ValueError("xx value not wrapping properly in StartingArea.CalculatePlotList")
                     for m in range(n,len(self.plotList)):
                         #At some point the length of plot list will be much shorter than at
                         #the beginning of the loop, so it can never end normally
@@ -5603,7 +5603,7 @@ class StartingArea :
             if self.plotList[m].vacant == False:
                 sPlot = gameMap.plot(self.plotList[m].x,self.plotList[m].y)
                 if sPlot.isWater() == True:
-                    raise(ValueError, "Start plot is water!")
+                    raise ValueError("Start plot is water!")
                 sPlot.setImprovementType(gc.getInfoTypeForString("NO_IMPROVEMENT"))
                 playerID = self.playerList[n]
                 player = gc.getPlayer(playerID)
@@ -6496,12 +6496,12 @@ def expandLake(x,y,riversIntoLake,oceanMap):
                 yy = currentLakePlot.y
                 ii = oceanMap.getIndex(xx,yy)
             else:
-                raise(ValueError, "too many cardinal directions")
+                raise ValueError("too many cardinal directions")
             if ii != -1:
                 #if this neighbor is in water area, then quit
                 areaID = oceanMap.areaMap[ii]
                 if areaID == 0:
-                    raise(ValueError, "areaID = 0 while generating lakes. This is a bug")
+                    raise ValueError("areaID = 0 while generating lakes. This is a bug")
                 for n in range(len(oceanMap.areaList)):
                     if oceanMap.areaList[n].ID == areaID:
                         if oceanMap.areaList[n].water == True:
