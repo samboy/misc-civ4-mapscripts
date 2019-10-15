@@ -266,6 +266,7 @@
 ##
 
 from __future__ import print_function
+from __future__ import division
 
 IsStandAlone = False
 if __name__ != "__main__":
@@ -1296,10 +1297,10 @@ class PythonRandom :
             return rMin
         #returns a number between rMin and rMax inclusive
         if self.usePR:
-            return self.rg32.randint(rMin,rMax)
+            return int(self.rg32.randint(rMin,rMax))
         else:
             #mapRand.get() is not inclusive, so we must make it so
-            return rMin + self.mapRand.get(rMax + 1 - rMin,"Getting a randint - FairWeather.py")
+            return int(rMin + self.mapRand.get(rMax + 1 - rMin,"Getting a randint - FairWeather.py"))
 #Set up random number system for global access
 PRand = PythonRandom()
 
@@ -1360,7 +1361,7 @@ def GetHmIndex(x,y):
     else:
         yy = y
 
-    i = yy * mc.hmWidth + xx
+    i = int(yy) * mc.hmWidth + int(xx)
     return i
 
 #Handles arbitrary size
@@ -2415,8 +2416,8 @@ class ClimateMap :
                 summerAvg = 0
                 winterAvg = 0
                 i = GetHmIndex(x,y)
-                for yy in range(y - mc.filterSize/2,y + mc.filterSize/2 + 1,1):
-                    for xx in range(x - mc.filterSize/2,x + mc.filterSize/2 + 1,1):
+                for yy in range(y - mc.filterSize//2,y + mc.filterSize//2 + 1,1):
+                    for xx in range(x - mc.filterSize//2,x + mc.filterSize//2 + 1,1):
                         ii = GetHmIndex(xx,yy)
                         if ii == -1:
                             continue
@@ -3562,7 +3563,7 @@ class PangaeaBreaker :
             #Check 4 nieghbors
             xx = s.x - gap
             if xx < 0:
-                xx = mc.hmWidth/gap * gap
+                xx = mc.hmWidth // gap * gap
             i = GetHmIndex(xx,s.y)
             if i != -1 and self.areaMap.areaMap[i] == ID:
                 s.neighborList.append(indexMap[i])
@@ -3868,12 +3869,12 @@ class Areamap :
         else:
             yy = y
 
-        i = yy * self.mapWidth + xx
+        i = int(yy) * self.mapWidth + int(xx)
         return i
 
     def fillArea(self,index,areaID,matchFunction):
         #first divide index into x and y
-        y = index/self.mapWidth
+        y = index // self.mapWidth
         x = index%self.mapWidth
         #We check 8 neigbors for land,but 4 for water. This is because
         #the game connects land squares diagonally across water, but
