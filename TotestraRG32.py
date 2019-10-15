@@ -265,6 +265,8 @@
 ## bugs that caused deserts to get out of control.
 ##
 
+from __future__ import print_function
+
 IsStandAlone = False
 if __name__ != "__main__":
     from CvPythonExtensions import *
