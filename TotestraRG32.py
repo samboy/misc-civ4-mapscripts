@@ -265,7 +265,7 @@
 ## bugs that caused deserts to get out of control.
 ##
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 IsStandAlone = False
 if __name__ != "__main__":
@@ -811,8 +811,8 @@ class MapConstants :
                          heightmap_size_factor) + 1
 
         # These are expressed in 4x4 "Grid" units
-        self.maxMapWidth = int(self.hmWidth / 4)
-        self.maxMapHeight = int(self.hmHeight / 4)
+        self.maxMapWidth = int(self.hmWidth // 4)
+        self.maxMapHeight = int(self.hmHeight // 4)
 
         #Wrap options
         selectionID = mmap.getCustomMapOption(OPTION_Wrap)
@@ -927,8 +927,8 @@ class MapConstants :
                          heightmap_size_factor)
             self.hmHeight = (self.hmMaxGrain * self.ratioY *
                          heightmap_size_factor) + 1
-            self.maxMapWidth = int(self.hmWidth / 4)
-            self.maxMapHeight = int(self.hmHeight / 4)
+            self.maxMapWidth = int(self.hmWidth // 4)
+            self.maxMapHeight = (self.hmHeight // 4)
             self.WrapX = True
             self.WrapY = False
 
@@ -1002,10 +1002,7 @@ class MapConstants :
 
 # Since range is too slow in Python2, we do this to make the code run in
 # Python2 and Python3
-try:
-    xrange
-except:
-    xrange = range
+
 
 class RadioGatun32:
         def __init__(self, m):
@@ -1028,7 +1025,7 @@ class RadioGatun32:
                 z = 0
                 for i in xrange(self.millsize):
                         y = (i * 7) % self.millsize
-                        r = int(((i * (i + 1)) / 2)) % self.wordsize
+                        r = int(((i * (i + 1)) // 2)) % self.wordsize
                         x = a[y] ^ (a[ ((y + 1) % self.millsize) ] |
                             (a[ ((y + 2) % self.millsize) ] ^ self.mask))
                         aa[i] = ((x >> r) | (x <<(self.wordsize - r))
@@ -1156,7 +1153,7 @@ class RadioGatun32:
         # Return number between 0 (can be 0) and 1 (can be slightly smaller
         # than 1 but never 1)
         def random(self):
-                return float(self.rng64()) / 18446744073709551616
+                return self.rng64() / 18446744073709551616
         # Return a number between a and b
         def randint(self, low, high):
                 if(low == high):
@@ -1281,13 +1278,14 @@ class PythonRandom :
 
         print(str(self.seedString))
         return
+
     def random(self):
         if self.usePR:
             return self.rg32.random()
         else:
             #This formula is identical to the getFloat function in CvRandom. It
             #is not exposed to Python so I have to recreate it.
-            fResult = float(self.mapRand.get(65535,"Getting float -FairWeather.py"))/float(65535)
+            fResult = self.mapRand.get(65535, "Getting float -FairWeather.py")/float(65535)
 #            print fResult
             return fResult
     def randint(self,rMin,rMax):
@@ -1429,8 +1427,8 @@ def ShrinkMap(largeMap,lWidth,lHeight,sWidth,sHeight):
         return smallMap
 
     #Scale down a large map down to a small map
-    yScale = float(lHeight)/float(sHeight)
-    xScale = float(lWidth)/float(sWidth)
+    yScale = lHeight/sHeight
+    xScale = lWidth/sWidth
     for y in range(sHeight):
         for x in range(sWidth):
 ##            print "x = %d, y = %d" % (x,y)
@@ -1458,7 +1456,7 @@ def ShrinkMap(largeMap,lWidth,lHeight,sWidth,sHeight):
 ##            print " final height = %f" % (contributors/weights)
             #smallMap.append(contributors/weights)
             smallMap[GetIndexGeneral(x,y,sWidth,sHeight)] = (
-                contributors/weights)
+                contributors//weights)
             #smallMap.append(contributors/weights)
 
     return smallMap
@@ -1647,7 +1645,7 @@ def FindValueFromPercent(mmap,width,height,percent,tolerance,greaterThan):
 ##        print "current threshold = %f" % threshold
 ##        print "current thresholdChange = %f" % thresholdChange
 ##        print "matchCount = %d" % matchCount
-        currentPercent = float(matchCount)/float(totalCount)
+        currentPercent = matchCount/totalCount
 ##        print "currentPercent = %f" % currentPercent
         if currentPercent < percent + tolerance and \
            currentPercent > percent - tolerance:
@@ -1743,10 +1741,10 @@ class HeightMap :
         if mc.hmSeparation != mc.NO_SEPARATION:
             if mc.hmSeparation == mc.NORTH_SOUTH_SEPARATION:
                 dimension = y
-                middle = mc.hmHeight/2
+                middle = mc.hmHeight//2
             elif mc.hmSeparation == mc.EAST_WEST_SEPARATION:
                 dimension = x
-                middle = mc.hmWidth/2
+                middle = mc.hmWidth//2
             else:
                 raise ValueError("bad hmSeparation type")
 
@@ -1768,8 +1766,8 @@ class HeightMap :
         peaksNEList = list()
         peaksSWList = list()
         peaksSEList = list()
-        middleX = mc.hmWidth/2
-        middleY = mc.hmHeight/2
+        middleX = mc.hmWidth//2
+        middleY = mc.hmHeight//2
         for y in range(0,mc.hmHeight,mc.hmMaxGrain):
             for x in range(0,mc.hmWidth,mc.hmMaxGrain):
                 if not self.isPlotOnMargin(x,y):
@@ -1819,7 +1817,7 @@ class HeightMap :
         currentGrain = float(mc.hmMaxGrain)
         while currentGrain > 1.0:
             #h is scalar for random displacement
-            h = (currentGrain/float(mc.hmMaxGrain)) * float(mc.hmNoiseLevel)
+            h = (currentGrain/mc.hmMaxGrain) * float(mc.hmNoiseLevel)
             #First do the 'square' pass
             for y in range(0,mc.hmHeight,int(currentGrain)):
                 for x in range(0,mc.hmWidth,int(currentGrain)):
@@ -1865,7 +1863,7 @@ class HeightMap :
                         if bottom != -1:
                             contributers += 1
                             average += self.heightMap[bottom]
-                        average = average/float(contributers)
+                        average = average/contributers
                         middle = GetHmIndex(x + int(currentGrain/2.0),y)
                         displacement = h * PRand.random() - h/2.0
                         self.heightMap[middle] = average + displacement
@@ -1883,7 +1881,7 @@ class HeightMap :
                         if left != -1:
                             contributers += 1
                             average += self.heightMap[left]
-                        average = average/float(contributers)
+                        average = average/contributers
                         middle = GetHmIndex(x,y + int(currentGrain/2.0))
                         displacement = h * PRand.random() - h/2.0
                         self.heightMap[middle] = average + displacement
@@ -1901,7 +1899,7 @@ class HeightMap :
         preSmoothMap = array('d')
         growthPlotList = list()
         plateList = list()
-        maxDistance = math.sqrt(pow(float(mc.distanceFilterSize/2),2) + pow(float(mc.distanceFilterSize/2),2))
+        maxDistance = math.sqrt(pow(float(mc.distanceFilterSize//2),2) + pow(float(mc.distanceFilterSize//2),2))
         #initialize maps
         for y in range(mc.hmHeight):
             for x in range(mc.hmWidth):
@@ -2003,7 +2001,7 @@ class HeightMap :
                 SWfound = True
 
         #Stagger the plates somewhat to add interest
-        steps = int(mc.plateStaggerRange/mc.plateStagger)
+        steps = int(mc.plateStaggerRange//mc.plateStagger)
         for i in range(0,mc.hmHeight*mc.hmWidth):
             if plateList[self.plateMap[i].plateID].isOnMapEdge and PRand.random() < mc.chanceForWaterEdgePlate:
                 preSmoothMap[i] = 0.0
@@ -2025,8 +2023,8 @@ class HeightMap :
                 if borderMap[i] == True:
                     isBorder = True
                 plateID = self.plateMap[i].plateID
-                for yy in range(int(y - mc.distanceFilterSize/2),int(y + mc.distanceFilterSize/2 + 1),1):
-                    for xx in range(int(x - mc.distanceFilterSize/2),int(x + mc.distanceFilterSize/2 + 1),1):
+                for yy in range(int(y - mc.distanceFilterSize//2),int(y + mc.distanceFilterSize//2 + 1),1):
+                    for xx in range(int(x - mc.distanceFilterSize//2),int(x + mc.distanceFilterSize//2 + 1),1):
                         ii = GetHmIndex(xx,yy)
                         if ii == -1:
                             continue
@@ -2036,7 +2034,7 @@ class HeightMap :
                             distance = math.sqrt(pow(float(y - yy),2) + pow(float(x - xx),2))
                             if distance < self.plateMap[ii].distanceList[plateID]:
                                 self.plateMap[ii].distanceList[plateID] = distance
-                avg = avg/float(contributers)
+                avg = avg/contributers
                 self.plateHeightMap[i] = avg
 
 ##        self.printPlateHeightMap()
@@ -2055,14 +2053,14 @@ class HeightMap :
                     angleDifference = AngleDifference(plateList[plateID].angle,plateList[self.plateMap[i].plateID].angle)
 #                print angleDifference
                 ripple = (pow(math.cos(mc.rippleFrequency * self.plateMap[i].distanceList[plateID]) * \
-                (-self.plateMap[i].distanceList[plateID]/maxDistance + 1),2) + (-self.plateMap[i].distanceList[plateID]/maxDistance + 1)) \
+                (-self.plateMap[i].distanceList[plateID]//maxDistance + 1),2) + (-self.plateMap[i].distanceList[plateID]//maxDistance + 1)) \
                 * mc.rippleAmplitude * math.sin(math.radians(angleDifference))
                 avgRippleTop += (ripple * distanceWeight)
                 avgRippleBottom += distanceWeight
             if avgRippleBottom == 0.0:
                 avgRipple = 0.0
             else:
-                avgRipple = avgRippleTop/avgRippleBottom
+                avgRipple = avgRippleTop//avgRippleBottom
             self.plateHeightMap[i] += avgRipple - (avgRipple * PRand.random() * mc.plateNoiseFactor)
 
         NormalizeMap(self.plateHeightMap,mc.hmWidth,mc.hmHeight)
@@ -2081,26 +2079,26 @@ class HeightMap :
                 i = GetHmIndex(x,y)
                 if mc.westMargin == True:
                     if x < marginSize:
-                        self.heightMap[i] *= (float(x)/float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (x/marginSize) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
                 if mc.eastMargin == True:
                     if mc.hmWidth - x < marginSize:
-                        self.heightMap[i] *= (float(mc.hmWidth - x)/float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= ((mc.hmWidth - x)/marginSize) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
                 if mc.southMargin == True:
                     if y < marginSize:
-                        self.heightMap[i] *= (float(y)/float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (y/marginSize) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
                 if mc.northMargin == True:
                     if mc.hmHeight - y < marginSize:
-                        self.heightMap[i] *= (float(mc.hmHeight - y)/float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= ((mc.hmHeight - y)/marginSize) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
 
                 if mc.hmSeparation == mc.NORTH_SOUTH_SEPARATION:
-                    difference = abs((mc.hmHeight/2) - y)
+                    difference = abs((mc.hmHeight//2) - y)
                     if difference < marginSize:
-                        self.heightMap[i] *= (float(difference)/float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (difference/marginSize) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
 
                 elif mc.hmSeparation == mc.EAST_WEST_SEPARATION:
-                    difference = abs((mc.hmWidth/2) - x)
+                    difference = abs((mc.hmWidth//2) - x)
                     if difference < marginSize:
-                        self.heightMap[i] *= (float(difference)/float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (difference/marginSize) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
 
 ##        #Now lets square the heightmap to simulate erosion
 ##        for i in range(mc.hmWidth * mc.hmHeight):
@@ -2230,7 +2228,7 @@ class HeightMap :
         influence = peakValue
         maxDistance = math.sqrt(pow(float(searchRadius),2) + pow(float(searchRadius),2))
         #minDistance = 1.0
-        influence -= ((peakValue - sinkValue)* (distance - 1.0))/(maxDistance - 1.0)
+        influence -= ((peakValue - sinkValue)* (distance - 1.0))//(maxDistance - 1.0)
         return influence
     def FindDistanceToPlateBoundary(self,x,y,searchRadius):
         minDistance = 10.0
@@ -2297,7 +2295,7 @@ class HeightMap :
             lineString = ""
             for x in range(0,mc.hmWidth,1):
                 i = GetHmIndex(x,y)
-                mapLoc = int((self.heightMap[i] - self.seaLevel)/(1.0 - self.seaLevel) * 10)
+                mapLoc = int((self.heightMap[i] - self.seaLevel)//(1.0 - self.seaLevel) * 10)
                 #mapLoc = int(self.heightMap[i] * 10)
                 if self.heightMap[i] < self.seaLevel:
                     lineString += '.'
@@ -2355,7 +2353,7 @@ class HeightMap :
             lineString = ""
             for x in range(0,mc.hmWidth,1):
                 i = GetHmIndex(x,y)
-                mapLoc = int((distanceMap[i]/maxDistance) * 40)
+                mapLoc = int((distanceMap[i]//maxDistance) * 40)
                 lineString += chr(mapLoc + 48)
             print(lineString)
         lineString = " "
@@ -2374,13 +2372,13 @@ class Plate :
         self.SE = 2
         self.SW = 3
     def GetQuadrant(self):
-        if self.seedY < mc.hmHeight/2:
-            if self.seedX < mc.hmWidth/2:
+        if self.seedY < mc.hmHeight//2:
+            if self.seedX < mc.hmWidth//2:
                 return self.SW
             else:
                 return self.SE
         else:
-            if self.seedX < mc.hmWidth/2:
+            if self.seedX < mc.hmWidth//2:
                 return self.NW
             else:
                 return self.NE
@@ -2414,16 +2412,16 @@ class ClimateMap :
                 summerAvg = 0
                 winterAvg = 0
                 i = GetHmIndex(x,y)
-                for yy in range(y - mc.filterSize/2,y + mc.filterSize/2 + 1,1):
-                    for xx in range(x - mc.filterSize/2,x + mc.filterSize/2 + 1,1):
+                for yy in range(y - mc.filterSize//2,y + mc.filterSize//2 + 1,1):
+                    for xx in range(x - mc.filterSize//2,x + mc.filterSize//2 + 1,1):
                         ii = GetHmIndex(xx,yy)
                         if ii == -1:
                             continue
                         contributers += 1
                         summerAvg += summerSunMap[ii]
                         winterAvg += winterSunMap[ii]
-                summerAvg = summerAvg/float(contributers)
-                winterAvg = winterAvg/float(contributers)
+                summerAvg = summerAvg/contributers
+                winterAvg = winterAvg/contributers
                 self.summerTempsMap.append(summerAvg)
                 self.winterTempsMap.append(winterAvg)
 
@@ -2567,7 +2565,7 @@ class ClimateMap :
                 #divide moisture by number of neighbors for distribution
                 if len(nList) == 0:
                     continue #dead end, dump appropriate rain
-            moisturePerNeighbor = self.moistureMap[i]/float(len(nList))
+            moisturePerNeighbor = self.moistureMap[i]/len(nList)
             if bDebug:
                 print("moisturePerNeighbor = %f for %d neighbors" % (moisturePerNeighbor,len(nList)))
 
@@ -2585,7 +2583,7 @@ class ClimateMap :
                 if bGeostrophic:
                     cost = self.getRainCost(plot.x,plot.y,xx,yy,plot.uplift)
                 else:
-                    cost = self.getRainCost(plot.x,plot.y,xx,yy,countRemaining/mc.monsoonUplift)
+                    cost = self.getRainCost(plot.x,plot.y,xx,yy,countRemaining//mc.monsoonUplift)
 
                 if bDebug:
                     print("  rain cost = %f" % cost)
@@ -2631,14 +2629,14 @@ class ClimateMap :
             tempPerLatChange = 1.0/latRange
             temp = 1.0 - (tempPerLatChange * latDifference)
         else:
-            tempPerLatChange = (1.0 - (2.0*mc.oceanTempClamp))/latRange
+            tempPerLatChange = (1.0 - (2.0*mc.oceanTempClamp))//latRange
             temp = 1.0 - mc.oceanTempClamp - (tempPerLatChange * latDifference)
 
         return temp
 
     def getLatitude(self,y):
         latitudeRange = mc.topLatitude - mc.bottomLatitude
-        degreesPerDY = float(latitudeRange)/float(mc.hmHeight - mc.northCrop - mc.southCrop)
+        degreesPerDY = latitudeRange/(mc.hmHeight - mc.northCrop - mc.southCrop)
         if y > mc.hmHeight - mc.northCrop:
             return mc.topLatitude
         if y < mc.southCrop:
@@ -2776,7 +2774,7 @@ class WindZones :
         return -1
     def GetZoneSize(self):
         latitudeRange = self.topLat - self.botLat
-        degreesPerDY = float(latitudeRange)/float(self.mapHeight)
+        degreesPerDY = latitudeRange/self.mapHeight
         size = 30.0/degreesPerDY
         return size
     def GetWindDirections(self,y):
@@ -3110,7 +3108,7 @@ class SmallMaps :
             lineString = ""
             for x in range(0,mc.width,1):
                 i = GetIndexGeneral(x,y,mc.width,mc.height)
-                mapLoc = int((self.heightMap[i] - hm.seaLevel)/(1.0 - hm.seaLevel) * 10)
+                mapLoc = int((self.heightMap[i] - hm.seaLevel)//(1.0 - hm.seaLevel) * 10)
                 #mapLoc = int(self.heightMap[i] * 10)
                 if self.heightMap[i] < hm.seaLevel:
                     lineString += '.'
@@ -3167,7 +3165,7 @@ class SmallMaps :
 
 def isHmWaterMatch(x,y):
     i = GetHmIndex(x,y)
-    if pb.distanceMap[i] > mc.minimumMeteorSize/3:
+    if pb.distanceMap[i] > mc.minimumMeteorSize//3:
         return True
     return False
 
@@ -3226,7 +3224,7 @@ class PangaeaBreaker :
         continentList.sort(lambda x,y:cmp(x.size,y.size))
         continentList.reverse()
         biggestSize = continentList[0].size
-        if 0.70 < float(biggestSize)/float(totalLand):
+        if 0.70 < biggestSize/totalLand:
 ##            endtime = time.clock()
 ##            elapsed = endtime - starttime
 ##            print("isPangea time = %(t)s" % {"t":str(elapsed)})
@@ -3330,7 +3328,7 @@ class PangaeaBreaker :
             landLine,waterLine = self.countCraterLine(x1,x2,cy,biggestContinentID)
             land += landLine
             water += waterLine
-        percent = float(land)/float(land + water)
+        percent = land/(land + water)
         return percent
 
     def countCraterLine(self,x1,x2,y,biggestContinentID):
@@ -3355,8 +3353,8 @@ class PangaeaBreaker :
                     IDCount += 1
                     xTotal += x
                     yTotal += y
-        xCenter = round(float(xTotal)/float(IDCount))
-        yCenter = round(float(yTotal)/float(IDCount))
+        xCenter = round(xTotal/IDCount)
+        yCenter = round(yTotal/IDCount)
 ##        #first find center in x direction
 ##        changes = list()
 ##        yMin = mc.height
@@ -3402,14 +3400,14 @@ class PangaeaBreaker :
 
     def getDistance(self,x,y,dx,dy):
         xx = x - dx
-        if abs(xx) > mc.hmWidth/2:
+        if abs(xx) > mc.hmWidth//2:
             xx = mc.hmWidth - abs(xx)
 
         distance = max(abs(xx),abs(y - dy))
         return distance
     def castMeteorUponTheEarth(self,x,y):
 ##        starttime = time.clock()
-        radius = PRand.randint(mc.minimumMeteorSize,max(mc.minimumMeteorSize + 1,mc.hmWidth/16))
+        radius = PRand.randint(mc.minimumMeteorSize,max(mc.minimumMeteorSize + 1,mc.hmWidth//16))
         circlePointList = self.getCirclePoints(x,y,radius)
 ##        print "circlePointList"
 ##        print circlePointList
@@ -3561,7 +3559,7 @@ class PangaeaBreaker :
             #Check 4 nieghbors
             xx = s.x - gap
             if xx < 0:
-                xx = mc.hmWidth/gap * gap
+                xx = mc.hmWidth//gap * gap
             i = GetHmIndex(xx,s.y)
             if i != -1 and self.areaMap.areaMap[i] == ID:
                 s.neighborList.append(indexMap[i])
@@ -3575,7 +3573,7 @@ class PangaeaBreaker :
 ##                print("%d,%d index %d" % (xx,s.y,indexMap[i]))
             yy = s.y - gap
             if yy < 0:
-                yy = mc.hmHeight/gap * gap
+                yy = mc.hmHeight//gap * gap
             i = GetHmIndex(s.x,yy)
             if i != -1 and self.areaMap.areaMap[i] == ID:
                 s.neighborList.append(indexMap[i])
@@ -3647,7 +3645,7 @@ class PangaeaBreaker :
             while len(S) > 0:
                 w = S.pop()
                 for v in P[w]:
-                    delta[v] = delta[v] + (sigma[v]/sigma[w]) * (1 + delta[w])
+                    delta[v] = delta[v] + (sigma[v]//sigma[w]) * (1 + delta[w])
                     if w != s:
                         C[w].centrality = C[w].centrality + delta[w]
 ##            print s
@@ -3757,7 +3755,7 @@ class ContinentMap :
             # put everyone on the "old world" continent
             if mc.ShareContinent == False:
                 del continentList[0]
-            if float(oldWorldSize)/float(totalLand) > 0.60:
+            if oldWorldSize/totalLand > 0.60:
                 break
 
         #add back the biggestNewWorld continent
@@ -3872,8 +3870,8 @@ class Areamap :
 
     def fillArea(self,index,areaID,matchFunction):
         #first divide index into x and y
-        y = index/self.mapWidth
-        x = index%self.mapWidth
+        y = index // self.mapWidth
+        x = index % self.mapWidth
         #We check 8 neigbors for land,but 4 for water. This is because
         #the game connects land squares diagonally across water, but
         #water squares are not passable diagonally across land
@@ -4649,7 +4647,7 @@ class BonusPlacer :
         bonusInfo = gc.getBonusInfo(eBonus)
         classInfo = gc.getBonusClassInfo(bonusInfo.getBonusClassType())
         if plot.isWater() == True:
-            if gameMap.getNumBonusesOnLand(eBonus) * 100/(gameMap.getNumBonuses(eBonus) + 1) < bonusInfo.getMinLandPercent():
+            if gameMap.getNumBonusesOnLand(eBonus) * 100//(gameMap.getNumBonuses(eBonus) + 1) < bonusInfo.getMinLandPercent():
                 return False
         #Make sure there are no bonuses of the same class (but a different type) nearby:
         if classInfo != None:
@@ -4776,9 +4774,9 @@ class BonusPlacer :
                 plot = gameMap.plotByIndex(i)
                 if self.PlotCanHaveBonus(plot,eBonus,bIgnoreLatitude,bIgnoreArea):
                     numPossible += 1
-            landTiles += numPossible/bonusInfo.getTilesPer()
-        players = game.countCivPlayersAlive() * bonusInfo.getPercentPerPlayer()/100
-        bonusCount = baseCount * (landTiles + players)/100
+            landTiles += numPossible//bonusInfo.getTilesPer()
+        players = game.countCivPlayersAlive() * bonusInfo.getPercentPerPlayer()//100
+        bonusCount = baseCount * (landTiles + players)//100
         bonusCount = max(1,int(bonusCount * mc.BonusBonus))
 ##        print "Calculating bonus amount for %(bt)s" % {"bt":bonusInfo.getType()}
 ##        print "baseCount=%(bc)d, numPossible=%(np)d, landTiles=%(lt)d, players=%(p)d" % \
@@ -4852,8 +4850,8 @@ class BonusPlacer :
             if plot.getArea() == areaID:
                 if self.PlotCanHaveBonus(plot,eBonus,False,True):
                     numPossible += 1
-        numPossible = numPossible/(uniqueTypesInArea + sameClassTypesInArea + 1)
-        suitability = float(numPossible)/float(area.getNumTiles())
+        numPossible = numPossible//(uniqueTypesInArea + sameClassTypesInArea + 1)
+        suitability = numPossible/area.getNumTiles()
         return suitability,numPossible
 #Global Access
 bp = BonusPlacer()
@@ -4911,7 +4909,7 @@ class StartingPlotFinder :
                 oldWorldValue += self.startingAreaList[i].rawValue
 
             #calulate value per player of old world
-            oldWorldValuePerPlayer = oldWorldValue/len(shuffledPlayers)
+            oldWorldValuePerPlayer = oldWorldValue//len(shuffledPlayers)
 
             #Sort startingAreaList by rawValue
             self.startingAreaList.sort(lambda x, y: cmp(x.rawValue, y.rawValue))
@@ -4920,7 +4918,7 @@ class StartingPlotFinder :
             #as they are too small to put a player on, however leave at least
             #half as many continents as there are players, just in case the
             #continents are *all* quite small.
-            numAreas = max(1,len(self.startingAreaList) - len(shuffledPlayers)/2)
+            numAreas = max(1,len(self.startingAreaList) - len(shuffledPlayers)//2)
             for i in range(numAreas):
                 if self.startingAreaList[0].rawValue < oldWorldValuePerPlayer:
                     del self.startingAreaList[0]
@@ -4934,11 +4932,11 @@ class StartingPlotFinder :
 
             #Recalulate value per player of old world so we are starting more
             #accurately
-            oldWorldValuePerPlayer = oldWorldValue/len(shuffledPlayers)
+            oldWorldValuePerPlayer = oldWorldValue//len(shuffledPlayers)
 
             #Record the ideal number of players for each continent
             for startingArea in self.startingAreaList:
-                startingArea.idealNumberOfPlayers = int(round(float(startingArea.rawValue)/float(oldWorldValuePerPlayer)))
+                startingArea.idealNumberOfPlayers = int(round(startingArea.rawValue/oldWorldValuePerPlayer))
 
             #Now we want best first
             self.startingAreaList.reverse()
@@ -5007,7 +5005,7 @@ class StartingPlotFinder :
                 if self.plotList[i].vacant == True:
                     continue
                 currentTotalValue = self.plotList[i].totalValue
-                percentLacking = 1.0 - (float(currentTotalValue)/float(bestTotalValue))
+                percentLacking = 1.0 - (currentTotalValue/bestTotalValue)
                 if percentLacking > 0:
                     bonuses = min(5,int(percentLacking/0.2))
                     print("boosting plot by %(bv)d" % {"bv":bonuses})
@@ -5067,7 +5065,7 @@ class StartingPlotFinder :
             totalFood += food
             cPlot = CityPlot(food,value)
             cityPlotList.append(cPlot)
-        usablePlots = totalFood/gc.getFOOD_CONSUMPTION_PER_POPULATION()
+        usablePlots = totalFood//gc.getFOOD_CONSUMPTION_PER_POPULATION()
         cityPlotList.sort(lambda x,y:cmp(x.value,y.value))
         cityPlotList.reverse()
         #value is obviously limited to available food
@@ -5246,8 +5244,8 @@ class StartingPlotFinder :
                 food,value = self.getCityPotentialValue(x,y)
 
                 #switch to food if food is needed
-                usablePlots = food/gc.getFOOD_CONSUMPTION_PER_POPULATION()
-                if usablePlots <= gc.getNUM_CITY_PLOTS()/2:
+                usablePlots = food//gc.getFOOD_CONSUMPTION_PER_POPULATION()
+                if usablePlots <= gc.getNUM_CITY_PLOTS()//2:
                     yields[n] = YieldTypes.YIELD_FOOD
 
                 if debugOut: print("value now at %(v)d" % {"v":value})
@@ -5347,7 +5345,7 @@ class StartingPlotFinder :
             #first loop for hill tiles, then...
             for plot in plotList:
                 featureInfo = gc.getFeatureInfo(plot.getFeatureType())
-                if badFeaturesFound == mc.MaxBadFeaturesInFC/2: #truncation on this operation will prefer to remove on flats, which is desirable
+                if badFeaturesFound == mc.MaxBadFeaturesInFC//2: #truncation on this operation will prefer to remove on flats, which is desirable
                     break
                 if featureInfo != None and plot.getPlotType() == PlotTypes.PLOT_HILLS:
                     totalYield = 0
@@ -5483,7 +5481,7 @@ class StartingArea :
         self.plotList.sort(lambda x, y: cmp(x.localValue, y.localValue))
 
         #To save time and space let's get rid of some of the lesser plots
-        cull = (len(self.plotList) * 2) / 3
+        cull = (len(self.plotList) * 2) // 3
         for i in range(cull):
             del self.plotList[0]
 
@@ -5653,7 +5651,7 @@ class StartingArea :
         return
     def getDistance(self,x,y,dx,dy):
         xx = x - dx
-        if abs(xx) > mc.width/2:
+        if abs(xx) > mc.width//2:
             xx = mc.width - abs(xx)
 
         distance = max(abs(xx),abs(y - dy))
@@ -6052,7 +6050,7 @@ def getGridSize(argsList):
 
     (sizex, sizey) = grid_sizes[eWorldSize]
     # The above values are for a 3:2 ratio.  We also support other ratios
-    base_size = float(sizey) / 2 # base sizes: 3.5, 5, 6.5, 8, 10, 12
+    base_size = sizey / 2 # base sizes: 3.5, 5, 6.5, 8, 10, 12
     sizex = int((base_size * mc.ratioX) + 0.5)
     sizey = int((base_size * mc.ratioY) + 0.5)
 
@@ -6078,7 +6076,7 @@ def generatePlotTypes():
     mmap = gc.getMap()
     mc.width = mmap.getGridWidth()
     mc.height = mmap.getGridHeight()
-    mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
+    mc.minimumMeteorSize = (1 + int(round(mc.hmWidth/mc.width))) * 3
     PRand.seed()
     hm.performTectonics()
     hm.generateHeightMap()
@@ -6591,7 +6589,7 @@ def addFeatures():
                     elif sm.averageTempMap[i] > mc.SnowTemp:
                         plot.setFeatureType(featureForest,FORESTSNOWY)
                 elif sm.rainFallMap[i] > sm.desertThreshold:#forest
-                    if sm.rainFallMap[i] > PRand.random() * sm.plainsThreshold * mc.TreeFactor / mc.MaxTreeChance:
+                    if sm.rainFallMap[i] > PRand.random() * sm.plainsThreshold * mc.TreeFactor // mc.MaxTreeChance:
                         if sm.averageTempMap[i] > mc.ForestTemp:
                            plot.setFeatureType(featureForest,FORESTLEAFY)
                         elif sm.averageTempMap[i] > mc.TundraTemp:
@@ -6809,8 +6807,8 @@ if __name__ == "__main__":
     mc.southCrop = 10
     mc.eastCrop = 0
     mc.westCrop = 0
-    mc.maxMapWidth = int(mc.hmWidth / 4)
-    mc.maxMapHeight = int(mc.hmHeight / 4)
+    mc.maxMapWidth = int(mc.hmWidth // 4)
+    mc.maxMapHeight = int(mc.hmHeight // 4)
     if(mc.width > mc.hmWidth):
         mc.width = mc.hmWidth
     if(mc.height > mc.hmHeight):
@@ -6820,7 +6818,7 @@ if __name__ == "__main__":
     else: # Patience is assumed to be 2
         mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0016)
 
-    mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
+    mc.minimumMeteorSize = (1 + int(round(mc.hmWidth/mc.width))) * 3
     mc.AllowNewWorld = True
     mc.ShareContinent = True
     PRand.seed()
