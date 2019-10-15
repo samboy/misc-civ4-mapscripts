@@ -2451,7 +2451,7 @@ class ClimateMap :
                 rainPlot = RainPlot(x,y,self.summerTempsMap[i],0)
                 temperatureList.append(rainPlot)
         #sort by temperature, coldest first
-        temperatureList.sort(lambda x,y:cmp(x.order,y.order))
+        temperatureList.sort(key=lambda x:x.order)
 
         #Drop summer monsoon rains
         self.dropRain(temperatureList,self.summerTempsMap,False,None)
@@ -2468,7 +2468,7 @@ class ClimateMap :
                 rainPlot = RainPlot(x,y,self.winterTempsMap[i],0)
                 temperatureList.append(rainPlot)
         #sort by temperature, coldest first
-        temperatureList.sort(lambda x,y:cmp(x.order,y.order))
+        temperatureList.sort(key=lambda x: x.order)
 
         #Drop winter monsoon rains
         self.dropRain(temperatureList,self.winterTempsMap,False,None)
@@ -2513,7 +2513,7 @@ class ClimateMap :
                     order += 1.0
 
         #Sort order list
-        orderList.sort(lambda x,y:cmp(x.order,y.order))
+        orderList.sort(key=lambda x: x.order)
 
         #drop geostrophic rain
         self.dropRain(orderList,self.averageTempMap,True,wz)
@@ -3225,7 +3225,7 @@ class PangaeaBreaker :
             totalLand += c.size
 
         #sort all the continents by size, largest first
-        continentList.sort(lambda x,y:cmp(x.size,y.size))
+        continentList.sort(key=lambda x: x.size)
         continentList.reverse()
         biggestSize = continentList[0].size
         if 0.70 < float(biggestSize)/float(totalLand):
@@ -3247,7 +3247,7 @@ class PangaeaBreaker :
                 continentList.append(a)
 
         #sort all the continents by size, largest first
-        continentList.sort(lambda x,y:cmp(x.size,y.size))
+        continentList.sort(key=lambda x: x.size)
         continentList.reverse()
         biggestContinentID = continentList[0].ID
 
@@ -3415,7 +3415,7 @@ class PangaeaBreaker :
         circlePointList = self.getCirclePoints(x,y,radius)
 ##        print "circlePointList"
 ##        print circlePointList
-        circlePointList.sort(lambda n,m:cmp(n.y,m.y))
+        circlePointList.sort(key=lambda n:n.y)
         for n in range(0,len(circlePointList),2):
             cy = circlePointList[n].y
             if circlePointList[n].x < circlePointList[n + 1].x:
@@ -3537,7 +3537,7 @@ class PangaeaBreaker :
 
     def getHighestCentrality(self,ID):
         C = self.createCentralityList(ID)
-        C.sort(lambda x,y:cmp(x.centrality,y.centrality))
+        C.sort(key=lambda x: x.centrality)
         C.reverse()
         return C[0].x,C[0].y
     def createContinentList(self,ID):
@@ -3725,7 +3725,7 @@ class ContinentMap :
 
         #sort all the continents by size, largest first
 #        continentList.sort(key=operator.attrgetter('size'),reverse=True)
-        continentList.sort(lambda x,y:cmp(x.size,y.size))
+        continentList.sort(key=lambda x: x.size)
         continentList.reverse()
 
         print('')
@@ -3750,7 +3750,7 @@ class ContinentMap :
         #sort list by ID rather than size to make things
         #interesting and possibly bigger new worlds
 #        continentList.sort(key=operator.attrgetter('ID'),reverse=True)
-        continentList.sort(lambda x,y:cmp(x.ID,y.ID))
+        continentList.sort(key=lambda x: x.ID)
         continentList.reverse()
 
         for n in range(len(continentList)):
@@ -3847,7 +3847,7 @@ class Areamap :
         return None
     def getOceanID(self):
 #        self.areaList.sort(key=operator.attrgetter('size'),reverse=True)
-        self.areaList.sort(lambda x,y:cmp(x.size,y.size))
+        self.areaList.sort(key=lambda x: x.size)
         self.areaList.reverse()
         for a in self.areaList:
             if a.water == True:
