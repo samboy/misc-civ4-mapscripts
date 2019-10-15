@@ -5019,7 +5019,7 @@ class StartingPlotFinder :
 
         except:
             errorPopUp("PerfectWorld's starting plot finder has failed due to a rarely occuring bug, and this map likely has unfair starting locations. You may wish to quit this game and generate a new map.")
-            raise(Exception, e)
+            raise
         return
 
     def setupOldWorldAreaList(self):
