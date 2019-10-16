@@ -1,6 +1,34 @@
 #!/usr/bin/env python2
 ##############################################################################
-## File: TotestraRG32.py version 2019-07-28 (July 28, 2019)
+## This is Totestra, my fork of the incredibly popular and successful 
+## Perfect World map script.  This script is a canonical example of what
+## successful code looks like: It's messy.  It does even pretend to follow
+## PEP-8.  Porting this to Python3 would probably take about a month of
+## effort.  But none of that matters: The original PerfectWorld3 script
+## was downloaded over 40,000 times and was praised as being one of the
+## best mest scripts ever made for the Civilization franchise.  In terms
+## of maintainability, for young programmers out there who do not have
+## much professional programming experience, there's a lot of code out
+## there in the business world which is a good deal more messy than this
+## code.  Novice programmers whine that a given peace of code is messy;
+## professionals calmly come up with a reasonable estimate of how long
+## it will take to clean up the code so that it is manageable (and change
+## jobs should their boss not accept their estimate).
+
+## In terms of porting this to Python3, here is the test case of all the
+## code to make sure a regression does not pop up:
+
+# python2 TotestraRG32.py 2997
+
+## This code should generate output which ends like this:
+
+# Biggest is 8 with :{'floodPlains': 15, 'Land': 906, 'Desert': 257, 'Tundra': 20}
+
+## If it does not, I will not accept the merge in question that breaks
+## the code.  Also, if the code does not run in the ancient version of
+## Python embedded in Civilization IV, I will reject the merge.
+
+## File: TotestraRG32.py version 2019-10-16 (October 16, 2019)
 
 ## 2019-07-19 Update: The map generator now places huts on the map;
 ## each non-desert land non-ice square has a 2.5% chance of having a hut;
