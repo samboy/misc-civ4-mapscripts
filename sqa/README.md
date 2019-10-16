@@ -15,9 +15,10 @@ Enter this directory then type in this command:
 
 ## The RadioGatún[32] test
 
-The test makes sure that TotestraRG32.py generates the same RadioGatún[32]
-hashes (i.e. random numbers) for the reference test vectors that the 
-original 2006 test suite has.
+The test makes sure that the random number generator inside of 
+TotestraRG32.py generates the same RadioGatún[32] hashes (i.e. random
+numbers) for the reference test vectors that the original 2006 test
+suite has.
 
 In addition to the test inputs in the 2006 test suite, a single UTF-8
 encoded Unicode string is also in the suite, to ensure the program 
