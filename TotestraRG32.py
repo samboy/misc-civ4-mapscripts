@@ -5027,7 +5027,7 @@ class StartingPlotFinder :
             #add bonuses due to player difficulty settings
             self.addHandicapBonus()
 
-        except Exception as e:
+        except:
             errorPopUp("PerfectWorld's starting plot finder has failed due to a rarely occuring bug, and this map likely has unfair starting locations. You may wish to quit this game and generate a new map.")
             raise
         return
