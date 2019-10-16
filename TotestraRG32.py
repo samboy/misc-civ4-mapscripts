@@ -1,5 +1,10 @@
 #!/usr/bin/env python2
 ##############################################################################
+
+## Important: I will not accept any merge which does not pass the tests
+## in the sqa/ directory.  Yes, this code now has test cases.  No, I will
+## *not* accept merges which introduce regressions.
+
 ## This is Totestra, my fork of the incredibly popular and successful 
 ## Perfect World map script.  This script is a canonical example of what
 ## successful code looks like: It's messy.  It does even pretend to follow
