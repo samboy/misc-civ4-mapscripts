@@ -15,7 +15,7 @@
 # For an even larger map, with even more distant land to explore,
 # there is (40 13 143 76).
 
-# Going the other way, another set of values is (49 21 116 72) which makes 
+# Going the other way, another set of values is (53 21 116 72) which makes 
 # for a tight crop of the mainland, with very little to explore with Dhows 
 # in the mid game
 
