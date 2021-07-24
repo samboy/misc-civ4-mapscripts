@@ -1,5 +1,6 @@
 ##############################################################################
 ## File: BigIsland.py 
+## Version: 2021-07-24
 ##
 ## This is like SandBar.py (very desert map, ideal for Legends of Ancient
 ## Arabia or other desert-themed mods, or a very dry Civ4 experience), but
