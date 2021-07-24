@@ -252,7 +252,7 @@ OPTION_Patience = 11 # Hidden
 OPTION_Huts = 0
 OPTION_MapResources = 1
 OPTION_Handicap = 2
-OPTION_Wrap = 3 
+OPTION_Bigger = 3 
 OPTION_MapSeed = 4 
 OPTION_Pangaea = 5 # HIDDEN
 OPTION_NoRotate = 6 # HIDDEN
@@ -719,7 +719,7 @@ class MapConstants :
         # slower the map generation process
 
         # X and Y values for the map's size factor
-        ratioValue = mmap.getCustomMapOption(OPTION_Wrap)
+        ratioValue = mmap.getCustomMapOption(OPTION_Bigger)
 	self.ratioX = 2
 	self.ratioY = 2
 
@@ -740,7 +740,7 @@ class MapConstants :
         #Height and Width of main climate and height maps. This does not
         #reflect the resulting map size. Both dimensions( + 1 if wrapping in
         #that dimension = False) must be evenly divisble by self.hmMaxGrain
-	selectionID = mmap.getCustomMapOption(OPTION_Wrap)
+	selectionID = mmap.getCustomMapOption(OPTION_Bigger)
         heightmap_size_factor = 3 + selectionID
         self.hmWidth  = (self.hmMaxGrain * self.ratioX * 
                          heightmap_size_factor)
@@ -753,7 +753,7 @@ class MapConstants :
          
         #Wrap options
 	selectionID = 0 # No wrap (forced in SandBar)
-        wrapString = "Frap"
+        wrapString = "Flat"
 	self.WrapX = False # Changed elsewhere, careful
 	self.WrapY = False
 
@@ -5513,7 +5513,7 @@ def getCustomMapOptionName(argsList):
             return "Civ placement"
         elif optionID == OPTION_Pangaea:
             return "Pangaea Rule"
-        elif optionID == OPTION_Wrap:
+        elif optionID == OPTION_Bigger:
             return "Enable bigger maps"
         elif optionID == OPTION_MapSeed:
             return "Map seed"
@@ -5547,8 +5547,8 @@ def getNumCustomMapOptionValues(argsList):
             return 3
         elif optionID == OPTION_Pangaea:
             return 2
-        elif optionID == OPTION_Wrap:
-            return 2
+        elif optionID == OPTION_Bigger:
+            return 3
         elif optionID == OPTION_MapSeed: # Map world
             return 2
         elif optionID == OPTION_IslandFactor: # Number continents
@@ -5591,9 +5591,11 @@ def getCustomMapOptionDescAt(argsList):
             return "Break Pangaeas"
         elif selectionID == 1:
             return "Allow Pangaeas"
-    elif optionID == OPTION_Wrap:
+    elif optionID == OPTION_Bigger:
+        if selectionID == 2:
+            return "Huge maps"
         if selectionID == 1:
-            return "Bigger maps"
+            return "Big maps"
         elif selectionID == 0:
             return "Standard size"
     elif optionID == OPTION_MapSeed:
@@ -5743,10 +5745,9 @@ def getGridSize(argsList):
     # Check for bigger map option
     gc = CyGlobalContext()
     mmap = gc.getMap()
-    if(mmap.getCustomMapOption(OPTION_Wrap) == 1): # If a bigger map
-        sixex = sizex + int(sizex / 3)
-        sixey = sizey + int(sizey / 3)
-    
+    for foo in range(mmap.getCustomMapOption(OPTION_Bigger)): 
+        sizex = sizex + int(sizex / 3)
+        sizey = sizey + int(sizey / 3)
     # Let's reduce ice on smaller maps
     if(sizey < 20):
 	mc.iceSlope *= 0.85
