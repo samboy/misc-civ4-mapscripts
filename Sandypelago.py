@@ -58,14 +58,14 @@ def getGridSize(x):
 
 
 def getDescription():
-	return "Sandypelago - Desert with islands of arable land"
+	return "Sandypelago - Islands of arable land"
 
 def isAdvancedMap():
 	"This map should show up in simple mode"
 	return 0
 
 def getNumCustomMapOptions():
-	return 3
+	return 4
 
 def getNumHiddenCustomMapOptions():
 	return 2
@@ -75,7 +75,8 @@ def getCustomMapOptionName(argsList):
 	option_names = {
 		0:	"Landmass type",
 		1:	"World wrap",
-		2:  "Resources"
+		2:  "Resources",
+                3:  "non-arable terrain type"
 		}
 	return option_names[iOption]
 	
@@ -84,7 +85,8 @@ def getNumCustomMapOptionValues(argsList):
 	option_values = {
 		0:	3,
 		1:	3,
-		2:  2
+		2:  2,
+                3:  3
 		}
 	return option_values[iOption]
 	
@@ -104,7 +106,12 @@ def getCustomMapOptionDescAt(argsList):
 		2:	{
 			0: "Standard",
 			1: "Balanced"
-			}
+			},
+                3:      {
+                        0: "Desert",
+                        1: "Snow",
+                        2: "Coast"
+                        }
 		}
 	return selection_names[iOption][iSelection]
 	
@@ -113,7 +120,8 @@ def getCustomMapOptionDefault(argsList):
 	option_defaults = {
 		0:	1,
 		1:	0,
-		2:  0
+		2:  0,
+                3:  0
 		}
 	return option_defaults[iOption]
 
@@ -122,7 +130,8 @@ def isRandomCustomMapOption(argsList):
 	option_random = {
 		0:	true,
 		1:	false,
-		2:  false
+		2:  false,
+                3:  false
 		}
 	return option_random[iOption]
 
@@ -182,9 +191,15 @@ def generatePlotTypes():
 		plotTypes = fractal_world.generatePlotTypes(grain_amount = 4)
 
 	qPlotTypes = []
+        doLand = True
+        if(map.getCustomMapOption(3) == 2):
+                doLand = False # Coast
+
 	for square in plotTypes:
-		if square==PlotTypes.PLOT_OCEAN:
+		if square==PlotTypes.PLOT_OCEAN and doLand:
 			square = PlotTypes.PLOT_LAND
+			heightMap.append(0)
+		elif square==PlotTypes.PLOT_OCEAN:
 			heightMap.append(0)
 		else:
 			heightMap.append(1)
@@ -193,14 +208,20 @@ def generatePlotTypes():
 
 
 def generateTerrainTypes():
+	map = CyMap()
 	NiTextOut("Generating Terrain (Python Archipelago) ...")
 	terraingen = TerrainGenerator()
 	terrainTypes = terraingen.generateTerrain()
 	rTerrain = []
 	b = 0
+        nonArableType = 2 # Desert
+        if(map.getCustomMapOption(3) == 1):
+                nonArableType = 4 # Snow
+        elif(map.getCustomMapOption(3) == 2):
+                nonArableType = 5 # Coast
 	for a in terrainTypes:
 		if heightMap[b] != 1:
-			rTerrain.append(2) # Desert
+			rTerrain.append(nonArableType) 
 		elif a == 3 or a == 4: # Tundra or snow
 			rTerrain.append(0) # Grassland
 		else:
