@@ -150,3 +150,26 @@ Arabia mod. Your mileage may vary.
 
 https://forums.civfanatics.com/threads/sandland.532500/
 
+# BigIsland.py
+
+This puts all of the players on a large single island. It’s possible
+to change the climate of the map; the island is near the equator, so even
+on a cold world there is little tundra on the map. The island has a feel
+of a realistic island, because the map is generated with plate tectonics,
+simulated rainfall, and so on.
+
+There will usually be a few small islands to explore in the mid game
+and end game, but most of the game will be on the main island.
+
+The normal maximum map size is 96x96 (just under 10,000 tiles), but
+there’s a “bigger maps” option hidden near the bottom of the
+option list which allows maps up to 160x160 in size (this slows down
+map creation quite a bit, hence hiding the option a little).
+
+To install this map script, take the BigIsland.zip file, extract
+BigIsland.py, and install that .py file to one’s PublicMaps
+folder, which is a path which looks like C:\Program Files (x86)\2K
+Games\Civ4\Beyond the Sword\PublicMaps. The exact location will depend
+on how Civ4 was installed on your system.
+
+https://forums.civfanatics.com/threads/new-ish-map-script-big-island.671823/
