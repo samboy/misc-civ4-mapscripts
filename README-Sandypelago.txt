@@ -1,6 +1,7 @@
 This is a quick and dirty modification to the Archipelago map script which 
 comes with Civ4.  This script, instead of generating a bunch of islands 
-in an ocean, generates a bunch of areas with arable land in a desert. 
+in an ocean, generates a bunch of areas with arable land in a desert (or
+snow, or coast for a Polynesian experience).
 
 This is geared towards desert-themed mods (since as Legends of Ancient 
 Arabia), but works with other mods for games where people do not want to 
