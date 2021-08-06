@@ -4,6 +4,7 @@
 ## 2) Ability to use fixed random seed
 ## 3) Remove mountains next to coast (fix coastside mountain ring bug)
 ## 4) Allow everyone to start on same landmass
+## 5) Have options for changing resource distribution
 ## File: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
 ## Copyright 2007 Rich Marinaccio
@@ -254,6 +255,9 @@ class MapConstants :
         #bonuses. People often want lots of bonuses, and for those people, this variable is definately
         #a bonus.
         self.BonusBonus = 1.0
+        # This determines if we use Perfect World's way of spreading
+        # resources (False), or use a more normal resource distribution
+        self.spreadResources = False
         
         #How many squares are added to a lake for each unit of drainage flowing
         #into it.
@@ -588,8 +592,24 @@ class MapConstants :
             self.hmWidth += 1
             self.WrapX = False
             wrapString = "Flat"
-            
+          
+        # How we distribute resources
         selectionID = mmap.getCustomMapOption(3)
+        if selectionID == 0:
+            self.BonusBonus = 1.5 # Increases resources
+            self.spreadResources = True
+        elif selectionID == 1: # Evenly spaced resources
+            self.BonusBonus = 0.7 
+            self.spreadResources = True
+        elif selectionID == 2: # Like Perfect World
+            self.BonusBonus = 1.0 
+            self.spreadResources = False
+        else:
+            self.BonusBonus = 1.5 # Increases resources
+            self.spreadResources = True
+
+        # Do we use a fixed or random random seed?
+        selectionID = mmap.getCustomMapOption(4)
         if selectionID == 1: # Fixed random seed
             self.randomSeed = 8939185639133313
 
@@ -4024,7 +4044,8 @@ class BonusPlacer :
         if plot.isPotentialCityWork() == False:
             return False
         
-        if bIgnoreArea == False and bonusInfo.isOneArea() == True:
+        if (bIgnoreArea == False and bonusInfo.isOneArea() == True and
+                 mc.spreadResources == False):
             areaID = plot.getArea()
             areaFound = False
             for i in range(len(self.bonusList)):
@@ -5077,7 +5098,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 4
+    return 5
 	
 def getCustomMapOptionName(argsList):
         """
@@ -5093,6 +5114,8 @@ def getCustomMapOptionName(argsList):
         elif optionID == 2:
             return "Wrap Option"
         elif optionID == 3:
+            return "Resources"
+        elif optionID == 4:
             return "Map seed"
 
         return u""
@@ -5111,6 +5134,8 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == 2:
             return 3
         elif optionID == 3:
+            return 3
+        elif optionID == 4:
             return 2
         return 0
 	
@@ -5155,6 +5180,13 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 2:
             return "Flat"
     elif optionID == 3:
+        if selectionID == 0:
+            return "Full of resources"
+        elif selectionID == 1:
+            return "Resources evenly spread"
+        elif selectionID == 2:
+            return "Like Perfect World"
+    elif optionID == 4:
         if selectionID == 0:
             return "Random"
         elif selectionID == 1:
