@@ -5825,10 +5825,11 @@ def addFeatures():
                             #print "oasis failed random check"
             
     return
-    
+   
 def createIce():
     gc = CyGlobalContext()
     mmap = gc.getMap()
+    signadded = 0
     featureIce = gc.getInfoTypeForString("FEATURE_ICE")
     iceChance = mc.iceChance
     iceRange = mc.iceRange
@@ -5845,7 +5846,13 @@ def createIce():
             plot = mmap.plot(x,y)
             if plot != 0 and plot.isWater() == True and PRand.random() < iceChance:
                 plot.setFeatureType(featureIce,0)
+                if signadded == 0:
+                    CyEngine().addSign(plot, -1, str(mc.randomSeed))
+                    signadded = 1
         iceChance *= iceSlope
+    if signadded == 0:
+        CyEngine().addSign(plot, -1, str(mc.randomSeed))
+        signadded = 1
         
 def addBonuses():
     bp.AddBonuses()
