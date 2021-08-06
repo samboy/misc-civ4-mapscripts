@@ -1,5 +1,5 @@
 ##############################################################################
-## T2 version 2021-08-XX
+## T2 version 2021-08-06
 ## T2 changes from PerfectWorld 2.06 (*not* 2.06f)
 ## 1) Ability to select climate
 ## 2) Ability to use fixed random seed
@@ -7,6 +7,7 @@
 ## 4) Allow everyone to start on same landmass
 ## 5) Have options for changing resource distribution
 ## 6) Note random seed on sign placed in the arctic
+## 7) Ability to have extra huge maps
 ## File: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
 ## Copyright 2007 Rich Marinaccio
@@ -585,9 +586,10 @@ class MapConstants :
         if selectionID == 1: # Big maps
             self.hmHeight = 129
             self.hmWidth = 192
-        elif selectionID == 2: # Small maps
-            self.hmHeight = 65
-            self.hmWidth = 96
+        # Small maps disabled; the generated maps are buggy
+        #elif selectionID == 2: # Small maps
+        #    self.hmHeight = 65
+        #    self.hmWidth = 96
 
         #Wrap options
         selectionID = mmap.getCustomMapOption(2)
@@ -5296,9 +5298,10 @@ def getGridSize(argsList):
     if mmap.getCustomMapOption(4) == 1: # Big maps
         sizex = sizex + int(sizex / 3) 
         sizey = sizey + int(sizey / 3) 
-    elif mmap.getCustomMapOption(4) == 2: # Small maps
-        sizex = sizex - int(sizex / 3) 
-        sizey = sizey - int(sizey / 3) 
+    # Small maps disabled (the generated maps are buggy)
+    #elif mmap.getCustomMapOption(4) == 2: # Small maps
+    #    sizex = sizex - int(sizex / 3) 
+    #    sizey = sizey - int(sizey / 3) 
 
     if (argsList[0] == -1): # (-1,) is passed to function on loads
             return []
