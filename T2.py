@@ -648,8 +648,10 @@ class PythonRandom :
             seedValue = randint(0,9007199254740991)
             if mc.randomSeed == 0:
                 seed(seedValue)
+                mc.randomSeed = seedValue
             else:
                 seed(mc.randomSeed)
+                seedValue = mc.randomSeed
             self.seedString = "Random seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
             
 ##            seedValue = 4316490043753041
