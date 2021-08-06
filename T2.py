@@ -1,4 +1,7 @@
 ##############################################################################
+## T2 changes from PerfectWorld 2.06 (*not* 2.06f)
+## 1) Ability to select climate
+## 2) Ability to use fixed random seed
 ## File: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
 ## Copyright 2007 Rich Marinaccio
@@ -171,7 +174,13 @@ class MapConstants :
         print "Initializing map constants"
 ##############################################################################
 ## GLOBAL TUNING VARIABLES: Change these to customize the map results
-        
+       
+        gc = CyGlobalContext()
+        mmap = gc.getMap()
+
+        # Default seed
+        self.randomSeed = 0
+
         #Percent of land vs. water
         self.landPercent = 0.29
         
@@ -470,7 +479,44 @@ class MapConstants :
         #syncing issues for multi-player now or in the future, therefore it must
         #be optional.
         self.UsePythonRandom = True        
-        
+    
+        # T2 change: Add the ability to select climate
+        self.iceChance = 1.0 # Chance of having iceberg at top/bottom of map
+        self.iceRange = 4 # Number of squares we add icebergs to
+        self.iceSlope = 0.66 # How quickly we reduce icebergs
+        clim = mmap.getClimate()
+        if clim == 1: # Tropical
+            self.tropicsLatitude = 46
+            # q3max changes
+            self.DesertPercent = .10 # added
+            self.PlainsPercent = .30 # added
+            self.SnowTemp = .20 # added
+            self.TundraTemp = .30 # added
+            self.ForestTemp = .35 # added
+            self.JungleTemp = .50 # added
+            # End q3max changes
+            self.iceSlope = 0.33 # Less ice
+        elif clim == 2: # Arid
+            self.DesertPercent = 0.40
+            self.PlainsPercent = 0.82
+            self.iceSlope = 0.33 # Less ice
+        elif clim == 3: # Rocky
+            self.PeakPercent = 0.24
+            self.HillPercent = 0.70
+            self.HillChanceAtOne = 0.70
+            self.PeakChanceAtOne = 0.43
+            self.iceSlope = 0.75 # Some more ice
+            self.iceRange = 6
+        elif clim == 4: # Cold
+            self.tropicsLatitude = 0
+            self.SnowTemp = .50
+            self.TundraTemp = .75
+            self.ForestTemp = .85
+            self.JungleTemp = .99
+            self.iceRange = 12
+            self.iceChance = 1.2
+            self.iceSlope = 0.87 # Lots of ice
+
         #Below here are static defines. If you change these, the map won't work.
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.L = 0
@@ -537,6 +583,10 @@ class MapConstants :
             self.WrapX = False
             wrapString = "Flat"
             
+        selectionID = mmap.getCustomMapOption(3)
+        if selectionID == 1: # Fixed random seed
+            self.randomSeed = 8939185639133313
+
         self.optionsString = "Map Options: \n"
         if self.AllowNewWorld:
             self.optionsString += "AllowNewWorld = true\n"
@@ -570,7 +620,10 @@ class PythonRandom :
             # has 53 bits of precision, so I'm using a 53 bit integer to seed the map!
             seed() #Start with system time
             seedValue = randint(0,9007199254740991)
-            seed(seedValue)
+            if mc.randomSeed == 0:
+                seed(seedValue)
+            else:
+                seed(mc.randomSeed)
             self.seedString = "Random seed (Using Python rands) for this map is %(s)20d" % {"s":seedValue}
             
 ##            seedValue = 4316490043753041
@@ -5011,7 +5064,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 3
+    return 4
 	
 def getCustomMapOptionName(argsList):
         """
@@ -5026,6 +5079,8 @@ def getCustomMapOptionName(argsList):
             return "Pangaea Rules"
         elif optionID == 2:
             return "Wrap Option"
+        elif optionID == 3:
+            return "Map seed"
 
         return u""
 	
@@ -5042,6 +5097,8 @@ def getNumCustomMapOptionValues(argsList):
             return 2
         elif optionID == 2:
             return 3
+        elif optionID == 3:
+            return 2
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -5082,6 +5139,11 @@ def getCustomMapOptionDescAt(argsList):
             return "Toroidal"
         elif selectionID == 2:
             return "Flat"
+    elif optionID == 3:
+        if selectionID == 0:
+            return "Random"
+        elif selectionID == 1:
+            return "Fixed seed"
     return u""
 	
 def getCustomMapOptionDefault(argsList):
@@ -5129,7 +5191,7 @@ def isClimateMap():
 	"""
 	Uses the Climate options
 	"""
-	return 0
+	return 1
 	
 def isSeaLevelMap():
 	"""
@@ -5719,26 +5781,22 @@ def createIce():
     gc = CyGlobalContext()
     mmap = gc.getMap()
     featureIce = gc.getInfoTypeForString("FEATURE_ICE")
-    if mc.WrapY == True:
-        iceChance = 0.5
-    else:
-        iceChance = 1.0
-    for y in range(4):
+    iceChance = mc.iceChance
+    iceRange = mc.iceRange
+    iceSlope = mc.iceSlope
+    for y in range(iceRange):
         for x in range(mc.width):
             plot = mmap.plot(x,y)
             if plot != 0 and plot.isWater() == True and PRand.random() < iceChance:
                 plot.setFeatureType(featureIce,0)
-        iceChance *= .66
-    if mc.WrapY == True:
-        iceChance = 0.5
-    else:
-        iceChance = 1.0
-    for y in range(mc.height - 1,mc.height - 5,-1):
+        iceChance *= iceSlope
+    iceChance = mc.iceChance
+    for y in range(mc.height - 1,mc.height - 1 - iceRange,-1):
         for x in range(mc.width):
             plot = mmap.plot(x,y)
             if plot != 0 and plot.isWater() == True and PRand.random() < iceChance:
                 plot.setFeatureType(featureIce,0)
-        iceChance *= .66
+        iceChance *= iceSlope
         
 def addBonuses():
     bp.AddBonuses()
