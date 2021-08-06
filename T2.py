@@ -1,10 +1,12 @@
 ##############################################################################
+## T2 version 2021-08-05
 ## T2 changes from PerfectWorld 2.06 (*not* 2.06f)
 ## 1) Ability to select climate
 ## 2) Ability to use fixed random seed
 ## 3) Remove mountains next to coast (fix coastside mountain ring bug)
 ## 4) Allow everyone to start on same landmass
 ## 5) Have options for changing resource distribution
+## 6) Note random seed on sign placed in the arctic
 ## File: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
 ## Copyright 2007 Rich Marinaccio
