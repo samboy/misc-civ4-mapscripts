@@ -2,6 +2,7 @@
 ## T2 changes from PerfectWorld 2.06 (*not* 2.06f)
 ## 1) Ability to select climate
 ## 2) Ability to use fixed random seed
+## 3) Remove mountains next to coast (fix coastside mountain ring bug)
 ## File: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
 ## Copyright 2007 Rich Marinaccio
@@ -2246,7 +2247,7 @@ class SmallMaps :
         for y in range(mc.height):
             for x in range(mc.width):
                 i = GetIndex(x,y)
-                if self.plotMap == mc.HILLS:
+                if self.plotMap[i] == mc.HILLS:
                     allHills = True
                     for direction in range(1,9,1):
                         xx,yy = GetXYFromDirection(x,y,direction)
@@ -2255,14 +2256,20 @@ class SmallMaps :
                             allHills = False
                     if allHills == True:
                         self.plotMap[i] = mc.LAND
-                if self.plotMap == mc.PEAK:
+                if self.plotMap[i] == mc.PEAK:
                     allPeaks = True
+                    peakCount = 0
+                    nextToOcean = False
                     for direction in range(1,9,1):
                         xx,yy = GetXYFromDirection(x,y,direction)
                         ii = GetIndex(xx,yy)
                         if self.plotMap[ii] != mc.PEAK:
                             allPeaks = False
-                    if allPeaks == True:
+                        else:
+                            peakCount += 1
+                        if self.plotMap[ii] == mc.OCEAN:
+                            nextToOcean = True
+                    if allPeaks == True or peakCount>3 or nextToOcean == True:
                         self.plotMap[i] = mc.HILLS
         
         return
