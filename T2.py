@@ -1,5 +1,5 @@
 ##############################################################################
-## T2 version 2021-08-05
+## T2 version 2021-08-XX
 ## T2 changes from PerfectWorld 2.06 (*not* 2.06f)
 ## 1) Ability to select climate
 ## 2) Ability to use fixed random seed
@@ -327,6 +327,7 @@ class MapConstants :
         #Height and Width of main climate and height maps. This does not
         #reflect the resulting map size. Both dimensions( + 1 if wrapping in
         #that dimension = False) must be evenly divisble by self.hmMaxGrain
+        # Note: The bigger map option may rewrite these values (see below)
         self.hmWidth = 144
         self.hmHeight = 97
 
@@ -578,6 +579,16 @@ class MapConstants :
         if selectionID == 1:
             self.AllowPangeas = not self.AllowPangeas
 
+        # Bigger maps option
+        selectionID = mmap.getCustomMapOption(4)
+        # Default size is 144 wide, 97 tall
+        if selectionID == 1: # Big maps
+            self.hmHeight = 129
+            self.hmWidth = 192
+        elif selectionID == 2: # Small maps
+            self.hmHeight = 65
+            self.hmWidth = 96
+
         #Wrap options
         selectionID = mmap.getCustomMapOption(2)
         wrapString = "Cylindrical"
@@ -610,8 +621,8 @@ class MapConstants :
             self.BonusBonus = 1.5 # Increases resources
             self.spreadResources = True
 
-        # Do we use a fixed or random random seed?
-        selectionID = mmap.getCustomMapOption(4)
+        # Do we use a fixed or random map seed?
+        selectionID = mmap.getCustomMapOption(5)
         if selectionID == 1: # Fixed random seed
             self.randomSeed = 8939185639133313
 
@@ -625,7 +636,6 @@ class MapConstants :
         else:
             self.optionsString += "AllowPangeas = false\n"
         self.optionsString += "Wrap Option = " + wrapString + "\n"
-        
 
         return
     
@@ -5102,7 +5112,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 5
+    return 6
 	
 def getCustomMapOptionName(argsList):
         """
@@ -5120,6 +5130,8 @@ def getCustomMapOptionName(argsList):
         elif optionID == 3:
             return "Resources"
         elif optionID == 4:
+            return "Have bigger maps"
+        elif optionID == 5:
             return "Map seed"
 
         return u""
@@ -5140,6 +5152,8 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == 3:
             return 3
         elif optionID == 4:
+            return 2
+        elif optionID == 5:
             return 2
         return 0
 	
@@ -5191,6 +5205,13 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 2:
             return "Like Perfect World"
     elif optionID == 4:
+        if selectionID == 0:
+            return "Standard size"
+        elif selectionID == 1:
+            return "Big maps"
+        elif selectionID == 2:
+            return "Small maps"
+    elif optionID == 5:
         if selectionID == 0:
             return "Random"
         elif selectionID == 1:
@@ -5267,10 +5288,21 @@ def getGridSize(argsList):
 		WorldSizeTypes.WORLDSIZE_LARGE:		(30,20),
 		WorldSizeTypes.WORLDSIZE_HUGE:		(36,24)
     }
+    # Scale if they want a bigger or smaller world
+    [eWorldSize] = argsList
+    (sizex, sizey) = grid_sizes[eWorldSize]
+    gc = CyGlobalContext()
+    mmap = gc.getMap()
+    if mmap.getCustomMapOption(4) == 1: # Big maps
+        sizex = sizex + int(sizex / 3) 
+        sizey = sizey + int(sizey / 3) 
+    elif mmap.getCustomMapOption(4) == 2: # Small maps
+        sizex = sizex - int(sizex / 3) 
+        sizey = sizey - int(sizey / 3) 
+
     if (argsList[0] == -1): # (-1,) is passed to function on loads
             return []
-    [eWorldSize] = argsList
-    return grid_sizes[eWorldSize]
+    return (sizex, sizey)
 
 def generatePlotTypes():
     gc = CyGlobalContext()
