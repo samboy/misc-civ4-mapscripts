@@ -3,6 +3,7 @@
 ## 1) Ability to select climate
 ## 2) Ability to use fixed random seed
 ## 3) Remove mountains next to coast (fix coastside mountain ring bug)
+## 4) Allow everyone to start on same landmass
 ## File: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
 ## Copyright 2007 Rich Marinaccio
@@ -195,6 +196,7 @@ class MapConstants :
         #positions anywhere in the world. For some mods, a new world doesn't make
         #sense.
         self.AllowNewWorld = True
+        self.ShareContinent = False
         
         #How many land squares will be above peak threshold and thus 'peaks'.
         self.PeakPercent = 0.12
@@ -562,6 +564,9 @@ class MapConstants :
         selectionID = mmap.getCustomMapOption(0)
         if selectionID == 1:
             self.AllowNewWorld = not self.AllowNewWorld
+        if selectionID == 2: # Everyone on same landmass
+            self.AllowNewWorld = True
+            self.ShareContinent = True
         #Pangaea Rules
         selectionID = mmap.getCustomMapOption(1)
         if selectionID == 1:
@@ -3046,7 +3051,8 @@ class ContinentMap :
         
         for n in range(len(continentList)):
             oldWorldSize += continentList[0].size
-            del continentList[0]
+            if mc.ShareContinent == False:
+                del continentList[0]
             if float(oldWorldSize)/float(totalLand) > 0.60:
                 break
 
@@ -5099,7 +5105,7 @@ def getNumCustomMapOptionValues(argsList):
         """
         optionID = argsList[0]
         if optionID == 0:
-            return 2
+            return 3
         elif optionID == 1:
             return 2
         elif optionID == 2:
@@ -5128,6 +5134,8 @@ def getCustomMapOptionDescAt(argsList):
                 return "Start Anywhere"
             else:
                 return "Start in Old World"
+        elif selectionID == 2:
+            return "Everyone on same landmass"
     elif optionID == 1:
         if selectionID == 0:
             if mc.AllowPangeas:
