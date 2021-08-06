@@ -173,3 +173,23 @@ Games\Civ4\Beyond the Sword\PublicMaps. The exact location will depend
 on how Civ4 was installed on your system.
 
 https://forums.civfanatics.com/threads/new-ish-map-script-big-island.671823/
+
+# T2.py
+
+I have created a simplified version of Totestra called “T2”. This
+discards a large number of changes from Perfect World, and only includes
+the most relevant features (allow everyone to start on same landmass;
+have more resources by default on map w/ resource control option;
+remove coastal mountains; etc.) The maps will be the same as generated
+by Totestra with the same features selected.
+
+One useful feature this map script has which stock Totestra doesn’t
+have is the ability to make extra huge 192x128 maps. The option for these
+big maps is a little hidden, but can be seen in the options (since bigger
+maps take longer to generate).
+
+The code may be more maintainable compared to stock Totestra.
+
+To install, place the T2.py file in the relevant “PublicMaps/”
+(maybe “PrivateMaps/” if using it with a mod) folder in one’s
+Civilization 4 files.
