@@ -193,3 +193,47 @@ The code may be more maintainable compared to stock Totestra.
 To install, place the T2.py file in the relevant “PublicMaps/”
 (maybe “PrivateMaps/” if using it with a mod) folder in one’s
 Civilization 4 files.
+
+## How extra huge maps are made in T2.py
+
+I should explain why it’s useful to change the height map size when
+we already have the ability to adjust the map size via the standard
+“size” control. The way T2.py handles size is like this: It makes
+a large (144 wide, 96 high by default) really large map which it then
+runs plate tectonics and weather simulation with to act like a reasonably
+realistic planet. Then, once it has this 144x96 map generated, T2.py then
+scales down this really large map to the size requested by the user (44x28
+for duel, 60x40 for tiny, 80x52 for small, 96x64 for standard, 120x80
+for large, and 144x96 for huge) This way, if we have the same seed but
+select different map sizes, we get more or less the same planet generated.
+
+What “bigger maps” does is change the size of that underlying height
+field. This allows us to make maps which break the 144x96 cap on map sizes
+and have maps as large as 192x128. (This results in a different map being
+generated for a given seed.) T2.py scales up all of the smaller map sizes
+(56x36 for duel, then 80x52, 104x68, 128x84, 160x104, and finally 192x128
+for huge) when a bigger map is selected. This option is a little hidden
+because it takes a lot more time (and memory, so make sure to only make
+a really huge map right after starting a new Civ4 session or a memory
+allocation failure may happen) to make this bigger map.
+
+I also was able to add an option to make this underlying height field
+smaller (96x64 instead of the default 144x96); this is for running the
+generator on older computers when it’s more important to fairly quickly
+generate a smaller map than to generate a large or huge world. All the
+smaller maps are scaled down; e.g. a duel map is only 32x20.
+
+# T2RG32.py
+
+This is a variant of T2.py that uses an implementation of
+RadioGatún[32] instead of the built-in random number generator Python
+has (MT19937 32-bit) to generate random numbers.  The main advantage
+here is that the seed is now a string instead of a number; the main
+issue is that Python runs RadioGatún[32] quite slowly (the actual 
+algorithm is very fast when implemented as hand tuned C code) so map
+generation is slower.
+
+The maps are more or less the same maps TotestraRG32.py generates;
+the main difference being, to keep the code simple, we allow Civ4 to
+place tribal huts.  This means two runs with a given seed will result
+in different hut locations.
