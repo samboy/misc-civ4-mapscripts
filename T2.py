@@ -201,6 +201,7 @@ class MapConstants :
         #sense.
         self.AllowNewWorld = True
         self.ShareContinent = False
+        self.ShareContinentIndex = 1
         
         #How many land squares will be above peak threshold and thus 'peaks'.
         self.PeakPercent = 0.12
@@ -572,9 +573,13 @@ class MapConstants :
         selectionID = mmap.getCustomMapOption(0)
         if selectionID == 1:
             self.AllowNewWorld = not self.AllowNewWorld
-        if selectionID == 2: # Everyone on same landmass
+        if selectionID == 2: # Everyone on same landmass (largest)
             self.AllowNewWorld = True
             self.ShareContinent = True
+        if selectionID == 3: # Everyone on same landmass (second largest)
+            self.AllowNewWorld = True
+            self.ShareContinent = True
+            self.ShareContinentIndex = 2
         #Pangaea Rules
         selectionID = mmap.getCustomMapOption(1)
         if selectionID == 1:
@@ -3069,6 +3074,8 @@ class ContinentMap :
         oldWorldSize = 0
         #biggest continent is automatically 'Old World'
         oldWorldSize += continentList[0].size
+        if mc.ShareContinentIndex == 2:
+            oldWorldContinent = continentList[0]
         del continentList[0]
 
         #If this was the only continent than we have a pangaea. Oh well.
@@ -3093,8 +3100,12 @@ class ContinentMap :
             if float(oldWorldSize)/float(totalLand) > 0.60:
                 break
 
-        #add back the biggestNewWorld continent
-        continentList.append(biggestNewWorld)
+        # add back the biggestNewWorld continent unless we're putting
+        # everyone on the second biggest continent
+        if mc.ShareContinentIndex != 2:
+            continentList.append(biggestNewWorld)
+        else:
+            continentList.append(oldWorldContinent)
         
         #what remains in the list will be considered 'New World'
         print ''
@@ -5147,7 +5158,7 @@ def getNumCustomMapOptionValues(argsList):
         """
         optionID = argsList[0]
         if optionID == 0:
-            return 3
+            return 4
         elif optionID == 1:
             return 2
         elif optionID == 2:
@@ -5181,7 +5192,9 @@ def getCustomMapOptionDescAt(argsList):
             else:
                 return "Start in Old World"
         elif selectionID == 2:
-            return "Everyone on same landmass"
+            return "Everyone on largest landmass"
+        elif selectionID == 3:
+            return "Everyone on 2nd largest land"
     elif optionID == 1:
         if selectionID == 0:
             if mc.AllowPangeas:
