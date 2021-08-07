@@ -7,7 +7,7 @@
 ## 4) Allow everyone to start on same landmass
 ## 5) Have options for changing resource distribution
 ## 6) Note random seed on sign placed in the arctic
-## 7) Ability to have extra huge maps
+## 7) Ability to have bigger (192x128) or smaller (96x64) maps
 ## File: PerfectWorld.py version 2.06
 ## Author: Rich Marinaccio
 ## Copyright 2007 Rich Marinaccio
@@ -586,10 +586,11 @@ class MapConstants :
         if selectionID == 1: # Big maps
             self.hmHeight = 129
             self.hmWidth = 192
-        # Small maps disabled; the generated maps are buggy
-        #elif selectionID == 2: # Small maps
-        #    self.hmHeight = 65
-        #    self.hmWidth = 96
+        elif selectionID == 2: # Small maps
+            self.hmHeight = 65
+            self.hmWidth = 96
+            self.hmNumberOfPlates = (int(
+                     float(self.hmWidth * self.hmHeight) * 0.0016))
 
         #Wrap options
         selectionID = mmap.getCustomMapOption(2)
@@ -5154,7 +5155,7 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == 3:
             return 3
         elif optionID == 4:
-            return 2
+            return 3
         elif optionID == 5:
             return 2
         return 0
@@ -5298,10 +5299,9 @@ def getGridSize(argsList):
     if mmap.getCustomMapOption(4) == 1: # Big maps
         sizex = sizex + int(sizex / 3) 
         sizey = sizey + int(sizey / 3) 
-    # Small maps disabled (the generated maps are buggy)
-    #elif mmap.getCustomMapOption(4) == 2: # Small maps
-    #    sizex = sizex - int(sizex / 3) 
-    #    sizey = sizey - int(sizey / 3) 
+    elif mmap.getCustomMapOption(4) == 2: # Small maps
+        sizex = sizex - int(sizex / 3) 
+        sizey = sizey - int(sizey / 3) 
 
     if (argsList[0] == -1): # (-1,) is passed to function on loads
             return []
