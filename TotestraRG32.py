@@ -34,7 +34,9 @@
 ## the code.  Also, if the code does not run in the ancient version of
 ## Python embedded in Civilization IV, I will reject the merge.
 
-## File: TotestraRG32.py version 2019-10-16 (October 16, 2019)
+## File: TotestraRG32.py version 2021-08-07 (August 7, 2021)
+
+## 2021-08-07 Update: "Everyone on 2nd largest land" option added
 
 ## 2019-07-19 Update: The map generator now places huts on the map;
 ## each non-desert land non-ice square has a 2.5% chance of having a hut;
@@ -740,10 +742,14 @@ class MapConstants :
         selectionID = mmap.getCustomMapOption(OPTION_NewWorld)
         self.AllowNewWorld = True
         self.ShareContinent = False
+        self.ShareContinentIndex = 1
         if selectionID == 1:
             self.AllowNewWorld = False
         elif selectionID == 2:
             self.ShareContinent = True
+        elif selectionID == 3:
+            self.ShareContinent = True
+            self.ShareContinentIndex = 2
 
         self.xtraFlags = 0
         self.xtraFlags |= ((self.ShareContinent & 1) << 4)
@@ -3767,6 +3773,8 @@ class ContinentMap :
         oldWorldSize = 0
         #biggest continent is automatically 'Old World'
         oldWorldSize += continentList[0].size
+        if mc.ShareContinentIndex == 2:
+            oldWorldContinent = continentList[0]
         del continentList[0]
 
         #If this was the only continent than we have a pangaea. Oh well.
@@ -3794,7 +3802,10 @@ class ContinentMap :
                 break
 
         #add back the biggestNewWorld continent
-        continentList.append(biggestNewWorld)
+        if mc.ShareContinentIndex != 2:
+            continentList.append(biggestNewWorld)
+        else:
+            continentList.append(oldWorldContinent)
 
         #what remains in the list will be considered 'New World'
         print('')
@@ -5860,7 +5871,7 @@ def getNumCustomMapOptionValues(argsList):
         """
         optionID = argsList[0]
         if optionID == OPTION_NewWorld:
-            return 3
+            return 4
         elif optionID == OPTION_Pangaea:
             return 2
         elif optionID == OPTION_Wrap:
@@ -5902,7 +5913,9 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 1:
             return "Start anywhere reasonable"
         elif selectionID == 2:
-            return "Everyone on same landmass"
+            return "Everyone on largest landmass"
+        elif selectionID == 3:
+            return "Everyone on 2nd largest land"
     elif optionID == OPTION_Pangaea:
         if selectionID == 0:
             return "Break Pangaeas"
@@ -6856,6 +6869,7 @@ if __name__ == "__main__":
     mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
     mc.AllowNewWorld = True
     mc.ShareContinent = True
+    mc.ShareContinentIndex = 1
     PRand.seed()
     hm.performTectonics()
     hm.generateHeightMap()
