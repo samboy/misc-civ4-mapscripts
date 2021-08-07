@@ -199,7 +199,7 @@ Civilization 4 files.
 I should explain why it’s useful to change the height map size when
 we already have the ability to adjust the map size via the standard
 “size” control. The way T2.py handles size is like this: It makes
-a large (144 wide, 96 high by default) really large map which it then
+a really large (144 wide, 96 high by default) map which it then
 runs plate tectonics and weather simulation with to act like a reasonably
 realistic planet. Then, once it has this 144x96 map generated, T2.py then
 scales down this really large map to the size requested by the user (44x28
