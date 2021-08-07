@@ -5,7 +5,7 @@ the years.
 The mainline version of Totestra, my most popular mapscript, is here: 
 https://github.com/samboy/Totestra-mapscript/
 
-## TotestraRG32.py
+# TotestraRG32.py
 
 TotestraRG32.py is a variant of Totestra (which is, in turn, a variant of
 Cephalo’s “Perfect World” maps script) using RadioGatun[32] instead of 
@@ -33,7 +33,7 @@ requires Python 3 and the `pypng` library to run.  That directory
 also shows how to run TotestraRG32 as a standalone map generator in
 “batch mode” using standard UNIX tools.
 
-## SandBar.py
+# SandBar.py
 
 I felt that Legends of Ancient Arabia (LoAA), as well as the other Arabian
 mods like Rhye's Sword of Islam, really deserve their own map script,
@@ -61,7 +61,7 @@ map generator.
 
 https://forums.civfanatics.com/threads/sandbar-an-interesting-take-on-perfectworld.464127/
 
-## Sandypelago.py
+# Sandypelago.py
 
 Sandypelago is a quick and dirty modification to the Archipelago map
 script which comes with Civ4. This script, instead of generating a bunch
@@ -92,7 +92,7 @@ Arabia mod. Your mileage may vary.
 
 https://forums.civfanatics.com/threads/sandypelago.532562/
 
-## SandBarMoreIslands.py
+# SandBarMoreIslands.py
 
 Playing multiplayer Legends of Ancient Arabia games with my buddy made
 me realize I really like having a few islands out there, just enough
@@ -111,7 +111,7 @@ likely a player will start near the edge of the map.
 
 https://forums.civfanatics.com/threads/sandbar-an-interesting-take-on-perfectworld.464127/
 
-## TotestraBigCoast.py, TotestraDry.py, qTotestraHUGE.py, and TotestraStandAlone.py
+# TotestraBigCoast.py, TotestraDry.py, qTotestraHUGE.py, and TotestraStandAlone.py
 
 These are forks of Totestra:
 
@@ -123,7 +123,7 @@ These are forks of Totestra:
 
 https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
 
-## sandLand.py
+# sandLand.py
 
 This is a quick and dirty modification to the Islands map script which
 comes with Civ4. This script, instead of generating a bunch of islands
