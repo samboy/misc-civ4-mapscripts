@@ -1,3 +1,8 @@
+# Totestra.py
+
+This is the older version of Totestra which has a lot of features and
+may be harder to maintain than the current version.
+
 # TotestraRG32.py
 
 TotestraRG32.py is a variant of Totestra (which is, in turn, a variant of
