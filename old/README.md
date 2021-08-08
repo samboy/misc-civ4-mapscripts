@@ -26,15 +26,27 @@ requires Python 3 and the `pypng` library to run.  That directory
 also shows how to run TotestraRG32 as a standalone map generator in
 “batch mode” using standard UNIX tools.
 
-# TotestraBigCoast.py, TotestraDry.py, qTotestraHUGE.py, and TotestraStandAlone.py
-
-These are forks of Totestra:
+# TotestraBigCoast.py
 
 * TotestraBigCoast.py: Make the coastal area be larger, so that lanteens
   (ships without navigation) are more useful.
-* TotestraDry.py: Totestra with more desert
-* qTotestraHUGE.py: Totestra with maps four times bigger
-* TotestraStandAlone.py: Totestra which can be run stand alone w/o Civ4
 
 https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
 
+# TotestraDry.py
+
+* TotestraDry.py: Totestra with more desert
+
+https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
+
+# qTotestraHUGE.py
+
+* qTotestraHUGE.py: Totestra with maps four times bigger
+
+https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
+
+# TotestraStandAlone.py
+
+* TotestraStandAlone.py: Totestra which can be run stand alone w/o Civ4
+
+https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
