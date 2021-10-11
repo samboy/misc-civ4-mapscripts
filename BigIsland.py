@@ -1,6 +1,5 @@
 ##############################################################################
 ## File: BigIsland.py 
-## Version: 2021-07-24
 ##
 ## This is like SandBar.py (very desert map, ideal for Legends of Ancient
 ## Arabia or other desert-themed mods, or a very dry Civ4 experience), but
@@ -901,7 +900,8 @@ class PythonRandom :
 	    if(mc.smoothPeaks == 1):
 		mc.serviceTag |= (1 << 75)
 	    mc.serviceTag |= (a91a15d7(mc.serviceTag) << 53)
-	    mc.serviceString = ("%x" % mc.serviceTag)
+	    #mc.serviceString = ("%x" % mc.serviceTag)
+	    mc.serviceString = ("%d" % seedValue)
             print "SERVICE TAG: " + mc.serviceString 
             seed(seedValue)
             
@@ -964,14 +964,16 @@ def errorPopUp(message):
 #This function converts x and y to a one-dimensional index.
 def GetIndex(x,y):
     #Check X for wrap
-    if mc.WrapX == True:
+    #if mc.WrapX == True:
+    if True:
         xx = x % mc.width
     elif x < 0 or x >= mc.width:
         return -1
     else:
         xx = x
     #Check y for wrap
-    if mc.WrapY == True:
+    #if mc.WrapY == True:
+    if True:
         yy = y % mc.height
     elif y < 0 or y >= mc.height:
         return -1
@@ -982,16 +984,19 @@ def GetIndex(x,y):
     return i
 
 # This does the same thing for the height map (as opposed to the plot map)
+# Big island change: Always assume map wraps when building things
 def GetHmIndex(x,y):
     #Check X for wrap
-    if mc.WrapX == True:
+    #if mc.WrapX == True:
+    if True:
         xx = x % mc.hmWidth
     elif x < 0 or x >= mc.hmWidth:
         return -1
     else:
         xx = x
     #Check y for wrap
-    if mc.WrapY == True:
+    #if mc.WrapY == True:
+    if True:
         yy = y % mc.hmHeight
     elif y < 0 or y >= mc.hmHeight:
         return -1
@@ -1004,14 +1009,16 @@ def GetHmIndex(x,y):
 #Handles arbitrary size
 def GetIndexGeneral(x,y,width,height):
     #Check X for wrap
-    if mc.WrapX == True:
+    #if mc.WrapX == True:
+    if True:
         xx = x % width
     elif x < 0 or x >= width:
         return -1
     else:
         xx = x
     #Check y for wrap
-    if mc.WrapY == True:
+    #if mc.WrapY == True:
+    if True:
         yy = y % height
     elif y < 0 or y >= height:
         return -1
@@ -3371,14 +3378,16 @@ class PangaeaBreaker :
     
     def isNeighbor(self,x,y,xx,yy):
             #Check X for wrap
-        if mc.WrapX == True:
+        #if mc.WrapX == True:
+        if True:
             mx = xx % mc.hmWidth
         elif x < 0 or x >= mc.hmWidth:
             return False
         else:
             mx = xx
         #Check y for wrap
-        if mc.WrapY == True:
+        #if mc.WrapY == True:
+        if True:
             my = yy % mc.hmHeight
         elif y < 0 or y >= mc.hmHeight:
             return False
@@ -3568,14 +3577,16 @@ class Areamap :
                         
     def getIndex(self,x,y):
         #Check X for wrap
-        if mc.WrapX == True:
+        #if mc.WrapX == True:
+        if True:
             xx = x % self.mapWidth
         elif x < 0 or x >= self.mapWidth:
             return -1
         else:
             xx = x
         #Check y for wrap
-        if mc.WrapY == True:
+        #if mc.WrapY == True:
+        if True:
             yy = y % self.mapHeight
         elif y < 0 or y >= self.mapHeight:
             return -1
