@@ -6845,7 +6845,7 @@ if __name__ == "__main__":
     mc.WrapY = False
     mc.BonusBonus = 1.5 # Full of resources
     mc.spreadResources = True # Full of resources
-    mc.noRotate = 0
+    mc.noRotate = 1 # 1 to be compatible with T2RG32.py
     mc.smoothPeaks = 1
     mc.northWaterBand = 10
     mc.southWaterBand = 10
