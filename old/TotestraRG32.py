@@ -6903,8 +6903,15 @@ if __name__ == "__main__":
                     "Land": 0,
                     "Desert": 0,
                     "floodPlains": 0,
-                    "Tundra": 0
+                    "Tundra": 0,
+                    "Snow": 0,
+                    "MinY": y,
+                    "MaxY": y
                 }
+            if tally[area]["MinY"] > y:
+                tally[area]["MinY"] = y
+            if tally[area]["MaxY"] < y:
+                tally[area]["MaxY"] = y
             if sm.terrainMap[i] != mc.OCEAN and sm.terrainMap[i] != mc.COAST:
                 tally[area]["Land"] += 1
                 if(tally[area]["Land"] > maxLandAmount):
@@ -6917,6 +6924,8 @@ if __name__ == "__main__":
                     tally[area]["floodPlains"] += 1
             if sm.terrainMap[i] == mc.TUNDRA:
                 tally[area]["Tundra"] += 1
+            if sm.terrainMap[i] == mc.SNOW:
+                tally[area]["Snow"] += 1
     print("Flood plain count: " + str(floodPlainCount))
     for area in tally:
         print("Tally for continent " + str(area) + ": " +
