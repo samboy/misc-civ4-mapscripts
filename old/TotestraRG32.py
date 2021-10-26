@@ -6930,7 +6930,8 @@ if __name__ == "__main__":
     for area in tally:
         print("Tally for continent " + str(area) + ": " +
               str(tally[area]))
-    print("Biggest is " + str(maxLandArea) + " with :"+str(tally[maxLandArea]))
+    print("Biggest is " + str(maxLandArea) + 
+          " with :"+str(tally[maxLandArea]) + " seed " + str(mySeed))
     if(maxLandArea >= 0 and tally[maxLandArea]["Tundra"] < 10 and
        tally[maxLandArea]["floodPlains"] > 30 and
        tally[maxLandArea]["Desert"] > 500 and
