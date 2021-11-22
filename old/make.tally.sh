@@ -6,6 +6,7 @@ if [ -z "$A" ] ; then
 	A=1
 fi
 
+touch tally
 while : ; do
 	python2 TotestraRG32.py $A | grep 'Biggest is' >> tally
 	A=`expr $A + 1`
