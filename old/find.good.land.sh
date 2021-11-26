@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ ! -e tally ] ; then
-	xzcat tally.txt.xz > tally
+	xzcat tally.txt.xz | tr -d '\015' > tally
 fi
 
 cat tally | tr -d , | tr -d '}' | awk '
