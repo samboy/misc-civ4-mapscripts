@@ -1,4 +1,8 @@
 #!/bin/sh
+if [ ! -e tally ] ; then
+	xzcat tally.txt.xz > tally
+fi
+
 cat tally | tr -d , | tr -d '}' | awk '
 	{land=$8;snow=$10;tundra=$12;min=$14;max=$16;desert=$18;
 	 percent=desert/land
