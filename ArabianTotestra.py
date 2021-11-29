@@ -2,7 +2,7 @@
 ## Arabian Totestra:
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
 ## Hence, the map will use one of 44 possible fixed seeds to generate the
-## world.  It’s possible to select one of the 43 seeds below randomly,
+## world.  It’s possible to select one of the seeds below randomly,
 ## or to specify the fixed seed 36933 (medium to large main island)
 ## The worlds have been selected because they generate maps which are 
 ## suitable for an Arabian adventure (main land in middle latitudes, has no
@@ -10,6 +10,7 @@
 
 # Here is a list of seeds for a possible Arabian adventure.  Each seed is
 # in (size, seed) format.
+# Batch #1: 39000-52999
 seedList = [(822, 52805),
 (905, 51274),
 (920, 49666),
@@ -52,7 +53,21 @@ seedList = [(822, 52805),
 (2006, 50950),
 (2173, 43216),
 (2292, 42086),
-(2323, 42609)]
+(2323, 42609),
+# Batch #2 70000+
+(709,71995),
+(849,70810),
+(1015,70843),
+(1035,72270),
+(1152,71499),
+(1161,72253),
+(1254,71467),
+(1384,71566),
+(1544,70343),
+(1784,71015),
+(1827,71484),
+(2032,71855)
+]
 
 ## Changes from PerfectWorld 2.06 (*not* 2.06f)
 ## 1) Ability to select climate
