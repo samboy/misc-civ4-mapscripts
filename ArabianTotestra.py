@@ -2,7 +2,7 @@
 ## Arabian Totestra:
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
 ## Hence, the map will use one of 44 possible fixed seeds to generate the
-## world.  It’s possible to select one of the seeds below randomly,
+## world.  It's possible to select one of the seeds below randomly,
 ## or to specify the fixed seed 36933 (medium to large main island)
 ## The worlds have been selected because they generate maps which are 
 ## suitable for an Arabian adventure (main land in middle latitudes, has no
@@ -994,12 +994,23 @@ class MapConstants :
 
         # Do we use a fixed or random map seed?
         selectionID = mmap.getCustomMapOption(1)
-        if selectionID == 1: # Fixed random seed
+        if selectionID == 3: # Fixed random seed
             self.randomSeed = 36933
         else:
             # We choose one of 43 possible Arabian adventures
-            seedIndex = int(random() * len(seedList))
-            self.randomSeed = seedList[seedIndex][1]
+            localSeedList = []
+            if selectionID == 0: # Large (Epic or Marathon)
+                for a in range(len(seedList)):
+                    if seedList[a][0] >= 1400:
+                        localSeedList.append(seedList[a])
+            elif selectionID == 1: # Small (Normal or Epic)
+                for a in range(len(seedList)):
+                    if seedList[a][0] < 1400:
+                        localSeedList.append(seedList[a])
+            else: # Otherwise, choose any map at random
+                localSeedList = seedList
+            seedIndex = int(random() * len(localSeedList))
+            self.randomSeed = localSeedList[seedIndex][1]
 
         self.optionsString = "Map Options: \n"
         if self.AllowNewWorld:
@@ -5533,7 +5544,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1:
-            return 2
+            return 4
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -5554,8 +5565,12 @@ def getCustomMapOptionDescAt(argsList):
             return "Like Perfect World"
     elif optionID == 1:
         if selectionID == 0:
+            return "Larger start continents"
+        if selectionID == 1:
+            return "Smaller start continents"
+        if selectionID == 2:
             return "Random"
-        elif selectionID == 1:
+        elif selectionID == 3:
             return "Fixed seed"
     return u""
 	
