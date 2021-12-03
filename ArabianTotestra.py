@@ -5604,7 +5604,7 @@ def isClimateMap():
 	"""
 	Uses the Climate options
 	"""
-	return 1
+	return 0
 	
 def isSeaLevelMap():
 	"""
