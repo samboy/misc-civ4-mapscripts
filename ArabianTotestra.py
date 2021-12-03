@@ -5549,7 +5549,7 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == 1:
             return 4
         elif optionID == 2:
-            return 4
+            return 8
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -5586,6 +5586,14 @@ def getCustomMapOptionDescAt(argsList):
             return "Some"
         elif selectionID == 3:
             return "Lots (Easier for player)"
+        elif selectionID == 4:
+            return "Tons (even easier)"
+        elif selectionID == 5:
+            return "Mega"
+        elif selectionID == 6:
+            return "Super mega"
+        elif selectionID == 7:
+            return "Insane (Much easier)"
     return u""
 	
 def getCustomMapOptionDefault(argsList):
