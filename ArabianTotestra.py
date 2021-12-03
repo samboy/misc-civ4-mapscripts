@@ -829,17 +829,18 @@ class MapConstants :
         #River side cities are also important, how important is determined by this
         #value.
         self.RiverCityValueBonus = 1.2
-        
+       
+        handicap = mmap.getCustomMapOption(2)
         #Bonus resources to add depending on difficulty settings
-        self.SettlerBonus = 0
-        self.ChieftainBonus = 0
-        self.WarlordBonus = 0
-        self.NobleBonus = 0
-        self.PrinceBonus = 1
-        self.MonarchBonus = 1
-        self.EmperorBonus = 2
-        self.ImmortalBonus = 2
-        self.DeityBonus = 3
+        self.SettlerBonus = handicap
+        self.ChieftainBonus = handicap 
+        self.WarlordBonus = handicap
+        self.NobleBonus = handicap
+        self.PrinceBonus = handicap
+        self.MonarchBonus = handicap
+        self.EmperorBonus = handicap 
+        self.ImmortalBonus = handicap
+        self.DeityBonus = handicap
         
         #Decides whether to use the Python random generator or the one that is
         #intended for use with civ maps. The Python random has much higher precision
@@ -5510,7 +5511,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 2
+    return 3
 	
 def getCustomMapOptionName(argsList):
         """
@@ -5531,6 +5532,8 @@ def getCustomMapOptionName(argsList):
         #    return "Have bigger maps"
         elif optionID == 1:
             return "Map seed"
+        elif optionID == 2:
+            return "Player bonus resources"
 
         return u""
 	
@@ -5545,6 +5548,8 @@ def getNumCustomMapOptionValues(argsList):
             return 3
         elif optionID == 1:
             return 4
+        elif optionID == 2:
+            return 4
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -5556,14 +5561,14 @@ def getCustomMapOptionDescAt(argsList):
     """
     optionID = argsList[0]
     selectionID = argsList[1]
-    if optionID == 0:
+    if optionID == 0: # Resources
         if selectionID == 0:
             return "Full of resources"
         elif selectionID == 1:
             return "Resources evenly spread"
         elif selectionID == 2:
             return "Like Perfect World"
-    elif optionID == 1:
+    elif optionID == 1: # Seed (i.e. land size)
         if selectionID == 0:
             return "Larger start continents"
         if selectionID == 1:
@@ -5572,6 +5577,15 @@ def getCustomMapOptionDescAt(argsList):
             return "Random"
         elif selectionID == 3:
             return "Fixed seed"
+    elif optionID == 2: # Player bonus resource amount
+        if selectionID == 0:
+            return "None (Player equal to AI)"
+        if selectionID == 1:
+            return "A little"
+        if selectionID == 2:
+            return "Some"
+        elif selectionID == 3:
+            return "Lots (Easier for player)"
     return u""
 	
 def getCustomMapOptionDefault(argsList):
