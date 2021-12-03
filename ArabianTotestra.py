@@ -5571,18 +5571,18 @@ def getCustomMapOptionDescAt(argsList):
     elif optionID == 1: # Seed (i.e. land size)
         if selectionID == 0:
             return "Larger start continents"
-        if selectionID == 1:
+        elif selectionID == 1:
             return "Smaller start continents"
-        if selectionID == 2:
+        elif selectionID == 2:
             return "Random"
         elif selectionID == 3:
             return "Fixed seed"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
             return "None (Player equal to AI)"
-        if selectionID == 1:
+        elif selectionID == 1:
             return "A little"
-        if selectionID == 2:
+        elif selectionID == 2:
             return "Some"
         elif selectionID == 3:
             return "Lots (Easier for player)"
