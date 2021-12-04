@@ -1004,9 +1004,9 @@ class MapConstants :
 
         # Do we use a fixed or random map seed?
         selectionID = mmap.getCustomMapOption(1)
-        if selectionID == 3: # Fixed random seed
+        if selectionID == 4: # Fixed random seed
             self.randomSeed = 36933
-        else:
+        elif selectionID != 3: # Anything but "Free form"
             # We choose one of 43 possible Arabian adventures
             localSeedList = []
             if selectionID == 0: # Large (Epic or Marathon)
@@ -5577,7 +5577,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1:
-            return 4
+            return 5
         elif optionID == 2:
             return 8
         elif optionID == 3:
@@ -5608,6 +5608,8 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 2:
             return "Random"
         elif selectionID == 3:
+            return "Free Form (not Arabian)"
+        elif selectionID == 4:
             return "Fixed seed"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
