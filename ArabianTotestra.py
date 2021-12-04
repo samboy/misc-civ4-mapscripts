@@ -4973,6 +4973,18 @@ class StartingPlotFinder :
 
         for n in range(len(yields)):
             for i in range(gc.getNUM_CITY_PLOTS()):
+            
+                # We need to reshuffle bonus list for each square to get
+                # diversity of bonuses
+                bonusList = list()
+                for iii in range(numBonuses):
+                    bonusList.append(iii)
+                shuffledBonuses = list()
+                for iii in range(numBonuses):
+                    nnn = PRand.randint(0,len(bonusList) - 1)
+                    shuffledBonuses.append(bonusList[nnn])
+                    del bonusList[nnn]
+
                 food,value = self.getCityPotentialValue(x,y)
                 
                 #switch to food if food is needed
@@ -5002,17 +5014,22 @@ class StartingPlotFinder :
                 for b in range(gc.getNumBonusInfos()):
                     bonusEnum = shuffledBonuses[b]
                     bonusInfo = gc.getBonusInfo(bonusEnum)
+                    #print "b " + str(b) + " " + bonusInfo.getType() ## DEBUG
                     if bonusInfo.isNormalize() == False:
+                        #print "bonusInfo.isNormalize() == False" ## DEBUG
                         continue
                     if bonusInfo.getYieldChange(yields[n]) < 1:
+                        #print "bonusInfo.getYieldChange(yields[n])<1" ## DEBUG
                         continue
                     if bonusInfo.getTechCityTrade() == TechTypes.NO_TECH or \
                     gc.getTechInfo(bonusInfo.getTechCityTrade()).getEra() <= game.getStartEra():
+                    #if 1 == 1: # Any bonus, regardless of tech
+                        #print "bonus tech is good" ## DEBUG
                         if bp.PlotCanHaveBonus(plot,bonusEnum,False,False) == False:
-                            if debugOut: print "Plot can't have %(b)s" % {"b":bonusInfo.getType()}
+                            #print "Plot can't have %(b)s" % {"b":bonusInfo.getType()} ## DEBUG
                             continue
-                        if debugOut: print "Setting bonus type at %(x)d,%(y)d to %(b)s" % \
-                        {"x":plot.getX(),"y":plot.getY(),"b":bonusInfo.getType()}
+                        #print "Setting bonus type at %(x)d,%(y)d to %(b)s" % \
+                        #{"x":plot.getX(),"y":plot.getY(),"b":bonusInfo.getType()} ## DEBUG
                         plot.setBonusType(bonusEnum)
                         bonusCount += 1
                         break
