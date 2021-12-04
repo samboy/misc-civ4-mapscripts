@@ -6333,7 +6333,7 @@ def checkHut(hutSeen, x, y, distance):
         hi = 4
     for xx in range(lo,hi):
         if x + xx >= 0 and x + xx < mc.width:
-            for yy in range(-2,3):
+            for yy in range(lo,hi):
                 if y + yy >= 0 and y + yy < mc.height:
                     hutSeen[((y + yy) * mc.width) + (x + xx)] = 1 # No hut here
     hutSeen[(y * mc.width) + x] = 2 # Physical hut
