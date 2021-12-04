@@ -5516,7 +5516,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 3
+    return 4
 	
 def getCustomMapOptionName(argsList):
         """
@@ -5539,6 +5539,8 @@ def getCustomMapOptionName(argsList):
             return "Map seed"
         elif optionID == 2:
             return "Player bonus resources"
+        elif optionID == 3:
+            return "Hut placement"
 
         return u""
 	
@@ -5555,6 +5557,8 @@ def getNumCustomMapOptionValues(argsList):
             return 4
         elif optionID == 2:
             return 8
+        elif optionID == 3:
+            return 6
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -5599,6 +5603,19 @@ def getCustomMapOptionDescAt(argsList):
             return "Super mega"
         elif selectionID == 7:
             return "Insane (Much easier)"
+    if optionID == 3: # Hut placement
+        if selectionID == 0:
+            return "Civ4 default"
+        elif selectionID == 1:
+            return "No huts"
+        elif selectionID == 2:
+            return "Fixed huts per seed"
+        elif selectionID == 3:
+            return "Huts are rare"
+        elif selectionID == 4:
+            return "Many desert huts"
+        elif selectionID == 5:
+            return "Many huts everywhere"
     return u""
 	
 def getCustomMapOptionDefault(argsList):
@@ -6291,33 +6308,70 @@ def isClimateMap():
 def isSeaLevelMap():
     return 0
 
-##mc.initialize()
-##PRand.seed()
-##hm.performTectonics()
-##hm.generateHeightMap()
-##hm.combineMaps()
-##hm.calculateSeaLevel()
-####hm.printHeightMap()
-##hm.fillInLakes()
-##pb.breakPangaeas()
-####hm.printHeightMap()
-####hm.Erode()
-##hm.printHeightMap()
-##hm.addWaterBands()
-##cm.createClimateMaps()
-##cm.printTempMap(cm.summerTempsMap)
-##cm.printTempMap(cm.winterTempsMap)
-##cm.printTempMap(cm.averageTempMap)
-##cm.printRainFallMap(False)
-##cm.printRainFallMap(True)
-##sm.initialize()
-##rm.generateRiverMap()
-####sm.printHeightMap()
-####rm.printRiverMap()
-####sm.printPlotMap()
-##sm.printTerrainMap()
-##rm.printFlowMap()
-##rm.printRiverMap()
-##rm.printRiverAndTerrainAlign()
+# Add huts to the map
+# Use Civ4-specific code to place the hut
+def placeHut(x,y):
+    cigc = CyGlobalContext()
+    gMap = CyMap()
+    nativeHut = cigc.getInfoTypeForString("IMPROVEMENT_GOODY_HUT")
+    hereGame = gMap.plot(x,y)
+    hereGame.setImprovementType(nativeHut)
 
-##sm.printHeightMap()
+# Check to see if we can place a hut on a given square
+def checkHut(hutSeen, x, y):
+    if hutSeen[(y * mc.width) + x] != 0:
+        return False
+    # If we can place a hut, make sure we can not place any future huts
+    # within two squares of this hut
+    for xx in range(-2,3):
+        if x + xx >= 0 and x + xx < mc.width:
+            for yy in range(-2,3):
+                if y + yy >= 0 and y + yy < mc.height:
+                    hutSeen[((y + yy) * mc.width) + (x + xx)] = 1 # No hut here
+    hutSeen[(y * mc.width) + x] = 2 # Physical hut
+    placeHut(x,y)
+    return True
+
+def addGoodies():
+    gc = CyGlobalContext()
+    mmap = gc.getMap()
+    hutPlacementRules = mmap.getCustomMapOption(3)
+
+    # Note that these constants change below, these are only default values
+    # The chance out of 1000 that we have a goody hut on a desert
+    # (either flat or hill) square
+    desertHutChance = 37 # 3.7 percent
+    # The chance out of 1000 we will have a goody hut on a non-desert
+    # non-ice land (flat/hill) square
+    normalHutChance = 25 # 2.5 percent
+
+    if hutPlacementRules == 0: # Civ4 default behavior (huts move each time)
+        CyPythonMgr().allowDefaultImpl()
+        return
+    elif hutPlacementRules == 1: # No huts
+        return
+    # Note that rare/many desert/many everywhere use fixed per-seed huts
+    elif hutPlacementRules == 3: # Rare huts
+        desertHutChance = 7 # 0.7 percent
+        normalHutChance = 5 # 0.5 percent
+    elif hutPlacementRules == 4: # Many desert huts
+        desertHutChance = 105 # 10.5 percent
+        normalHutChance = 25 # 2.5 percent (same as above)
+    elif hutPlacementRules == 5: # Many huts everywhere
+        desertHutChance = 105 # 10.5 percent
+        normalHutChance = 75 # 7.5 percent 
+
+    # Fixed per-seed huts (each map seed always makes the same huts)
+
+    hutSeen = [0 for i in range(mc.width * mc.height)]
+    for x in range(mc.width):
+        for y in range(mc.height):
+            i = (y * mc.width) + x
+            if(sm.plotMap[i] == mc.HILLS or sm.plotMap[i] == mc.LAND):
+                # Different terrains have different hut chances
+                if(sm.terrainMap[i] == mc.DESERT):
+                    if(PRand.randint(0,999) < desertHutChance):
+                        checkHut(hutSeen, x, y)
+                elif(sm.terrainMap[i] != mc.SNOW):
+                    if(PRand.randint(0,999) < normalHutChance):
+                        checkHut(hutSeen, x, y)
