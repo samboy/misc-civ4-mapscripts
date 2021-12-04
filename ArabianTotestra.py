@@ -6318,12 +6318,20 @@ def placeHut(x,y):
     hereGame.setImprovementType(nativeHut)
 
 # Check to see if we can place a hut on a given square
-def checkHut(hutSeen, x, y):
+def checkHut(hutSeen, x, y, distance):
     if hutSeen[(y * mc.width) + x] != 0:
         return False
     # If we can place a hut, make sure we can not place any future huts
     # within two squares of this hut
-    for xx in range(-2,3):
+    lo = -2
+    hi = 3
+    if distance == 1:
+        lo = -1
+        hi = 2
+    elif distance == 3:
+        lo = -3
+        hi = 4
+    for xx in range(lo,hi):
         if x + xx >= 0 and x + xx < mc.width:
             for yy in range(-2,3):
                 if y + yy >= 0 and y + yy < mc.height:
@@ -6344,6 +6352,9 @@ def addGoodies():
     # The chance out of 1000 we will have a goody hut on a non-desert
     # non-ice land (flat/hill) square
     normalHutChance = 25 # 2.5 percent
+    # Minimum distance between huts, divided by 2.  1 means one hut
+    # per 3x3 square; 2 means 1 hut/5x5; 3 is 1 hut/7x7
+    distance = 2
 
     if hutPlacementRules == 0: # Civ4 default behavior (huts move each time)
         CyPythonMgr().allowDefaultImpl()
@@ -6354,12 +6365,15 @@ def addGoodies():
     elif hutPlacementRules == 3: # Rare huts
         desertHutChance = 7 # 0.7 percent
         normalHutChance = 5 # 0.5 percent
+        distance = 3
     elif hutPlacementRules == 4: # Many desert huts
         desertHutChance = 105 # 10.5 percent
         normalHutChance = 25 # 2.5 percent (same as above)
+        distance = 1
     elif hutPlacementRules == 5: # Many huts everywhere
         desertHutChance = 105 # 10.5 percent
         normalHutChance = 75 # 7.5 percent 
+        distance = 1
 
     # Fixed per-seed huts (each map seed always makes the same huts)
 
@@ -6371,7 +6385,7 @@ def addGoodies():
                 # Different terrains have different hut chances
                 if(sm.terrainMap[i] == mc.DESERT):
                     if(PRand.randint(0,999) < desertHutChance):
-                        checkHut(hutSeen, x, y)
+                        checkHut(hutSeen, x, y, distance)
                 elif(sm.terrainMap[i] != mc.SNOW):
                     if(PRand.randint(0,999) < normalHutChance):
-                        checkHut(hutSeen, x, y)
+                        checkHut(hutSeen, x, y, distance)
