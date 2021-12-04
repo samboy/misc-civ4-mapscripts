@@ -4620,9 +4620,11 @@ class StartingPlotFinder :
                             player_list.append(plrCheckLoop)
             shuffledPlayers = []
             for playerLoop in range(iPlayers):
-                    iChoosePlayer = PRand.randint(0,len(player_list)-1)
+                    # Disabled: First player should get best start
+                    #iChoosePlayer = PRand.randint(0,len(player_list)-1)
+                    iChoosePlayer = playerLoop # Instead
                     shuffledPlayers.append(player_list[iChoosePlayer])
-                    del player_list[iChoosePlayer]
+                    #del player_list[iChoosePlayer]
 
             self.startingAreaList = list()
             for i in range(len(areas)):
