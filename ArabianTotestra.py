@@ -126,7 +126,6 @@ seedList = [(822, 52805),
 (1812,75842),
 (1822,78143),
 (1827,71484),
-(1831,75487),
 (1839,82569),
 (1886,85846),
 (1916,76097),
@@ -1033,10 +1032,12 @@ class MapConstants :
 
         # Do we use a fixed or random map seed?
         selectionID = mmap.getCustomMapOption(1)
-        if selectionID == 5: # Fixed random seed
+        if selectionID == 6: # Fixed random seed (plains/desert start)
             self.randomSeed = 36933
         elif selectionID == 4: # Amira
             self.randomSeed = 2997
+        elif selectionID == 5: # Jungle start
+            self.randomSeed = 75487
         elif selectionID != 3: # Anything but "Free form"
             # We choose one of 43 possible Arabian adventures
             localSeedList = []
@@ -5608,7 +5609,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1:
-            return 6
+            return 7
         elif optionID == 2:
             return 8
         elif optionID == 3:
@@ -5643,7 +5644,9 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 4:
             return "Amira map"
         elif selectionID == 5:
-            return "Fixed seed"
+            return "Fixed seed (Jungle start)"
+        elif selectionID == 6:
+            return "Fixed seed (Grassland start)"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
             return "None (Player equal to AI)"
