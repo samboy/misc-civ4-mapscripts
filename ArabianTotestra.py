@@ -1034,7 +1034,7 @@ class MapConstants :
         selectionID = mmap.getCustomMapOption(1)
         if selectionID == 5: # Fixed random seed
             self.randomSeed = 36933
-        if selectionID == 4: # Amira
+        elif selectionID == 4: # Amira
             self.randomSeed = 2997
         elif selectionID != 3: # Anything but "Free form"
             # We choose one of 43 possible Arabian adventures
