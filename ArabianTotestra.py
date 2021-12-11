@@ -1,6 +1,6 @@
 ##############################################################################
 ## Arabian Totestra
-## Version: 2021-12-10
+## Version: 2021-12-10-2 (Biggest land 95000)
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
 ## Hence, the map will use one of 44 possible fixed seeds to generate the
 ## world.  It's possible to select one of the seeds below randomly,
