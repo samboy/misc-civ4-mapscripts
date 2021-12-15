@@ -1069,11 +1069,13 @@ class MapConstants :
 
         # Do we use a fixed or random map seed?
         selectionID = mmap.getCustomMapOption(1)
-        if selectionID == 6: # Fixed random seed (plains/desert start)
+        if selectionID == 7: # Fixed random seed (plains/desert start)
             self.randomSeed = 36933
         elif selectionID == 4: # Amira
             self.randomSeed = 2997
-        elif selectionID == 5: # Jungle start
+        elif selectionID == 5: # Caulixtla
+            self.randomSeed = -2
+        elif selectionID == 6: # Jungle start
             self.randomSeed = 75487
         elif selectionID != 3: # Anything but "Free form"
             # We choose one of 43 possible Arabian adventures
@@ -1131,11 +1133,16 @@ class PythonRandom :
                     seedMe = randint(0,25)
                     seedValue += seedletter[seedMe:seedMe+1]
                 self.seedString = "Random seed (Using RG32 rand) for this map is " + seedValue
+            elif mc.randomSeed == -2:
+                self.rg32 = False
+                seed(8939185639133313) # Caulixtla
+                seedValue = -2
             else:
                 seedValue = "RT" + str(mc.randomSeed)
                 self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             mc.randomSeed = seedValue
-            self.rg32 = RadioGatun32(seedValue)
+            if mc.randomSeed != -2:
+                self.rg32 = RadioGatun32(seedValue)
             
 ##            seedValue = 4316490043753041
 ##            seed(seedValue)
@@ -1152,11 +1159,14 @@ class PythonRandom :
 ##            self.mapRand.init(seedValue)
 ##            self.seedString = "Pre-set seed (Using getMapRand) for this map is %(s)20d" % {"s":seedValue}
             
-        print self.seedString
+        #print self.seedString
         return
     def random(self):
         if self.usePR:
-            return self.rg32.random()
+            if self.rg32:
+                return self.rg32.random()
+            else:
+                return random()
         else:
             #This formula is identical to the getFloat function in CvRandom. It
             #is not exposed to Python so I have to recreate it.
@@ -1169,7 +1179,10 @@ class PythonRandom :
             return rMin
         #returns a number between rMin and rMax inclusive
         if self.usePR:
-            return self.rg32.randint(rMin,rMax)
+            if self.rg32:
+                return self.rg32.randint(rMin,rMax)
+            else:
+                return randint(rMin,rMax)
         else:
             #mapRand.get() is not inclusive, so we must make it so
             return rMin + self.mapRand.get(rMax + 1 - rMin,"Getting a randint - FairWeather.py")
@@ -5646,7 +5659,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1:
-            return 7
+            return 8
         elif optionID == 2:
             return 8
         elif optionID == 3:
@@ -5681,8 +5694,10 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 4:
             return "Amira map"
         elif selectionID == 5:
-            return "Fixed seed (Jungle start)"
+            return "Caulixtla map"
         elif selectionID == 6:
+            return "Fixed seed (Jungle start)"
+        elif selectionID == 7:
             return "Fixed seed (Grassland start)"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
