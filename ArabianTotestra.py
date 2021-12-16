@@ -1,6 +1,6 @@
 ##############################################################################
 ## Arabian Totestra
-## Version: 2021-12-16-1 
+## Version: 2021-12-16-2 
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
 ## Hence, the map will use one of 44 possible fixed seeds to generate the
 ## world.  It's possible to select one of the seeds below randomly,
@@ -191,7 +191,10 @@ seedList = [(822, 52805),
 (1068,105415),
 (1338,105767),
 (1503,105977),
-(965,106312)
+(965,106312),
+(1171,106559),
+(1939,106617),
+(989,107147)
 ]
 
 ## Changes from PerfectWorld 2.06 (*not* 2.06f)
