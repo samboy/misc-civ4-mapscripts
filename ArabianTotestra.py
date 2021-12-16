@@ -1,6 +1,6 @@
 ##############################################################################
 ## Arabian Totestra
-## Version: 2021-12-10-2 (Biggest land 95000)
+## Version: 2021-12-16-1 
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
 ## Hence, the map will use one of 44 possible fixed seeds to generate the
 ## world.  It's possible to select one of the seeds below randomly,
@@ -1086,7 +1086,7 @@ class MapConstants :
 
         # Do we use a fixed or random map seed?
         selectionID = mmap.getCustomMapOption(1)
-        if selectionID == 7: # Fixed random seed (plains/desert start)
+        if selectionID == 8: # Fixed random seed (plains/desert start)
             self.randomSeed = 36933
         elif selectionID == 4: # Amira
             self.randomSeed = 2997
@@ -1094,8 +1094,10 @@ class MapConstants :
             self.randomSeed = -2
         elif selectionID == 6: # Jungle start
             self.randomSeed = 75487
+        elif selectionID == 7: # Caulixtla Jungle start
+            self.randomSeed = -3
         elif selectionID != 3: # Anything but "Free form"
-            # We choose one of 43 possible Arabian adventures
+            # We choose one of many possible Arabian adventures
             localSeedList = []
             if selectionID == 0: # Large (Epic or Marathon)
                 for a in range(len(seedList)):
@@ -1143,6 +1145,7 @@ class PythonRandom :
             # has 53 bits of precision, so I'm using a 53 bit integer to seed the map!
             seed() #Start with system time
             seedValue = randint(0,9007199254740991)
+            self.rg32 = True
             if mc.randomSeed == 0:
                 seedValue = "R"
                 seedletter="abcdefghijkl7nopqrstuv8xyz" # No wide letters
@@ -1150,17 +1153,17 @@ class PythonRandom :
                     seedMe = randint(0,25)
                     seedValue += seedletter[seedMe:seedMe+1]
                 self.seedString = "Random seed (Using RG32 rand) for this map is " + seedValue
-            elif mc.randomSeed == -2:
+            elif mc.randomSeed == -2 or mc.randomSeed == -3:
                 self.rg32 = False
                 seed(8939185639133313) # Caulixtla
-                seedValue = -2
+                seedValue = mc.randomSeed
+                self.seedString = "Fixed seed: Caulixtla map"
             else:
                 seedValue = "RT" + str(mc.randomSeed)
                 self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             mc.randomSeed = seedValue
-            if mc.randomSeed != -2:
+            if self.rg32:
                 self.rg32 = RadioGatun32(seedValue)
-            
 ##            seedValue = 4316490043753041
 ##            seed(seedValue)
 ##            self.seedString = "Pre-set seed (Using Pyhon rands) for this map is %(s)20d" % {"s":seedValue}     
@@ -4725,7 +4728,13 @@ class StartingPlotFinder :
             for playerLoop in range(iPlayers):
                     # Disabled: First player should get best start
                     #iChoosePlayer = PRand.randint(0,len(player_list)-1)
-                    iChoosePlayer = playerLoop # Instead
+                    iChoosePlayer = playerLoop # Do not shuffle
+                    # Give Caulixtla map Jungle start option
+                    if mc.randomSeed == -3 and len(player_list) > 7:
+                       if playerLoop == 0:
+                           iChoosePlayer = 6
+                       elif playerLoop == 6:
+                           iChoosePlayer = 0
                     shuffledPlayers.append(player_list[iChoosePlayer])
                     #del player_list[iChoosePlayer]
 
@@ -5676,7 +5685,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1:
-            return 8
+            return 9
         elif optionID == 2:
             return 8
         elif optionID == 3:
@@ -5715,6 +5724,8 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 6:
             return "Fixed seed (Jungle start)"
         elif selectionID == 7:
+            return "Caulixtla map (Jungle start)"
+        elif selectionID == 8:
             return "Fixed seed (Grassland start)"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
