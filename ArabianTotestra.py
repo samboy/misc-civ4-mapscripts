@@ -1,6 +1,6 @@
 ##############################################################################
 ## Arabian Totestra
-## Version: 2021-12-16-2 
+## Version: 2021-12-16-3
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
 ## Hence, the map will use one of 44 possible fixed seeds to generate the
 ## world.  It's possible to select one of the seeds below randomly,
@@ -8,6 +8,38 @@
 ## The worlds have been selected because they generate maps which are 
 ## suitable for an Arabian adventure (main land in middle latitudes, has no
 ## snow and little tundra)
+
+"""
+# About
+ArabianTotestra.py is a map script for Civilization IV.  It is derived 
+from Rich Marinaccio's map script Perfect World.  While Rich Marinaccio
+never provided a license for Perfect World, he has given me permission 
+to make derivatives of it and I believe he is OK with any and all
+non-commercial use of the script.
+
+This is a map script: It is a Python2 program run by Civilization IV to
+generate a map for that game.
+
+This map script is designed to model a natural world like Earth:  The 
+scipt simulates plate tectonics, rainfall, meteor hits, and other factors
+which created the continents on Earth.
+
+Unlike Perfect World, while each world is generated to be like Earth
+with multiple continents, this script limits the number of worlds that
+can be generated.  A script was run for several weeks to find 
+simulated planets suitable for creating an Arabian adventure:  The
+main continent needs to be near the equator, and there needs to be 
+very little cold areas in that continent.
+
+This script, by default, will only randomly select one of the larger
+possible Arabian adventures found by this script. 
+
+Unlike other Civilization IV map generators, all of the players will 
+start on the same continent, changing the map size won't change the
+size of the generated map (all maps are 144 tiles wide and 96 tiles 
+tall), climate can not be selected (the climate is arid), and the
+sea level can not be adjusted.
+"""
 
 # Here is a list of seeds for a possible Arabian adventure.  Each seed is
 # in (size, seed) format.
