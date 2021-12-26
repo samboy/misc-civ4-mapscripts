@@ -1,6 +1,6 @@
 ##############################################################################
 ## Arabian Totestra
-## Version: 2021-12-17
+## Version: 2021-12-25 (Merry Christmas!)
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
 ## Hence, the map will use one of 44 possible fixed seeds to generate the
 ## world.  It's possible to select one of the seeds below randomly,
@@ -165,6 +165,21 @@ given map seed will have the same hut locations.
 
 "Many huts everywhere" has many goody huts all over the map.  A given map
 seed will have the same hut locations.
+
+# Running stand alone
+The script can also be run stand alone.  This will not generate maps;
+if map generation in standalone mode is desired, use old/TotestraRG32.py
+instead.  Instead, standalone mode tests the random number generator to
+ensure it is generating correct RadioGatun[32] sums.
+
+To run it standalone:
+
+```
+python2 ArabianTotestra.py --test foo
+```
+
+Replace foo above with the desired string to generate a RadioGatun[32]
+sum of.
 """
 
 # Here is a list of seeds for a possible Arabian adventure.  Each seed is
@@ -774,9 +789,10 @@ def do_rg32_test(testInput):
 
 ##### END BSD LICENSED CODE ##############################################
 
-from CvPythonExtensions import *
-import CvUtil
-import CvMapGeneratorUtil 
+if __name__ != "__main__":
+    from CvPythonExtensions import *
+    import CvUtil
+    import CvMapGeneratorUtil 
 
 from array import array
 from random import random,randint,seed
@@ -6693,3 +6709,11 @@ def addGoodies():
                 elif(sm.terrainMap[i] != mc.SNOW):
                     if(PRand.randint(0,999) < normalHutChance):
                         checkHut(hutSeen, x, y, distance)
+
+if __name__ == "__main__":
+    import sys
+    if(len(sys.argv) > 2 and sys.argv[1] == '--test'):
+        do_rg32_test(sys.argv[2])
+    else:
+        print("Usage: python2 ArabianTotestra.py --test {input}")
+

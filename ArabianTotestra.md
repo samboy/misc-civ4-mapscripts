@@ -153,3 +153,18 @@ given map seed will have the same hut locations.
 
 "Many huts everywhere" has many goody huts all over the map.  A given map
 seed will have the same hut locations.
+
+# Running stand alone
+The script can also be run stand alone.  This will not generate maps;
+if map generation in standalone mode is desired, use old/TotestraRG32.py
+instead.  Instead, standalone mode tests the random number generator to
+ensure it is generating correct RadioGatun[32] sums.
+
+To run it standalone:
+
+```
+python2 ArabianTotestra.py --test foo
+```
+
+Replace foo above with the desired string to generate a RadioGatun[32]
+sum of.
