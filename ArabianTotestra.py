@@ -1,10 +1,10 @@
 ##############################################################################
 ## Arabian Totestra
-## Version: 2021-12-25 (Merry Christmas!)
+## Version: 2022-01-01 (Happy New Year!)
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
-## Hence, the map will use one of 44 possible fixed seeds to generate the
-## world.  It's possible to select one of the seeds below randomly,
-## or to specify the fixed seed 36933 (medium to large main island)
+## Hence, the map will use one of about 180 possible fixed seeds to 
+## generate the world.  It's possible to select one of the seeds 
+## below randomly, or to specify one of three fixed seeds.
 ## The worlds have been selected because they generate maps which are 
 ## suitable for an Arabian adventure (main land in middle latitudes, has no
 ## snow and little tundra)
