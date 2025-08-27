@@ -16,6 +16,13 @@ want to see Perfect World generated maps without starting Civilization IV,
 or for people who want to automate making a large number of maps (useful
 for finding seeds which make for really nice worlds).
 
+There are two automated tools for finding maps suitable for desert/Arab
+play:
+
+- make.tally.sh; this generates a file named `tally` (slowly; one map per
+  second or two)
+- find.good.land.sh; this lists suitable desert/Arab maps in the `tally` file  
+
 To run it stand alone, be sure to be at a command line, have Python2
 installed, then type in something like: `python TotestraRG32.py 5`
 
