@@ -2769,9 +2769,8 @@ class SmallMaps :
 
         self.createPlotMap()
         self.printPlotMap()
-        if not IsStandAlone:
-            self.createTerrainMap()
-            continentMap.generateContinentMap()
+        self.createTerrainMap()
+        continentMap.generateContinentMap()
 
     def fillInLakes(self):
         #smaller lakes need to be filled in again because the map
@@ -6649,6 +6648,10 @@ if __name__ == "__main__":
         mc.totestra = int(arg1)
     except:
         mc.totestra = 8939185639133313 # Caulixtla
+    if(mc.totestra):
+        mySeed = str(mc.totestra)
+    else:
+        mySeed = "Unknown"
     mc.initialize()
     # This stuff has to be hard coded here
     mc.width = 144
@@ -6696,6 +6699,9 @@ if __name__ == "__main__":
 
     mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
     mc.patience = 2
+    mc.AllowNewWorld = True
+    mc.ShareContinent = True
+    mc.ShareContinentIndex = 1
     PRand.seed()
     hm.performTectonics()
     hm.generateHeightMap()
@@ -6710,3 +6716,58 @@ if __name__ == "__main__":
 ##    hm.printHeightMap()
     cm.createClimateMaps()
     sm.initialize()
+    rm.generateRiverMap()
+
+    # Scan the map and give the user a summary of the map
+    floodPlainCount = 0
+    tally = {}
+    bigAM = Areamap(mc.width,mc.height,True,True)
+    bigAM.defineAreas(isNonCoastWaterMatch)
+    maxLandAmount = -1
+    maxLandArea = -1
+    for x in range(mc.width):
+        for y in range(mc.height):
+            i = (y * mc.width) + x
+            #area = continentMap.areaMap.areaMap[i]
+            area = bigAM.areaMap[i]
+            if not area in tally:
+                tally[area] = {
+                    "Land": 0,
+                    "Desert": 0,
+                    "floodPlains": 0,
+                    "Tundra": 0,
+                    "Snow": 0,
+                    "MinY": y,
+                    "MaxY": y
+                }
+            if tally[area]["MinY"] > y:
+                tally[area]["MinY"] = y
+            if tally[area]["MaxY"] < y:
+                tally[area]["MaxY"] = y
+            if sm.terrainMap[i] != mc.OCEAN and sm.terrainMap[i] != mc.COAST:
+                tally[area]["Land"] += 1
+                if(tally[area]["Land"] > maxLandAmount):
+                    maxLandAmount = tally[area]["Land"]
+                    maxLandArea = area
+            if sm.terrainMap[i] == mc.DESERT:
+                tally[area]["Desert"] += 1
+                if rm.riverMap[i] != 5:
+                    floodPlainCount += 1
+                    tally[area]["floodPlains"] += 1
+            if sm.terrainMap[i] == mc.TUNDRA:
+                tally[area]["Tundra"] += 1
+            if sm.terrainMap[i] == mc.SNOW:
+                tally[area]["Snow"] += 1
+    print("Flood plain count: " + str(floodPlainCount))
+    for area in tally:
+        print("Tally for continent " + str(area) + ": " +
+              str(tally[area]))
+    print("Biggest is " + str(maxLandArea) + 
+          " with :"+str(tally[maxLandArea]) + " seed " + str(mySeed))
+    if(maxLandArea >= 0 and tally[maxLandArea]["Tundra"] < 10 and
+       tally[maxLandArea]["floodPlains"] > 30 and
+       tally[maxLandArea]["Desert"] > 500 and
+       tally[maxLandArea]["Land"] > 1000):
+        print("Nice land found seed " + mySeed)
+
+
