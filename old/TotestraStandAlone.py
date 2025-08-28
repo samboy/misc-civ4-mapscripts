@@ -6671,7 +6671,7 @@ if __name__ == "__main__":
     mc.iceChance = 1.0
     mc.iceRange = 4
     mc.iceSlope = 0.66
-    if len(sys.argv) > 2: # Arid map
+    if len(sys.argv) > 2 or mc.totestra == 8939185639133313: # Arid map
         mc.DesertPercent = 0.40
         mc.PlainsPercent = 0.82
         mc.iceSlope = 0.33 # Less ice 
