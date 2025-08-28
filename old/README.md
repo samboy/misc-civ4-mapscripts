@@ -20,8 +20,9 @@ There are two automated tools for finding maps suitable for desert/Arab
 play:
 
 - make.tally.sh; this generates a file named `tally` (slowly; one map per
-  second or two)
-- find.good.land.sh; this lists suitable desert/Arab maps in the `tally` file  
+  few seconds)
+- find.good.land.sh; this lists suitable desert/Arab maps in the `tally` file;
+  about one in 300 maps are suitable.
 
 To run it stand alone, be sure to be at a command line, have Python2
 installed, then type in something like: `python TotestraRG32.py 5`
