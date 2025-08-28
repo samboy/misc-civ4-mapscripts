@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ ! -e tally ] ; then
-	xzcat tally.txt.xz | tr -d '\015' > tally
+	xzcat tallies/*txt.xz | tr -d '\015' > tally
 fi
 
 MAXTUNDRA=10
