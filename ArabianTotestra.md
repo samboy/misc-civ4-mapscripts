@@ -106,7 +106,7 @@ a start in a Jungle, as long as precisely nine players are selected (the
 number of tribes in "Legends of Ancient Arabia").  If the map does not
 have nine players, the player may not start in a jungle.  This start
 is the Omani start in the 2012 version of the Arabian Caulixtla map,
-and the Hijazi start in the 2021 second revision of the Arabian Caulixtla
+and the Lakhmid start in the 2021 second revision of the Arabian Caulixtla
 map.
 
 "Fixed seed (Grassland start)" is a different map than the "Fixed seed
@@ -168,3 +168,7 @@ python2 ArabianTotestra.py --test foo
 
 Replace foo above with the desired string to generate a RadioGatun[32]
 sum of.
+
+#Finding good desert maps
+In the folder `old/` are tools for finding good desert maps.
+
