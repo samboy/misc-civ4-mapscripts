@@ -5232,9 +5232,6 @@ class StartingPlotFinder :
         if debugOut: print "****************************************************************"
             
         return food,value
-    # This is the routine which makes a given city have more resources
-    # Used for player handicap bonuses
-    # Number of bonuses: 1-7, selected (1 is "A little", etc.)
     def boostCityPlotValue(self,x,y,bonuses,isCoastalCity):
         mapGen = CyMapGenerator()
         food,value = self.getCityPotentialValue(x,y)
@@ -5243,57 +5240,6 @@ class StartingPlotFinder :
         gc = CyGlobalContext()
         gameMap = CyMap()
         game = gc.getGame()
-
-        numBonuses = gc.getNumBonusInfos()
-	# If possible, add Legends of Ancient Arabia specific bonuses
-        bonusCount = 0
-        for desiredBonus in ['BONUS_CORN', 'BONUS_PIG', 'BONUS_COPPER',
-               'BONUS_HORSE', 'BONUS_IRON', 'BONUS_PIG']:
-           for i in range(numBonuses):
-              bonusInfo = gc.getBonusInfo(bonusEnum)
-              bonusNameString = bonusInfo.getType()
-              if(bonusNameString == desiredBonus):
-                 for loopStop in range(128):
-                    whichPlot = PRrand.randint(0,gc.getNUM_CITY_PLOTS())
-                    try:
-                       plot = plotCity(x,y,whichPlot)
-                    except:
-                       continue
-                    featureEnum = plot.getFeatureType()
-                    # No bonus on city
-                    if plot.getX() == x and plot.getY() == y:
-                        continue
-                    # These are land bonuses
-                    if plot.isWater():
-                        continue
-                    # I think this makes sure we can get there w/o navigation
-                    if gameMap.plot(x,y).getArea() != plot.getArea():
-                        continue
-                    # Make sure bonus not already placed here
-                    if(plot.getBonusType(TeamTypes.NO_TEAM) 
-                       != BonusTypes.NO_BONUS):
-                        continue
-                    # Save feature
-                    if featureEnum != FeatureTypes.NO_FEATURE:
-                       featureVariety = plot.getFeatureVariety()
-                       plot.setFeatureType(FeatureTypes.NO_FEATURE,-1)
-                    # Place resource
-                    plot.setBonusType(bonusEnum)
-                    #restore the feature if possible
-                    if featureEnum != FeatureTypes.NO_FEATURE:
-                       bonusInfo = (
-                         gc.getBonusInfo(plot.getBonusType(TeamTypes.NO_TEAM)))
-                       if(bonusInfo == None or 
-                            bonusInfo.isFeature(featureEnum)):
-                          plot.setFeatureType(featureEnum,featureVariety) 
-                    # Make sure we don't place too many bonus resources
-                    bonusCount += 1
-                    if bonusCount >= bonuses:
-                       if debugOut: print "Placed all bonuses."
-                       if debugOut: print "****************************************************"
-                       return
-                    break
-
         #Shuffle the bonus order so that different cities have different preferences
         #for bonuses
         bonusList = list()
@@ -5309,6 +5255,8 @@ class StartingPlotFinder :
         if len(shuffledBonuses) != numBonuses:
             raise ValueError, "Bad bonus shuffle. Learn 2 shuffle."
 
+        bonusCount = 0
+        
         #Do this process in 3 passes for each yield type, then an extra production pass
         yields = []
         yields.append(YieldTypes.YIELD_PRODUCTION)
@@ -6763,144 +6711,9 @@ def addGoodies():
                         checkHut(hutSeen, x, y, distance)
 
 if __name__ == "__main__":
-    IsStandAlone = True
     import sys
-    mc.UsePythonRandom = True
-    if len(sys.argv) > 1:
-        if(len(sys.argv) > 2 and sys.argv[1] == '--test'):
-            do_rg32_test(sys.argv[2])
-            sys.exit(0)
-        elif(len(sys.argv) > 2):
-            print("Usage: python2 ArabianTotestra.py --test {input}")
-            sys.exit(0)
-        mc.totestra = int(sys.argv[1])
-    if(mc.totestra):
-        mySeed = str(mc.totestra)
+    if(len(sys.argv) > 2 and sys.argv[1] == '--test'):
+        do_rg32_test(sys.argv[2])
     else:
         print("Usage: python2 ArabianTotestra.py --test {input}")
-        sys.exit(0)
-    mc.initialize()
-    # This stuff has to be hard coded here
-    mc.width = 144
-    mc.height = 96
-    mc.landPercent = 0.29
-    mc.tropicsLatitude = 23
-    mc.PeakPercent = 0.12
-    mc.HillPercent = 0.35
-    mc.HillChanceAtOne = .50
-    mc.PeakChanceAtOne = .27
-    mc.DesertPercent = 0.20
-    mc.PlainsPercent = 0.42
-    mc.SnowTemp = .30
-    mc.TundraTemp = .35
-    mc.ForestTemp = .50
-    mc.JungleTemp = .7
-    mc.iceChance = 1.0
-    mc.iceRange = 4
-    mc.iceSlope = 0.66
-    if len(sys.argv) <= 2: # Arid map
-        mc.DesertPercent = 0.40
-        mc.PlainsPercent = 0.82
-        mc.iceSlope = 0.33 # Less ice
-    mc.AllowPangeas = False
-    mc.patience = 2
-    mc.hmMaxGrain = 2 ** (2 + mc.patience)
-    mc.hmWidth = (mc.hmMaxGrain * 3 * 3)
-    mc.hmHeight =  (mc.hmMaxGrain * 2 * 3) + 1
-    mc.WrapX = True
-    mc.WrapY = False
-    mc.BonusBonus = 1.5 # Full of resources
-    mc.spreadResources = True # Full of resources
-    mc.noRotate = 1 # 1 to be compatible with T2RG32.py
-    mc.smoothPeaks = 1
-    mc.northWaterBand = 10
-    mc.southWaterBand = 10
-    mc.eastWaterBand = 0
-    mc.westWaterBand = 0
-    mc.northCrop = 10
-    mc.southCrop = 10
-    mc.eastCrop = 0
-    mc.westCrop = 0
-    mc.maxMapWidth = int(mc.hmWidth / 4)
-    mc.maxMapHeight = int(mc.hmHeight / 4)
-    if(mc.width > mc.hmWidth):
-        mc.width = mc.hmWidth
-    if(mc.height > mc.hmHeight):
-        mc.height = mc.hmHeight
-    if(mc.patience == 1):
-        mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0024)
-    else: # Patience is assumed to be 2
-        mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0016)
-
-    mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
-    mc.AllowNewWorld = True
-    mc.ShareContinent = True
-    mc.ShareContinentIndex = 1
-    PRand.seed()
-    hm.performTectonics()
-    hm.generateHeightMap()
-    hm.combineMaps()
-    hm.calculateSeaLevel()
-    hm.fillInLakes()
-    pb.breakPangaeas()
-##    hm.Erode()
-##    hm.printHeightMap()
-    hm.rotateMap()
-    hm.addWaterBands()
-##    hm.printHeightMap()
-    cm.createClimateMaps()
-    sm.initialize()
-    rm.generateRiverMap()
-
-    # Scan the map and give the user a summary of the map
-    floodPlainCount = 0
-    tally = {}
-    bigAM = Areamap(mc.width,mc.height,True,True)
-    bigAM.defineAreas(isNonCoastWaterMatch)
-    maxLandAmount = -1
-    maxLandArea = -1
-    for x in range(mc.width):
-        for y in range(mc.height):
-            i = (y * mc.width) + x
-            #area = continentMap.areaMap.areaMap[i]
-            area = bigAM.areaMap[i]
-            if not area in tally:
-                tally[area] = {
-                    "Land": 0,
-                    "Desert": 0,
-                    "floodPlains": 0,
-                    "Tundra": 0,
-                    "Snow": 0,
-                    "MinY": y,
-                    "MaxY": y
-                }
-            if tally[area]["MinY"] > y:
-                tally[area]["MinY"] = y
-            if tally[area]["MaxY"] < y:
-                tally[area]["MaxY"] = y
-            if sm.terrainMap[i] != mc.OCEAN and sm.terrainMap[i] != mc.COAST:
-                tally[area]["Land"] += 1
-                if(tally[area]["Land"] > maxLandAmount):
-                    maxLandAmount = tally[area]["Land"]
-                    maxLandArea = area
-            if sm.terrainMap[i] == mc.DESERT:
-                tally[area]["Desert"] += 1
-                if rm.riverMap[i] != 5:
-                    floodPlainCount += 1
-                    tally[area]["floodPlains"] += 1
-            if sm.terrainMap[i] == mc.TUNDRA:
-                tally[area]["Tundra"] += 1
-            if sm.terrainMap[i] == mc.SNOW:
-                tally[area]["Snow"] += 1
-    print("Flood plain count: " + str(floodPlainCount))
-    for area in tally:
-        print("Tally for continent " + str(area) + ": " +
-              str(tally[area]))
-    print("Biggest is " + str(maxLandArea) + 
-          " with :"+str(tally[maxLandArea]) + " seed " + str(mySeed))
-    if(maxLandArea >= 0 and tally[maxLandArea]["Tundra"] < 10 and
-       tally[maxLandArea]["floodPlains"] > 30 and
-       tally[maxLandArea]["Desert"] > 500 and
-       tally[maxLandArea]["Land"] > 1000):
-        print("Nice land found seed " + mySeed)
 
