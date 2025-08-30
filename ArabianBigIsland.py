@@ -5632,7 +5632,7 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == OPTION_IslandFactor: # Number continents
             return 4
 	elif optionID == OPTION_Huts:
-	    return 2
+	    return 6
         elif optionID == OPTION_Patience: # Speed/quality tradeoff
 	    # Slow but good disabled: Causes infinite loops
             return 2
@@ -5692,9 +5692,17 @@ def getCustomMapOptionDescAt(argsList):
             return "Lots (slow)"
     elif optionID == OPTION_Huts:
         if selectionID == 0:
-            return "Normal"
+            return "Civ4 default"
         elif selectionID == 1:
-            return "None"
+            return "No huts"
+        elif selectionID == 2:
+            return "Fixed huts per seed"
+        elif selectionID == 3:
+            return "Huts are rare"
+        elif selectionID == 4:
+            return "Many desert huts"
+        elif selectionID == 5:
+            return "Many huts everywhere"
     elif optionID == OPTION_Patience:
         if selectionID == -1:
             return "Not very (Faster mapgen)"
@@ -6462,10 +6470,89 @@ def beforeInit():
     print "Initializing Custom Map Options"
     mc.initInGameOptions()
     mc.initialize()
+
+# Add huts to the map
+# Use Civ4-specific code to place the hut
+def placeHut(x,y):
+    cigc = CyGlobalContext()
+    gMap = CyMap()
+    nativeHut = cigc.getInfoTypeForString("IMPROVEMENT_GOODY_HUT")
+    hereGame = gMap.plot(x,y)
+    hereGame.setImprovementType(nativeHut)
+
+# Check to see if we can place a hut on a given square
+def checkHut(hutSeen, x, y, distance):
+    if hutSeen[(y * mc.width) + x] != 0:
+        return False
+    # If we can place a hut, make sure we can not place any future huts
+    # within two squares of this hut
+    lo = -2
+    hi = 3
+    if distance == 1:
+        lo = -1
+        hi = 2
+    elif distance == 3:
+        lo = -3
+        hi = 4
+    for xx in range(lo,hi):
+        if x + xx >= 0 and x + xx < mc.width:
+            for yy in range(lo,hi):
+                if y + yy >= 0 and y + yy < mc.height:
+                    hutSeen[((y + yy) * mc.width) + (x + xx)] = 1 # No hut here
+    hutSeen[(y * mc.width) + x] = 2 # Physical hut
+    placeHut(x,y)
+    return True
+
 def addGoodies(): # We need to be able to control whether the map has huts
-    # Got info from http://forums.civfanatics.com/showthread.php?t=149766
-    if(mc.nohuts != 1):
-	CyPythonMgr().allowDefaultImpl()
+    # Got some info from http://forums.civfanatics.com/showthread.php?t=149766
+    gc = CyGlobalContext()
+    mmap = gc.getMap()
+    hutPlacementRules = mc.nohuts
+
+    # Note that these constants change below, these are only default values
+    # The chance out of 1000 that we have a goody hut on a desert
+    # (either flat or hill) square
+    desertHutChance = 37 # 3.7 percent
+    # The chance out of 1000 we will have a goody hut on a non-desert
+    # non-ice land (flat/hill) square
+    normalHutChance = 25 # 2.5 percent
+    # Minimum distance between huts, divided by 2.  1 means one hut
+    # per 3x3 square; 2 means 1 hut/5x5; 3 is 1 hut/7x7
+    distance = 2
+
+    if hutPlacementRules == 0: # Civ4 default behavior (huts move each time)
+        CyPythonMgr().allowDefaultImpl()
+        return
+    elif hutPlacementRules == 1: # No huts
+        return
+    # Note that rare/many desert/many everywhere use fixed per-seed huts
+    elif hutPlacementRules == 3: # Rare huts
+        desertHutChance = 7 # 0.7 percent
+        normalHutChance = 5 # 0.5 percent
+        distance = 3
+    elif hutPlacementRules == 4: # Many desert huts
+        desertHutChance = 105 # 10.5 percent
+        normalHutChance = 25 # 2.5 percent (same as above)
+        distance = 1
+    elif hutPlacementRules == 5: # Many huts everywhere
+        desertHutChance = 105 # 10.5 percent
+        normalHutChance = 75 # 7.5 percent 
+        distance = 1
+
+    # Fixed per-seed huts (each map seed always makes the same huts)
+
+    hutSeen = [0 for i in range(mc.width * mc.height)]
+    for x in range(mc.width):
+        for y in range(mc.height):
+            i = (y * mc.width) + x
+            if(sm.plotMap[i] == mc.HILLS or sm.plotMap[i] == mc.LAND):
+                # Different terrains have different hut chances
+                if(sm.terrainMap[i] == mc.DESERT):
+                    if(PRand.randint(0,999) < desertHutChance):
+                        checkHut(hutSeen, x, y, distance)
+                elif(sm.terrainMap[i] != mc.SNOW):
+                    if(PRand.randint(0,999) < normalHutChance):
+                        checkHut(hutSeen, x, y, distance)
 
 ##mc.initialize()
 ##PRand.seed()
