@@ -20,7 +20,7 @@ tens of thousands of possible maps, and the script will randomly
 choose a seed that generates an Arabian map (about 1 in 300 maps
 are suitable for Arabian play). See ArabianTotestra.md for more
 information, and the scripts to find suitable maps are in the
-`old/` folder. This map script is included with (LoAA).
+`old/` folder. This map script is included with LoAA.
 
 # SandBar.py
 
