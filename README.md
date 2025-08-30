@@ -5,6 +5,12 @@ the years.
 The mainline version of Totestra, my most popular mapscript, is here: 
 https://github.com/samboy/Totestra-mapscript/
 
+# ArabianBigIsland.py
+
+This is a perfect world variant tweaked to make maps suitable for
+Legends of Ancient Arabia (LoAA), and is one of the map scripts
+included with LoAA.  This is similar to SandBar and BigIsland.
+
 # SandBar.py
 
 I felt that Legends of Ancient Arabia (LoAA), as well as the other Arabian
