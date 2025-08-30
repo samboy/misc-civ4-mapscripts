@@ -185,6 +185,7 @@ sum of.
 # This is a list of bonuses we give the player in handicap mode for
 # Legends of Ancient Arabia. Corn is camels, which we need for the player
 # because of the LOAA economic model.
+# Please note that these resources are ones which are placed on land
 globalGameBonusList = ['BONUS_CORN', 'BONUS_PIG', 'BONUS_COPPER',
                'BONUS_HORSE', 'BONUS_IRON', 'BONUS_PIG', 'BONUS_PIG', 
                'BONUS_PIG', 'BONUS_PIG', 'BONUS_PIG', 'BONUS_PIG', 
