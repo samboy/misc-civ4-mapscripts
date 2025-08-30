@@ -277,6 +277,14 @@ ALLOW_EXTREME_RATIOS = 0
 # HAVE A SERVICE TAG.
 ADD_SERVICE_TAG = 1
 
+# This is a list of bonuses we give the player in handicap mode for
+# Legends of Ancient Arabia. Corn is camels, which we need for the player
+# because of the LOAA economic model.
+globalGameBonusList = ['BONUS_CORN', 'BONUS_PIG', 'BONUS_COPPER',
+               'BONUS_HORSE', 'BONUS_IRON', 'BONUS_PIG', 'BONUS_PIG', 
+               'BONUS_PIG', 'BONUS_PIG', 'BONUS_PIG', 'BONUS_PIG', 
+               'BONUS_PIG']
+
 # Quick and dirty 2-bit "party" of hex number
 def a91a15d7(x):
         # a and b are 2-bit inputs for the s-box
@@ -4932,6 +4940,67 @@ class StartingPlotFinder :
         if debugOut: print "****************************************************************"
             
         return food,value
+
+    # This is the routine which makes a given city have more resources
+    # Used for player handicap bonuses
+    # Number of bonuses: 1-7, selected (1 is "A little", etc.)
+    # The first routine gives the player specific bonuses
+    # gameList is a list like globalGameBonusList (see top of this file)
+    def gameSpecificBonuses(self,x,y,count,isCoastalCity,gameList):
+        debugOut = False
+        gc = CyGlobalContext()
+        numBonuses = gc.getNumBonusInfos()
+        bonusCount = 0
+        game = gc.getGame()
+        gameMap = CyMap()
+	# If possible, add Game specific bonuses
+        for desiredBonus in gameList:
+           for bonusNumber in range(numBonuses):
+              bonusInfo = gc.getBonusInfo(bonusNumber)
+              bonusNameString = bonusInfo.getType()
+              if(bonusNameString == desiredBonus):
+                 for loopStop in range(128):
+                    whichPlot = PRand.randint(0,gc.getNUM_CITY_PLOTS())
+                    try:
+                       plot = plotCity(x,y,whichPlot)
+                    except:
+                       continue
+                    featureEnum = plot.getFeatureType()
+                    # No bonus on city
+                    if plot.getX() == x and plot.getY() == y:
+                        continue
+                    # These are land bonuses
+                    if plot.isWater():
+                        continue
+                    # I think this makes sure we can get there w/o navigation
+                    if gameMap.plot(x,y).getArea() != plot.getArea():
+                        continue
+                    # Make sure bonus not already placed here
+                    if(plot.getBonusType(TeamTypes.NO_TEAM) 
+                       != BonusTypes.NO_BONUS):
+                        continue
+                    # Save feature
+                    if featureEnum != FeatureTypes.NO_FEATURE:
+                       featureVariety = plot.getFeatureVariety()
+                       plot.setFeatureType(FeatureTypes.NO_FEATURE,-1)
+                    # Place resource
+                    plot.setBonusType(bonusNumber)
+                    # Restore the feature if possible
+                    if featureEnum != FeatureTypes.NO_FEATURE:
+                       bonusInfo = (
+                         gc.getBonusInfo(plot.getBonusType(TeamTypes.NO_TEAM)))
+                       if(bonusInfo == None or 
+                            bonusInfo.isFeature(featureEnum)):
+                          plot.setFeatureType(featureEnum,featureVariety) 
+                    # Make sure we don't place too many bonus resources
+                    bonusCount += 1
+                    if bonusCount >= count:
+                       if debugOut: print "Placed all bonuses."
+                       if debugOut: print "****************************************************"
+                       return bonusCount
+                    break
+        return bonusCount
+
     def boostCityPlotValue(self,x,y,bonuses,isCoastalCity):
         mapGen = CyMapGenerator()
         food,value = self.getCityPotentialValue(x,y)
@@ -5127,39 +5196,39 @@ class StartingPlotFinder :
                 if eHandicap == gc.getInfoTypeForString("HANDICAP_SETTLER"):
                     if mc.SettlerBonus > 0:
                         print "Human player at Settler difficulty, adding %d resources" % mc.SettlerBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.SettlerBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.SettlerBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_CHIEFTAIN"):       
                     if mc.ChieftainBonus > 0:
                         print "Human player at Chieftain difficulty, adding %d resources" % mc.ChieftainBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.ChieftainBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.ChieftainBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_WARLORD"):       
                     if mc.WarlordBonus > 0:
                         print "Human player at Warlord difficulty, adding %d resources" % mc.WarlordBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.WarlordBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.WarlordBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_NOBLE"):       
                     if mc.NobleBonus > 0:
                         print "Human player at Noble difficulty, adding %d resources" % mc.NobleBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.NobleBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.NobleBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_PRINCE"):       
                     if mc.PrinceBonus > 0:
                         print "Human player at Prince difficulty, adding %d resources" % mc.PrinceBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.PrinceBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.PrinceBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_MONARCH"):       
                     if mc.MonarchBonus > 0:
                         print "Human player at Monarch difficulty, adding %d resources" % mc.MonarchBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.MonarchBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.MonarchBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_EMPEROR"):       
                     if mc.EmperorBonus > 0:
                         print "Human player at Emperor difficulty, adding %d resources" % mc.EmperorBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.EmperorBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.EmperorBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_IMMORTAL"):       
                     if mc.ImmortalBonus > 0:
                         print "Human player at Immortal difficulty, adding %d resources" % mc.ImmortalBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.ImmortalBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.ImmortalBonus,sPlot.isCoast(),globalGameBonusList)
                 elif eHandicap ==  gc.getInfoTypeForString("HANDICAP_DEITY"):       
                     if mc.DeityBonus > 0:
                         print "Human player at Deity Difficulty, adding %d resources" % mc.DeityBonus
-                        self.boostCityPlotValue(startPlot.getX(),startPlot.getY(),mc.DeityBonus,sPlot.isCoast())
+                        self.gameSpecificBonuses(startPlot.getX(),startPlot.getY(),mc.DeityBonus,sPlot.isCoast(),globalGameBonusList)
                     
  
 #Global access
