@@ -11,6 +11,17 @@ This is a perfect world variant tweaked to make maps suitable for
 Legends of Ancient Arabia (LoAA), and is one of the map scripts
 included with LoAA.  This is similar to SandBar and BigIsland.
 
+# ArabianTotestra.py
+
+This is a version of Totestra tweaked to choose maps suitable for
+Arabian adventures. While it makes the same maps stock Totestra
+makes (with the RG32 random number generator), I have calculated
+tens of thousands of possible maps, and the script will randomly
+choose a seed that generates an Arabian map (about 1 in 300 maps
+are suitable for Arabian play). See ArabianTotestra.md for more
+information, and the scripts to find suitable maps are in the
+`old/` folder. This map script is included with (LoAA).
+
 # SandBar.py
 
 I felt that Legends of Ancient Arabia (LoAA), as well as the other Arabian
