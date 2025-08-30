@@ -5934,7 +5934,7 @@ def getNumCustomMapOptionValues(argsList):
             return 3
         elif optionID == 1:
             return 9
-        elif optionID == 2:
+        elif optionID == 2: # Player bonus resource amount
             return 8
         elif optionID == 3:
             return 6
