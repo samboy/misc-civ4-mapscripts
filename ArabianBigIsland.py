@@ -5639,7 +5639,7 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == OPTION_MapRatio: # Map ratio
 	    return 2 
         elif optionID == OPTION_Handicap:
-	    return 4
+	    return 8
 	elif optionID == OPTION_MapResources:
 	    return 2
 	elif optionID == OPTION_NoRotate:
@@ -5710,14 +5710,22 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 0:
             return "3:2 (Earth-like)"
     elif optionID == OPTION_Handicap:
-	if selectionID == 0:
-	    return "None (Player equal to AI)"
-	if selectionID == 1:
-	    return "A little"
-	if selectionID == 2:
-	    return "Some"
-	if selectionID == 3:
-	    return "Lots (Easier for player)"
+        if selectionID == 0:
+            return "None (Player equal to AI)"
+        elif selectionID == 1:
+            return "A little"
+        elif selectionID == 2:
+            return "Some"
+        elif selectionID == 3:
+            return "Lots (Easier for player)"
+        elif selectionID == 4:
+            return "Tons (even easier)"
+        elif selectionID == 5:
+            return "Mega"
+        elif selectionID == 6:
+            return "Super mega"
+        elif selectionID == 7:
+            return "Insane (Much easier)"
     elif optionID == OPTION_MapResources:
 	if selectionID == 2:
 	    return "Like Perfect World"
