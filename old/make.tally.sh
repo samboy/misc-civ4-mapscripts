@@ -1,5 +1,10 @@
 #!/bin/sh
 
+echo You may need to use ctrl+Z to stop this process
+
+#COMMAND=TotestraRG32.py
+COMMAND=TotestraRG32Big.py
+
 A="$1"
 
 if [ -z "$A" ] ; then
@@ -8,6 +13,6 @@ fi
 
 touch tally
 while : ; do
-	python2 TotestraRG32.py $A | grep 'Biggest is' >> tally
+	python2 $COMMAND $A | grep 'Biggest is' >> tally
 	A=`expr $A + 1`
 done
