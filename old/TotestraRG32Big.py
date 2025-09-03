@@ -6815,6 +6815,10 @@ if __name__ == "__main__":
             do_rg32_test(sys.argv[2])
             sys.exit(0)
         mc.totestra = int(sys.argv[1])
+    else:
+        print("Usage: ./TotestraRG32Big.py --test {RG32 string} for RG32")
+        print("Also: ./TotestraRG32Big.py {numeric seed} to make map")
+        sys.exit(0)
     if(mc.totestra):
         mySeed = ("0x" +
             ("%04x" % ((mc.totestra >> 16) & 0xffff)) + "_" +
