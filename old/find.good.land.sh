@@ -3,6 +3,13 @@ if [ ! -e tally ] ; then
 	xzcat tallies/*txt.xz | tr -d '\015' > tally
 fi
 
+# 144x96 thresholds
+#MIN=20
+#MAX=78
+# 192x128 thresholds
+MIN=26 
+MAX=104
+
 MAXTUNDRA=10
 if [ -n "$1" ] ; then
   MAXTUNDRA="$1"
@@ -19,6 +26,6 @@ cat $FILENAME | tr -d , | tr -d '}' | awk '
 	   #land > 1400 && 
 	   percent > .4 && 
 	   tundra < '$MAXTUNDRA' && 
-           min > 20 && max < 78){
+           min > '$MIN' && max < '$MAX'){
 		print $0 " desert " percent "%"}
 	}'
