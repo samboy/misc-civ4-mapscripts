@@ -1,14 +1,17 @@
 #!/bin/sh
-if [ ! -e tally ] ; then
-	xzcat tallies/*txt.xz | tr -d '\015' > tally
-fi
 
-# 144x96 thresholds
+# 144x96 values
+#SIZE=144x96
 #MIN=20
 #MAX=78
-# 192x128 thresholds
+# 192x128 values
+SIZE=192x128
 MIN=26 
 MAX=104
+
+if [ ! -e tally ] ; then
+	xzcat tallies/${SIZE}/*txt.xz | tr -d '\015' > tally
+fi
 
 MAXTUNDRA=10
 if [ -n "$1" ] ; then
