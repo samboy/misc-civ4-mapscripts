@@ -7,4 +7,13 @@ if [ ! -e tally ] ; then
 	xzcat tallies/${SIZE}/*txt.xz | tr -d '\015' > tally
 fi
 
-grep -F '+' tally
+grep -F '+' tally | awk '{print $NF}' | awk -F, '{
+	seed=$1
+        for(a=2;a<NF;a++) {
+		islandSize = $a
+		sub(/+/,"",islandSize)
+		if($a ~ /+/) {
+			print "('\''" seed "'\''," islandSize "," a - 1 "),"
+		}
+	}
+}'
