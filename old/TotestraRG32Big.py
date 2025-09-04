@@ -6938,13 +6938,35 @@ if __name__ == "__main__":
                 tally[area]["Tundra"] += 1
             if sm.terrainMap[i] == mc.SNOW:
                 tally[area]["Snow"] += 1
-    print("Flood plain count: " + str(floodPlainCount))
-    IslandList = ""
     for area in tally:
+        if(tally[area]["Land"] > 0):
+            tally[area]["DesertPercent"] = (tally[area]["Desert"] * 100 / 
+                                            tally[area]["Land"]) 
+        else:
+            tally[area]["DesertPercent"] = 0
+        if(tally[area]["Land"] >= 1000 and 
+           tally[area]["DesertPercent"] >= 40 and
+           tally[area]["Snow"] == 0 and
+           tally[area]["Tundra"] <= 10 and
+           tally[area]["MinY"] > 26 and # 20 for 144x96 26 for 192x128       
+           tally[area]["MaxY"] < 104 # 78 for 144x96 104 for 192x128
+           ):
+            tally[area]["IsArabian"] = True
+        else:
+            tally[area]["IsArabian"] = False
+    print("Flood plain count: " + str(floodPlainCount))
+    IslandList = str(mySeed) + ","
+    for area in sorted(tally,reverse=True,key=lambda z: tally[z]["Land"]):
         print("Tally for continent " + str(area) + ": " +
               str(tally[area]))
         if(tally[area]["Land"] > 0):
-            IslandList += str(tally[area]["Land"]) + " "
+            IslandList += str(tally[area]["Land"]) 
+        if(tally[area]["Land"] < 1000 and tally[area]["Land"] > 0):
+            IslandList += ","
+        elif(tally[area]["IsArabian"]):
+            IslandList += "+,"
+        elif(tally[area]["Land"] > 0):
+            IslandList += "-,"
     print("Biggest is " + str(maxLandArea) + 
           " with :"+str(tally[maxLandArea]) + " seed " + str(mySeed) +
           " Islands: " + str(IslandList))
