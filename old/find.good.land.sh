@@ -30,5 +30,5 @@ cat $FILENAME | tr -d , | tr -d '}' | awk '
 	   percent > .4 && 
 	   tundra < '$MAXTUNDRA' && 
            min > '$MIN' && max < '$MAX'){
-		print $0 " desert " percent "%"}
+		print $0 " desert " percent * 100 "%"}
 	}'
