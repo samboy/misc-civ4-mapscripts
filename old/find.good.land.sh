@@ -13,7 +13,7 @@ grep -F '+' tally | awk '{print $NF}' | awk -F, '{
 		islandSize = $a
 		sub(/+/,"",islandSize)
 		if($a ~ /+/) {
-			print "('\''" seed "'\''," islandSize "," a - 1 "),"
+			print "(" islandSize ", '\''" seed "'\'', " a - 1 "),"
 		}
 	}
 }'
