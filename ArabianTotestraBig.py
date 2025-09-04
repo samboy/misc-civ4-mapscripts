@@ -165,8 +165,8 @@ globalGameBonusList = ['BONUS_CORN', 'BONUS_PIG', 'BONUS_COPPER',
                'BONUS_PIG']
 
 # Here is a list of seeds for a possible Arabian adventure.  Each seed is
-# in (size, seed) format.
-seedList = [(1596, '0x0000_0076')]
+# in (size, seed, islandRank) format.
+seedList = [(1596, '0x0000_0076', 1)]
 
 ## Changes from PerfectWorld 2.06 (*not* 2.06f)
 ## 1) Ability to select climate
@@ -1060,11 +1060,11 @@ class MapConstants :
             localSeedList = []
             if selectionID == 0: # Large (Epic or Marathon)
                 for a in range(len(seedList)):
-                    if seedList[a][0] >= 1400:
+                    if seedList[a][0] >= 1400 and seedList[a][2] == 1:
                         localSeedList.append(seedList[a])
             elif selectionID == 1: # Small (Normal or Epic)
                 for a in range(len(seedList)):
-                    if seedList[a][0] < 1400:
+                    if seedList[a][0] < 1400 and seedList[a][2] == 1:
                         localSeedList.append(seedList[a])
             else: # Otherwise, choose any map at random
                 localSeedList = seedList
