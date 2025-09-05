@@ -63,3 +63,16 @@ https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
 * TotestraStandAlone.py: Totestra which can be run stand alone w/o Civ4
 
 https://forums.civfanatics.com/threads/totestra-a-new-perfectworld2-fork.461262/
+
+# Notes on the random seeds
+
+The random seeds are processed using RadioGatún[32] and take a string as
+an input. The seeds can take several forms of strings:
+
+"R" + [Mixture of lower case letters and numbers] # Random for maps
+"RT" + [Decimal integer] # Fixed seed for 144x96 ArabianTotestra maps
+"RH" + [Hex number in 0x####_#### format] # Fixed seed for 192x128 maps
+"RL" + [Hex number in 0x####_#### format] # Fixed seed for 144x96 maps
+
+Note that the 0x####_#### hex numbers use lower case letters.
+
