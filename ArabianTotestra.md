@@ -170,5 +170,5 @@ Replace foo above with the desired string to generate a RadioGatun[32]
 sum of.
 
 #Finding good desert maps
-In the folder `old/` are tools for finding good desert maps.
+In the folder `misc/` are tools for finding good desert maps.
 
