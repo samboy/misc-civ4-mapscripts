@@ -6905,6 +6905,7 @@ if __name__ == "__main__":
     bigAM.defineAreas(isNonCoastWaterMatch)
     maxLandAmount = -1
     maxLandArea = -1
+    thisKindaArabian = {}
     for x in range(mc.width):
         for y in range(mc.height):
             i = (y * mc.width) + x
@@ -6939,6 +6940,7 @@ if __name__ == "__main__":
             if sm.terrainMap[i] == mc.SNOW:
                 tally[area]["Snow"] += 1
     for area in tally:
+        thisKindaArabian[area] = False
         if(tally[area]["Land"] > 0):
             tally[area]["DesertPercent"] = (tally[area]["Desert"] * 100 / 
                                             tally[area]["Land"]) 
@@ -6954,6 +6956,10 @@ if __name__ == "__main__":
             tally[area]["IsArabian"] = True
         else:
             tally[area]["IsArabian"] = False
+        if(tally[area]["DesertPercent"] >= 40 and
+           tally[area]["Snow"] == 0 and
+           tally[area]["Tundra"] <= 17):
+            thisKindaArabian[area] = True
     print("Flood plain count: " + str(floodPlainCount))
     IslandList = str(mySeed) + ","
     for area in sorted(tally,reverse=True,key=lambda z: tally[z]["Land"]):
@@ -6961,10 +6967,12 @@ if __name__ == "__main__":
               str(tally[area]))
         if(tally[area]["Land"] > 0):
             IslandList += str(tally[area]["Land"]) 
-        if(tally[area]["Land"] < 1000 and tally[area]["Land"] > 0):
-            IslandList += ","
-        elif(tally[area]["IsArabian"]):
+        if(tally[area]["IsArabian"]):
             IslandList += "+,"
+        elif(thisKindaArabian[area]):
+            IslandList += "@,"
+        elif(tally[area]["Land"] < 1000 and tally[area]["Land"] > 0):
+            IslandList += ","
         elif(tally[area]["Land"] > 0):
             IslandList += "-,"
     print("Biggest is " + str(maxLandArea) + 
