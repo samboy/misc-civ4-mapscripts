@@ -1340,7 +1340,7 @@ class MapConstants :
             self.randomSeed = 36933
         elif selectionID == 4: # Amira
             self.randomSeed = 2997
-        elif selectionID == 5: # Caulixtla
+        elif selectionID == 1: # Caulixtla
             self.randomSeed = -2
         elif selectionID == 6: # Jungle start
             self.randomSeed = 75487
@@ -1396,24 +1396,14 @@ class PythonRandom :
             seed() #Start with system time
             seedValue = randint(0,9007199254740991)
             self.rg32 = True
-            if mc.randomSeed == 0:
-                seedValue = "R"
-                seedletter="abcdefghijkl7nopqrstuv8xyz" # No wide letters
-                for seedMake in range(12):
-                    seedMe = randint(0,25)
-                    seedValue += seedletter[seedMe:seedMe+1]
-                self.seedString = "Random seed (Using RG32 rand) for this map is " + seedValue
-            elif mc.randomSeed == -2 or mc.randomSeed == -3:
+            if mc.randomSeed == -2 or mc.randomSeed == -3:
                 self.rg32 = False
                 seed(8939185639133313) # Caulixtla
                 seedValue = mc.randomSeed
                 self.seedString = "Fixed seed: Caulixtla map"
             else:
-                seedValue = "RT" + str(mc.randomSeed)
+                seedValue = "RL0x0000_70c1"
                 self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
-            # HACK HACK HACK
-            seedValue = "RL0x0000_70c1"
-            self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             mc.randomSeed = seedValue
             if self.rg32:
                 self.rg32 = RadioGatun32(seedValue)
@@ -5998,7 +5988,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1:
-            return 1
+            return 2
         elif optionID == 2: # Player bonus resource amount
             return 8
         elif optionID == 3:
@@ -6025,7 +6015,7 @@ def getCustomMapOptionDescAt(argsList):
         if selectionID == 0:
             return "Seventy see one (0x0000_70c1)"
         elif selectionID == 1:
-            return "Smaller start continents"
+            return "Caulixtla"
         elif selectionID == 2:
             return "Random"
         elif selectionID == 3:
