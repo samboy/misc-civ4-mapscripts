@@ -901,6 +901,8 @@ class MapConstants :
         self.AllowNewWorld = True
         self.ShareContinent = False
         self.ShareContinentIndex = 2
+	if(mmap.getCustomMapOption(5) == 1): # Start on biggest land
+            self.ShareContinentIndex = 1
         
         #How many land squares will be above peak threshold and thus 'peaks'.
         self.PeakPercent = 0.12
@@ -988,6 +990,8 @@ class MapConstants :
         #The percent chance that an oasis may appear in desert. A tile must be desert and
         #surrounded on all sides by desert.
         self.OasisChance = .08
+	if(mmap.getCustomMapOption(4) == 1): # Many huts
+            self.OasisChance = .25
 
         #This sets the amount of heat lost at the highest altitude. 1.0 loses all heat
         #0.0 loses no heat.
@@ -5950,7 +5954,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 4
+    return 6
 	
 def getCustomMapOptionName(argsList):
         """
@@ -5959,22 +5963,18 @@ def getCustomMapOptionName(argsList):
         Return a Unicode string
         """
         optionID = argsList[0]
-        #if optionID == 0:
-        #    return "New World Rules"
-        #elif optionID == 1:
-        #    return "Pangaea Rules"
-        #elif optionID == 2:
-        #    return "Wrap Option"
         if optionID == 0:
             return "Resources"
-        #elif optionID == 4:
-        #    return "Have bigger maps"
         elif optionID == 1:
             return "Map seed"
         elif optionID == 2:
             return "Player bonus resources"
         elif optionID == 3:
             return "Hut placement"
+        elif optionID == 4:
+            return "Oases"
+        elif optionID == 5:
+            return "Player start"
 
         return u""
 	
@@ -5987,12 +5987,16 @@ def getNumCustomMapOptionValues(argsList):
         optionID = argsList[0]
         if optionID == 0:
             return 3
-        elif optionID == 1:
+        elif optionID == 1: # Seed
             return 2
         elif optionID == 2: # Player bonus resource amount
             return 8
-        elif optionID == 3:
+        elif optionID == 3: # Huts
             return 6
+        elif optionID == 4: # Oases 
+            return 2
+        elif optionID == 5: # Player start
+            return 2
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -6016,20 +6020,6 @@ def getCustomMapOptionDescAt(argsList):
             return "Seventy see one (0x0000_70c1)"
         elif selectionID == 1:
             return "Caulixtla"
-        elif selectionID == 2:
-            return "Random"
-        elif selectionID == 3:
-            return "Free Form (not Arabian)"
-        elif selectionID == 4:
-            return "Amira map"
-        elif selectionID == 5:
-            return "Caulixtla map"
-        elif selectionID == 6:
-            return "Fixed seed (Jungle start)"
-        elif selectionID == 7:
-            return "Caulixtla map (Jungle start)"
-        elif selectionID == 8:
-            return "Fixed seed (Grassland start)"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
             return "None (Player equal to AI)"
@@ -6060,6 +6050,16 @@ def getCustomMapOptionDescAt(argsList):
             return "Many desert huts"
         elif selectionID == 5:
             return "Many huts everywhere"
+    if optionID == 4: # Oases
+        if selectionID == 0:
+            return "Default"
+        elif selectionID == 1:
+            return "Many"
+    if optionID == 5: # Player start
+        if selectionID == 0:
+            return "Default"
+        elif selectionID == 1:
+            return "Biggest landmass"
     return u""
 	
 def getCustomMapOptionDefault(argsList):
