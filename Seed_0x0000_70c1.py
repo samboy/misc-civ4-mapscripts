@@ -1196,8 +1196,8 @@ class MapConstants :
         self.iceChance = 1.0 # Chance of having iceberg at top/bottom of map
         self.iceRange = 4 # Number of squares we add icebergs to
         self.iceSlope = 0.66 # How quickly we reduce icebergs
-        #clim = mmap.getClimate()
-        clim = 2 # Only Arid because this is for Arabian maps
+        clim = mmap.getClimate()
+        #clim = 2 # Only Arid because this is for Arabian maps
         if clim == 1: # Tropical
             self.tropicsLatitude = 46
             # q3max changes
@@ -6758,7 +6758,7 @@ def beforeInit():
     mc.initInGameOptions()
 
 def isClimateMap():
-    return 0
+    return 1
 
 def isSeaLevelMap():
     return 0
