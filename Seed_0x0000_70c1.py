@@ -57,10 +57,13 @@ is visible when selecting "Map".
 
 ## Size
 
-This should be set to Huge.  While it can be set to a smaller size, the
-map generator *always* generates an 144x96 map; smaller sizes reduce the
-default number of players and make war weariness happen more quickly
-while not affecting the actual map generated.
+This determines how big the map is.  All sizes will generate a suitable
+map with both seeds.
+
+## Climate
+
+This should be set to "Arid" for Arabian adventures. Other values give
+less desert.
 
 ## Era
 
@@ -85,54 +88,19 @@ uses Perfect World's resource placement code.
 ## Map seed
 
 This determines the seed given to the pseudo random number generator
-to generate a map.  Running a script on a Raspberry Pi server found a
-large number of maps which appear to be suitable for Arabian adventures.
+to generate a map.  
 
-Selecting "larger start continents" will select one of those seeds which 
-generates a continent with a size of 1400 or higher.  This is suitable
-for a game at "epic" or "marathon" speeds.
-
-"Smaller start continents" will select a seed which makes a continent 
-smaller than 1400 in size.  This is for a game at "quick" or "normal"
-speeds.
-
-"Random" will select any known seed suitable for generating an Arabian
-adventure.
-
-"Free form (not Arabian)" will select a completely random Pefect World seed; 
-most maps will not be optimized for an Arabian adventure.
-
-"Amira map" is a fixed seed I found in 2018 which looks to be a very
-enjoyable Arabian adventure.  Selecting this will always generate the
-same map.
+"Seventy see one" is a fixed seed I found in 2025 where the second
+largest landmass is very suitable for an Arabian adventure at all
+sizes.  The largest landmass is also good for Arabian games,
+but has less of an Arabian flavor to it.
 
 "Caulixtla map" is a fixed seed I found in 2012 which is my usual go
-to Arabian adventure map.  If nine players are selected, this is the 
-Hijazi start in the Arabian Caulixtla map included with my fork of 
-"Legends of Ancient Arabia".  Note that this map will be upside down
-compared to the map included with "Legends of Ancient Arabia"; the
-LOAA version of the map was flipped over 180 degrees back in 2012.
-
-"Fixed seed (Jungle start)" is a fixed seed making a larger continent
-where the player starts in a jungle.
-
-"Caulixtla map (Jungle start)" is the Caulixtla map again, but with
-a start in a Jungle, as long as precisely nine players are selected (the
-number of tribes in "Legends of Ancient Arabia").  If the map does not
-have nine players, the player may not start in a jungle.  This start
-is the Omani start in the 2012 version of the Arabian Caulixtla map,
-and the Hijazi start in the 2021 second revision of the Arabian Caulixtla
-map.
-
-"Fixed seed (Grassland start)" is a different map than the "Fixed seed
-(Jungle start)" map above, and places the player on a medium sized map.
-Like the Caulixtla map and other Fixed seed, this seed will always 
-generate the same map.
-
-None of the fixed seed maps will be generated if selecting "Large start
-continents", "Small start continents", "Random", or free form maps.
-In addition, the free form maps will never generate a map from the "Large
-start continents", "Small start continents", and "Random" list of maps.
+to Arabian adventure map.  Note that the contients change form for
+"Large" and "Huge" maps; smaller maps have a different set of
+land masses.  Note also that this map will be upside down compared to
+the map included with "Legends of Ancient Arabia"; the LOAA version of
+the map was flipped over 180 degrees back in 2012.
 
 ## Player bonus resources
 
@@ -168,6 +136,21 @@ given map seed will have the same hut locations.
 
 "Many huts everywhere" has many goody huts all over the map.  A given map
 seed will have the same hut locations.
+
+## Oases
+
+If set to "Many", the chance a given desert square has an oasis is
+greatly increased.  "Default" has fewer oases.
+
+## Player start
+
+If set to "default", this will for Caulixtla (at "large" and "huge"
+sizes), and for "Seventy see one" (at all sizes), place all players
+on a land mass suitable for an Arabian adventure.  With the
+"Seventy see one" seed, "Biggest Landmass" may be less suited for an
+Arabian Adventure, but gives more land, which may be useful with
+smaller maps.  With the Caulixtla seed, "Biggest Landmass" always
+gives a landmass suitable for an Arabian adventure.
 
 # Running stand alone
 The script can also be run stand alone.  This will not generate maps;
