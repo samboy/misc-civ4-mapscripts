@@ -6135,7 +6135,7 @@ def getBottomLatitude():
     
 def getGridSize(argsList):
     grid_sizes = {
-		WorldSizeTypes.WORLDSIZE_DUEL:		(11,7),
+		WorldSizeTypes.WORLDSIZE_DUEL:		(14,7),
 		WorldSizeTypes.WORLDSIZE_TINY:		(15,10),
 		WorldSizeTypes.WORLDSIZE_SMALL:		(20,13),
 		WorldSizeTypes.WORLDSIZE_STANDARD:	(24,16),
