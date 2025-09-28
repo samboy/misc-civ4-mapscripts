@@ -1,7 +1,7 @@
 ##############################################################################
 ## Arabian Totestra
-## Fixed seed: 0x0000_70c1 
-## Everyone on second largest landmass
+## Fixed seed: 0x0000_70c1 (or Caulixtla)
+## Everyone on second largest landmass (or largest one but 2nd is best)
 ## Resizable; the map keeps its shape from tiny up until huge
 ##
 ## This is a fork of Totestra designed for Legends of Ancient Arabia.
@@ -1270,7 +1270,7 @@ class MapConstants :
             self.ShareContinent = True
             self.ShareContinentIndex = 2
         #Pangaea Rules
-        selectionID = mmap.getCustomMapOption(1)
+        #selectionID = mmap.getCustomMapOption(1)
         selectionID = 0 # Pangeas not allowed
         if selectionID == 1:
             self.AllowPangeas = not self.AllowPangeas
@@ -1323,31 +1323,31 @@ class MapConstants :
 
         # Do we use a fixed or random map seed?
         selectionID = mmap.getCustomMapOption(1)
-        if selectionID == 8: # Fixed random seed (plains/desert start)
-            self.randomSeed = 36933
-        elif selectionID == 4: # Amira
-            self.randomSeed = 2997
-        elif selectionID == 1: # Caulixtla
+        #if selectionID == 8: # Fixed random seed (plains/desert start)
+        #    self.randomSeed = 36933
+        #elif selectionID == 4: # Amira
+        #    self.randomSeed = 2997
+        if selectionID == 1: # Caulixtla
             self.randomSeed = -2
-        elif selectionID == 6: # Jungle start
-            self.randomSeed = 75487
-        elif selectionID == 7: # Caulixtla Jungle start
-            self.randomSeed = -3
-        elif selectionID != 3: # Anything but "Free form"
-            # We choose one of many possible Arabian adventures
-            localSeedList = []
-            if selectionID == 0: # Large (Epic or Marathon)
-                for a in range(len(seedList)):
-                    if seedList[a][0] >= 1400:
-                        localSeedList.append(seedList[a])
-            elif selectionID == 1: # Small (Normal or Epic)
-                for a in range(len(seedList)):
-                    if seedList[a][0] < 1400:
-                        localSeedList.append(seedList[a])
-            else: # Otherwise, choose any map at random
-                localSeedList = seedList
-            seedIndex = int(random() * len(localSeedList))
-            self.randomSeed = localSeedList[seedIndex][1]
+        #elif selectionID == 6: # Jungle start
+        #    self.randomSeed = 75487
+        #elif selectionID == 7: # Caulixtla Jungle start
+        #    self.randomSeed = -3
+        #elif selectionID != 3: # Anything but "Free form"
+        #    # We choose one of many possible Arabian adventures
+        #    localSeedList = []
+        #    if selectionID == 0: # Large (Epic or Marathon)
+        #        for a in range(len(seedList)):
+        #            if seedList[a][0] >= 1400:
+        #                localSeedList.append(seedList[a])
+        #    elif selectionID == 1: # Small (Normal or Epic)
+        #        for a in range(len(seedList)):
+        #            if seedList[a][0] < 1400:
+        #                localSeedList.append(seedList[a])
+        #    else: # Otherwise, choose any map at random
+        #        localSeedList = seedList
+        #    seedIndex = int(random() * len(localSeedList))
+        #    self.randomSeed = localSeedList[seedIndex][1]
 
         self.optionsString = "Map Options: \n"
         if self.AllowNewWorld:
@@ -2222,6 +2222,44 @@ class HeightMap :
 ##            self.heightMap[i] = self.heightMap[i] * self.heightMap[i]
 
         NormalizeMap(self.heightMap,mc.hmWidth,mc.hmHeight)
+
+    def rotateMap(self, amount):
+
+        #if mc.noRotate != 0:
+        #        return
+        if amount == 0:
+                return
+
+        # This rotates a map east or west so that the map wraps around where
+        # the lowest vertical band is on the map
+        low = 0
+        min = 10000.0
+
+        # Find the place on the map with the most water (lowest heightfield)
+        for x in range(mc.hmWidth):
+                sum = 0.0
+                for y in range(mc.hmHeight):
+                        sum += self.heightMap[GetHmIndex(x,y)]
+                #print "for x %d sum is %f min %f" % (x,sum,min)
+                if(sum < min):
+                        low = x
+                        min = sum
+        #print "low x is %d" % (low) #DEBUG
+
+        if amount != -1:
+        	low = amount
+
+        # Rotate the height map so we wrap where there is more water
+        for y in range(mc.hmHeight):
+                tempStripe = []
+                for x in range(mc.hmWidth):
+                        tempStripe.append(self.heightMap[GetHmIndex(x,y)])
+                for x in range(mc.hmWidth):
+                        self.heightMap[GetHmIndex(x,y)] = tempStripe[
+                                ((x + low) % mc.hmWidth)]
+
+        # Done
+        return
 
     def addWaterBands(self):
         #validate water bands. Maps that wrap cannot have one in that direction
@@ -5937,7 +5975,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 6
+    return 7
 	
 def getCustomMapOptionName(argsList):
         """
@@ -5958,6 +5996,8 @@ def getCustomMapOptionName(argsList):
             return "Oases"
         elif optionID == 5:
             return "Player start"
+        elif optionID == 6:
+            return "Lake/River placement"
 
         return u""
 	
@@ -5980,6 +6020,8 @@ def getNumCustomMapOptionValues(argsList):
             return 2
         elif optionID == 5: # Player start
             return 2
+        elif optionID == 6: # Lake placement (rotation)
+            return 5
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -6043,6 +6085,11 @@ def getCustomMapOptionDescAt(argsList):
             return "Default"
         elif selectionID == 1:
             return "Biggest landmass"
+    if optionID == 6: # Lake placement
+        if selectionID == 0:
+            return "Default"
+        else:
+            return "Variant #" + str(selectionID)
     return u""
 	
 def getCustomMapOptionDefault(argsList):
@@ -6085,7 +6132,7 @@ def isAdvancedMap():
 	Advanced maps only show up in the map script pulldown on the advanced menu.
 	Return 0 if you want your map to show up in the simple singleplayer menu
 	"""
-	return 0
+	return 1
 def isClimateMap():
 	"""
 	Uses the Climate options
@@ -6148,6 +6195,14 @@ def generatePlotTypes():
     pb.breakPangaeas()
 ##    hm.Erode()
 ##    hm.printHeightMap()
+    if(mmap.getCustomMapOption(6) == 1): # Alt lake placement
+      hm.rotateMap(-1)
+    elif(mmap.getCustomMapOption(6) == 2): # Alt lake placement #2
+      hm.rotateMap(72)
+    elif(mmap.getCustomMapOption(6) == 3): # Alt lake placement #3
+      hm.rotateMap(36)
+    elif(mmap.getCustomMapOption(6) == 4): # Alt lake placement #3
+      hm.rotateMap(108)
     hm.addWaterBands()
 ##    hm.printHeightMap()
     cm.createClimateMaps()
