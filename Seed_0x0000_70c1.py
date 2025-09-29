@@ -843,10 +843,19 @@ def do_rg32_test(testInput):
 
 ##### END BSD LICENSED CODE ##############################################
 
+globalInCiv4 = False
 if __name__ != "__main__":
     from CvPythonExtensions import *
     import CvUtil
     import CvMapGeneratorUtil 
+    globalInCiv4 = True
+
+def getParameter(value):
+    if globalInCiv4:
+        gc = CyGlobalContext()
+        mmap = gc.getMap()
+        return mmap.getCustomMapOption(value)
+    return 0 ## CODE HERE
 
 from array import array
 from random import random,randint,seed
@@ -884,7 +893,7 @@ class MapConstants :
         self.AllowNewWorld = True
         self.ShareContinent = False
         self.ShareContinentIndex = 2
-	if(mmap.getCustomMapOption(5) == 1): # Start on biggest land
+	if(getParameter(5) == 1): # Start on biggest land
             self.ShareContinentIndex = 1
         
         #How many land squares will be above peak threshold and thus 'peaks'.
@@ -973,7 +982,7 @@ class MapConstants :
         #The percent chance that an oasis may appear in desert. A tile must be desert and
         #surrounded on all sides by desert.
         self.OasisChance = .08
-	if(mmap.getCustomMapOption(4) == 1): # Many huts
+	if(getParameter(4) == 1): # Many oases
             self.OasisChance = .25
 
         #This sets the amount of heat lost at the highest altitude. 1.0 loses all heat
@@ -1158,7 +1167,7 @@ class MapConstants :
         #value.
         self.RiverCityValueBonus = 1.2
        
-        handicap = mmap.getCustomMapOption(2)
+        handicap = getParameter(2)
         #Bonus resources to add depending on difficulty settings
         self.SettlerBonus = handicap
         self.ChieftainBonus = handicap 
@@ -1307,7 +1316,7 @@ class MapConstants :
             wrapString = "Flat"
           
         # How we distribute resources
-        selectionID = mmap.getCustomMapOption(0)
+        selectionID = getParameter(0)
         if selectionID == 0:
             self.BonusBonus = 1.5 # Increases resources
             self.spreadResources = True
@@ -1322,7 +1331,7 @@ class MapConstants :
             self.spreadResources = True
 
         # Do we use a fixed or random map seed?
-        selectionID = mmap.getCustomMapOption(1)
+        selectionID = getParameter(1)
         #if selectionID == 8: # Fixed random seed (plains/desert start)
         #    self.randomSeed = 36933
         #elif selectionID == 4: # Amira
@@ -6195,13 +6204,13 @@ def generatePlotTypes():
     pb.breakPangaeas()
 ##    hm.Erode()
 ##    hm.printHeightMap()
-    if(mmap.getCustomMapOption(6) == 1): # Alt lake placement
+    if(getParameter(6) == 1): # Alt lake placement
       hm.rotateMap(-1)
-    elif(mmap.getCustomMapOption(6) == 2): # Alt lake placement #2
+    elif(getParameter(6) == 2): # Alt lake placement #2
       hm.rotateMap(72)
-    elif(mmap.getCustomMapOption(6) == 3): # Alt lake placement #3
+    elif(getParameter(6) == 3): # Alt lake placement #3
       hm.rotateMap(36)
-    elif(mmap.getCustomMapOption(6) == 4): # Alt lake placement #3
+    elif(getParameter(6) == 4): # Alt lake placement #3
       hm.rotateMap(108)
     hm.addWaterBands()
 ##    hm.printHeightMap()
@@ -6826,7 +6835,7 @@ def checkHut(hutSeen, x, y, distance):
 def addGoodies():
     gc = CyGlobalContext()
     mmap = gc.getMap()
-    hutPlacementRules = mmap.getCustomMapOption(3)
+    hutPlacementRules = getParameter(3)
 
     # Note that these constants change below, these are only default values
     # The chance out of 1000 that we have a goody hut on a desert
