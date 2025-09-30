@@ -844,6 +844,7 @@ def do_rg32_test(testInput):
 ##### END BSD LICENSED CODE ##############################################
 
 globalInCiv4 = False
+globalRotateAmount = False
 if __name__ != "__main__":
     from CvPythonExtensions import *
     import CvUtil
@@ -871,9 +872,10 @@ class MapConstants :
         print "Initializing map constants"
 ##############################################################################
 ## GLOBAL TUNING VARIABLES: Change these to customize the map results
-       
-        gc = CyGlobalContext()
-        mmap = gc.getMap()
+      
+        if globalInCiv4:
+            gc = CyGlobalContext()
+            mmap = gc.getMap()
 
         # Default seed
         self.randomSeed = 0
@@ -1192,7 +1194,10 @@ class MapConstants :
         self.iceChance = 1.0 # Chance of having iceberg at top/bottom of map
         self.iceRange = 4 # Number of squares we add icebergs to
         self.iceSlope = 0.66 # How quickly we reduce icebergs
-        clim = mmap.getClimate()
+        if globalInCiv4:
+          clim = mmap.getClimate()
+        else:
+	  clim = 2 # Arid
         #clim = 2 # Only Arid because this is for Arabian maps
         if clim == 1: # Tropical
             self.tropicsLatitude = 46
@@ -1383,7 +1388,7 @@ class PythonRandom :
             self.usePR = True
         else:
             self.usePR = False
-        if self.usePR and CyGame().isNetworkMultiPlayer():
+        if self.usePR and globalInCiv4 and CyGame().isNetworkMultiPlayer():
             print "Detecting network game. Setting UsePythonRandom to False."
             self.usePR = False
         if self.usePR:
@@ -6884,8 +6889,181 @@ def addGoodies():
 
 if __name__ == "__main__":
     import sys
-    if(len(sys.argv) > 2 and sys.argv[1] == '--test'):
-        do_rg32_test(sys.argv[2])
+    IsStandAlone = True
+    mc.UsePythonRandom = True
+    mc.totestra = 0x70c1
+    if len(sys.argv) > 1:
+        if(len(sys.argv) > 2 and sys.argv[1] == '--test'):
+            do_rg32_test(sys.argv[2])
+            sys.exit(0)
+        mc.totestra = int(sys.argv[1])
+    if len(sys.argv) > 2:
+        globalRotateAmount = int(sys.argv[2])
     else:
-        print("Usage: python2 ArabianTotestra.py --test {input}")
+        globalRotateAmount = 0
+    if(mc.totestra):
+        mySeed = ("0x" +
+            ("%04x" % ((mc.totestra >> 16) & 0xffff)) + "_" +
+            ("%04x" % (mc.totestra & 0xffff)))
+    else:
+        mySeed = "Unknown"
+    mc.initialize()
+    # This stuff has to be hard coded here
+    mc.width = 144
+    mc.height = 96
+    mc.landPercent = 0.29
+    mc.tropicsLatitude = 23
+    mc.PeakPercent = 0.12
+    mc.HillPercent = 0.35
+    mc.HillChanceAtOne = .50
+    mc.PeakChanceAtOne = .27
+    mc.DesertPercent = 0.20
+    mc.PlainsPercent = 0.42
+    mc.SnowTemp = .30
+    mc.TundraTemp = .35
+    mc.ForestTemp = .50
+    mc.JungleTemp = .7
+    mc.iceChance = 1.0
+    mc.iceRange = 4
+    mc.iceSlope = 0.66
+    if len(sys.argv) <= 3: # Arid map
+        mc.DesertPercent = 0.40
+        mc.PlainsPercent = 0.82
+        mc.iceSlope = 0.33 # Less ice
+    mc.AllowPangeas = False
+    mc.patience = 2
+    mc.hmMaxGrain = 2 ** (2 + mc.patience)
+    mc.hmWidth = (mc.hmMaxGrain * 3 * 3)
+    mc.hmHeight =  (mc.hmMaxGrain * 2 * 3) + 1
+    mc.WrapX = True
+    mc.WrapY = False
+    mc.BonusBonus = 1.5 # Full of resources
+    mc.spreadResources = True # Full of resources
+    mc.noRotate = 1 # 1 to be compatible with T2RG32.py
+    mc.smoothPeaks = 1
+    mc.northWaterBand = 10
+    mc.southWaterBand = 10
+    mc.eastWaterBand = 0
+    mc.westWaterBand = 0
+    mc.northCrop = 10
+    mc.southCrop = 10
+    mc.eastCrop = 0
+    mc.westCrop = 0
+    mc.maxMapWidth = int(mc.hmWidth / 4)
+    mc.maxMapHeight = int(mc.hmHeight / 4)
+    if(mc.width > mc.hmWidth):
+        mc.width = mc.hmWidth
+    if(mc.height > mc.hmHeight):
+        mc.height = mc.hmHeight
+    if(mc.patience == 1):
+        mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0024)
+    else: # Patience is assumed to be 2
+        mc.hmNumberOfPlates = int(float(mc.hmWidth * mc.hmHeight) * 0.0016)
+
+    mc.minimumMeteorSize = (1 + int(round(float(mc.hmWidth)/float(mc.width)))) * 3
+    mc.AllowNewWorld = True
+    mc.ShareContinent = True
+    mc.ShareContinentIndex = 1
+    PRand.seed()
+    hm.performTectonics()
+    hm.generateHeightMap()
+    hm.combineMaps()
+    hm.calculateSeaLevel()
+    hm.fillInLakes()
+    pb.breakPangaeas()
+##    hm.Erode()
+##    hm.printHeightMap()
+    hm.rotateMap(globalRotateAmount)
+    hm.addWaterBands()
+##    hm.printHeightMap()
+    cm.createClimateMaps()
+    sm.initialize()
+    rm.generateRiverMap()
+
+    # Scan the map and give the user a summary of the map
+    floodPlainCount = 0
+    tally = {}
+    bigAM = Areamap(mc.width,mc.height,True,True)
+    bigAM.defineAreas(isNonCoastWaterMatch)
+    maxLandAmount = -1
+    maxLandArea = -1
+    thisKindaArabian = {}
+    for x in range(mc.width):
+        for y in range(mc.height):
+            i = (y * mc.width) + x
+            #area = continentMap.areaMap.areaMap[i]
+            area = bigAM.areaMap[i]
+            if not area in tally:
+                tally[area] = {
+                    "Land": 0,
+                    "Desert": 0,
+                    "floodPlains": 0,
+                    "Tundra": 0,
+                    "Snow": 0,
+                    "MinY": y,
+                    "MaxY": y
+                }
+            if tally[area]["MinY"] > y:
+                tally[area]["MinY"] = y
+            if tally[area]["MaxY"] < y:
+                tally[area]["MaxY"] = y
+            if sm.terrainMap[i] != mc.OCEAN and sm.terrainMap[i] != mc.COAST:
+                tally[area]["Land"] += 1
+                if(tally[area]["Land"] > maxLandAmount):
+                    maxLandAmount = tally[area]["Land"]
+                    maxLandArea = area
+            if sm.terrainMap[i] == mc.DESERT:
+                tally[area]["Desert"] += 1
+                if rm.riverMap[i] != 5:
+                    floodPlainCount += 1
+                    tally[area]["floodPlains"] += 1
+            if sm.terrainMap[i] == mc.TUNDRA:
+                tally[area]["Tundra"] += 1
+            if sm.terrainMap[i] == mc.SNOW:
+                tally[area]["Snow"] += 1
+    for area in tally:
+        thisKindaArabian[area] = False
+        if(tally[area]["Land"] > 0):
+            tally[area]["DesertPercent"] = (tally[area]["Desert"] * 100 / 
+                                            tally[area]["Land"]) 
+        else:
+            tally[area]["DesertPercent"] = 0
+        if(tally[area]["Land"] >= 1000 and 
+           tally[area]["DesertPercent"] >= 40 and
+           tally[area]["Snow"] == 0 and
+           tally[area]["Tundra"] <= 10 and
+           tally[area]["MinY"] > 20 and # 20 for 144x96 26 for 192x128       
+           tally[area]["MaxY"] < 78 # 78 for 144x96 104 for 192x128
+           ):
+            tally[area]["IsArabian"] = True
+        else:
+            tally[area]["IsArabian"] = False
+        if(tally[area]["DesertPercent"] >= 40 and
+           tally[area]["Snow"] == 0 and
+           tally[area]["Tundra"] <= 17):
+          thisKindaArabian[area] = True
+    print("Flood plain count: " + str(floodPlainCount))
+    IslandList = str(mySeed) + ","
+    for area in sorted(tally,reverse=True,key=lambda z: tally[z]["Land"]):
+        print("Tally for continent " + str(area) + ": " +
+              str(tally[area]))
+        if(tally[area]["Land"] > 0):
+            IslandList += str(tally[area]["Land"]) 
+        if(tally[area]["IsArabian"]):
+            IslandList += "+,"
+        elif(thisKindaArabian[area]):
+            IslandList += "@,"
+        elif(tally[area]["Land"] < 1000 and tally[area]["Land"] > 0):
+            IslandList += ","
+        elif(tally[area]["Land"] > 0):
+            IslandList += "-,"
+    print("Biggest is " + str(maxLandArea) + 
+          " with :"+str(tally[maxLandArea]) + " seed " + str(mySeed) +
+          " Islands: " + str(IslandList))
+    if(maxLandArea >= 0 and tally[maxLandArea]["Tundra"] < 10 and
+       tally[maxLandArea]["floodPlains"] > 30 and
+       tally[maxLandArea]["Desert"] > 500 and
+       tally[maxLandArea]["Land"] > 1000):
+        print("Nice land found seed " + mySeed)
+
 
