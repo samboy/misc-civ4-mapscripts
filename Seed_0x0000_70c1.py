@@ -6035,7 +6035,7 @@ def getNumCustomMapOptionValues(argsList):
         elif optionID == 5: # Player start
             return 2
         elif optionID == 6: # Lake placement (rotation)
-            return 5
+            return 7
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -6216,7 +6216,11 @@ def generatePlotTypes():
     elif(getParameter(6) == 3): # Alt lake placement #3
       hm.rotateMap(36)
     elif(getParameter(6) == 4): # Alt lake placement #3
-      hm.rotateMap(108)
+      hm.rotateMap(108) # Nice for Caulixtla at large/huge sizes
+    elif(getParameter(6) == 5): # Alt lake placement #3
+      hm.rotateMap(69) # Nice for 70c1 at huge size
+    elif(getParameter(6) == 6): # Alt lake placement #3
+      hm.rotateMap(7) # Another 70c1 nice lake
     hm.addWaterBands()
 ##    hm.printHeightMap()
     cm.createClimateMaps()
