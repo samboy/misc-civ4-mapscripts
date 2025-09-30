@@ -1344,6 +1344,8 @@ class MapConstants :
         #    self.randomSeed = 2997
         if selectionID == 1: # Caulixtla
             self.randomSeed = -2
+        elif selectionID == 2: 
+            self.randomSeed = 1 # Becomes 0x0000_5290
         #elif selectionID == 6: # Jungle start
         #    self.randomSeed = 75487
         #elif selectionID == 7: # Caulixtla Jungle start
@@ -1403,6 +1405,9 @@ class PythonRandom :
                 seed(8939185639133313) # Caulixtla
                 seedValue = mc.randomSeed
                 self.seedString = "Fixed seed: Caulixtla map"
+            elif mc.randomSeed == 1:
+                seedValue = "RL0x0000_5290"
+                self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             elif mc.mySeed:
                 seedValue = "RL" + mc.mySeed
                 self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
@@ -6029,7 +6034,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1: # Seed
-            return 2
+            return 3
         elif optionID == 2: # Player bonus resource amount
             return 8
         elif optionID == 3: # Huts
@@ -6063,6 +6068,8 @@ def getCustomMapOptionDescAt(argsList):
             return "Seventy see one (0x0000_70c1)"
         elif selectionID == 1:
             return "Caulixtla"
+        elif selectionID == 2:
+            return "0x0000_5290"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
             return "None (Player equal to AI)"
