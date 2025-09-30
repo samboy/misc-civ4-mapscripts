@@ -879,6 +879,7 @@ class MapConstants :
 
         # Default seed
         self.randomSeed = 0
+        self.mySeed = False
 
         #Percent of land vs. water
         self.landPercent = 0.29
@@ -1402,6 +1403,9 @@ class PythonRandom :
                 seed(8939185639133313) # Caulixtla
                 seedValue = mc.randomSeed
                 self.seedString = "Fixed seed: Caulixtla map"
+            elif mc.mySeed:
+                seedValue = "RL" + mc.mySeed
+                self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             else:
                 seedValue = "RL0x0000_70c1"
                 self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
@@ -6901,8 +6905,9 @@ if __name__ == "__main__":
             ("%04x" % ((mc.totestra >> 16) & 0xffff)) + "_" +
             ("%04x" % (mc.totestra & 0xffff)))
     else:
-        mySeed = "Unknown"
+        mySeed = False
     mc.initialize()
+    mc.mySeed = mySeed
     # This stuff has to be hard coded here
     mc.width = 144
     mc.height = 96
