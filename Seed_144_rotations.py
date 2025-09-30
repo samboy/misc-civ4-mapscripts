@@ -6773,7 +6773,8 @@ def createIce():
             if plot != 0 and plot.isWater() == True and PRand.random() < iceChance:
                 plot.setFeatureType(featureIce,0)
                 if signadded == 0:
-                    CyEngine().addSign(plot, -1, str(mc.randomSeed))
+                    CyEngine().addSign(plot, -1, 
+          str(getParameter(6)) + "." + str(mc.randomSeed))
                     signadded = 1
         iceChance *= iceSlope
     if signadded == 0:
