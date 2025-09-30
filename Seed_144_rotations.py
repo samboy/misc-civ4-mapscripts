@@ -989,9 +989,11 @@ class MapConstants :
         #This value is used to decide if enough water has accumulated to form a river.
         #A lower value creates more rivers over the entire map.
         self.RiverThreshold = 4
-        if getParameter(7) > 0:
+        if getParameter(8) > 0:
+           self.RiverThreshold = 3
+        if getParameter(8) > 1:
            self.RiverThreshold = 2
-        if getParameter(7) > 1:
+        if getParameter(8) > 2:
            self.RiverThreshold = 1
         
         #The percent chance that an oasis may appear in desert. A tile must be desert and
@@ -6010,7 +6012,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 8
+    return 9
 	
 def getCustomMapOptionName(argsList):
         """
@@ -6034,7 +6036,9 @@ def getCustomMapOptionName(argsList):
         elif optionID == 6:
             return "Lake/River placement"
         elif optionID == 7:
-            return "Common lakes/rivers"
+            return "Common lakes"
+        elif optionID == 8:
+            return "Common rivers"
 
         return u""
 	
@@ -6059,8 +6063,10 @@ def getNumCustomMapOptionValues(argsList):
             return 2
         elif optionID == 6: # Lake placement (rotation)
             return 145
-        elif optionID == 7: # Wetness
+        elif optionID == 7: # Lakes
             return 10
+        elif optionID == 8: # Rivers
+            return 4
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -6131,7 +6137,7 @@ def getCustomMapOptionDescAt(argsList):
             return "Default"
         else:
             return "Rotate " + str(selectionID)
-    if optionID == 7: # How common lakes and rivers are
+    if optionID == 7 or optionID == 8: # How common lakes and rivers are
         if selectionID == 0:
             return "Default"
         else:
@@ -6806,6 +6812,7 @@ def createIce():
                 plot.setFeatureType(featureIce,0)
                 if signadded == 0:
                     CyEngine().addSign(plot, -1, 
+          "l" + str(getParameter(7)) + "r" + str(getParameter(8)) + "." +
           str(getParameter(6)) + "." + str(mc.randomSeed))
                     signadded = 1
         iceChance *= iceSlope
