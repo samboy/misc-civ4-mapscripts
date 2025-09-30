@@ -962,6 +962,8 @@ class MapConstants :
         #How many squares are added to a lake for each unit of drainage flowing
         #into it.
         self.LakeSizePerDrainage = 14.0
+        if getParameter(7) > 0:
+            self.LakeSizePerDrainage += 5 * getParameter(7)
 
         #This value modifies LakeSizePerRiverLength when a lake begins in desert
         self.DesertLakeModifier = .60
@@ -973,14 +975,24 @@ class MapConstants :
         #map square. It will become a lake if enough water flows into the
         #depression.
         self.numberOfLakesPerPlot = 0.003
+	if getParameter(7) > 0:
+            self.numberOfLakesPerPlot += 0.006 * getParameter(7)
 
         #This value sets the minimum altitude of lake depressions. They
         #generally look better higher up.
         self.minLakeAltitude = 0.45
+        if getParameter(7) > 0:
+           self.minLakeAltitude = 0.15
+        if getParameter(7) > 1:
+           self.minLakeAltitude = 0
                 
         #This value is used to decide if enough water has accumulated to form a river.
         #A lower value creates more rivers over the entire map.
         self.RiverThreshold = 4
+        if getParameter(7) > 0:
+           self.RiverThreshold = 2
+        if getParameter(7) > 1:
+           self.RiverThreshold = 1
         
         #The percent chance that an oasis may appear in desert. A tile must be desert and
         #surrounded on all sides by desert.
@@ -5998,7 +6010,7 @@ def getNumCustomMapOptions():
     Return an integer
     """
     mc.initialize()
-    return 7
+    return 8
 	
 def getCustomMapOptionName(argsList):
         """
@@ -6021,6 +6033,8 @@ def getCustomMapOptionName(argsList):
             return "Player start"
         elif optionID == 6:
             return "Lake/River placement"
+        elif optionID == 7:
+            return "Common lakes/rivers"
 
         return u""
 	
@@ -6045,6 +6059,8 @@ def getNumCustomMapOptionValues(argsList):
             return 2
         elif optionID == 6: # Lake placement (rotation)
             return 145
+        elif optionID == 7: # Wetness
+            return 10
         return 0
 	
 def getCustomMapOptionDescAt(argsList):
@@ -6115,6 +6131,11 @@ def getCustomMapOptionDescAt(argsList):
             return "Default"
         else:
             return "Rotate " + str(selectionID)
+    if optionID == 7: # How common lakes and rivers are
+        if selectionID == 0:
+            return "Default"
+        else:
+            return "Increase by " + str(selectionID) 
     return u""
 	
 def getCustomMapOptionDefault(argsList):
