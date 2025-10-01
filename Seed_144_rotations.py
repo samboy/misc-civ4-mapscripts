@@ -967,7 +967,7 @@ class MapConstants :
         if getParameter(7) > 1:
             self.LakeSizePerDrainage = 19.0
         if getParameter(7) > 2:
-            self.LakeSizePerDrainage += 3 * getParameter(7)
+            self.LakeSizePerDrainage += 3 * (getParameter(7) - 2)
 
         #This value modifies LakeSizePerRiverLength when a lake begins in desert
         self.DesertLakeModifier = .60
