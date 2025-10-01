@@ -963,7 +963,11 @@ class MapConstants :
         #into it.
         self.LakeSizePerDrainage = 14.0
         if getParameter(7) > 0:
-            self.LakeSizePerDrainage += 5 * getParameter(7)
+            self.LakeSizePerDrainage = 17.0
+        if getParameter(7) > 1:
+            self.LakeSizePerDrainage = 19.0
+        if getParameter(7) > 2:
+            self.LakeSizePerDrainage += 3 * getParameter(7)
 
         #This value modifies LakeSizePerRiverLength when a lake begins in desert
         self.DesertLakeModifier = .60
@@ -976,14 +980,16 @@ class MapConstants :
         #depression.
         self.numberOfLakesPerPlot = 0.003
 	if getParameter(7) > 0:
-            self.numberOfLakesPerPlot += 0.006 * getParameter(7)
+            self.numberOfLakesPerPlot += 0.003 * getParameter(7)
 
         #This value sets the minimum altitude of lake depressions. They
         #generally look better higher up.
         self.minLakeAltitude = 0.45
         if getParameter(7) > 0:
-           self.minLakeAltitude = 0.15
+           self.minLakeAltitude = 0.30
         if getParameter(7) > 1:
+           self.minLakeAltitude = 0.15
+        if getParameter(7) > 2:
            self.minLakeAltitude = 0
                 
         #This value is used to decide if enough water has accumulated to form a river.
@@ -995,6 +1001,8 @@ class MapConstants :
            self.RiverThreshold = 2
         if getParameter(8) > 2:
            self.RiverThreshold = 1
+        if getParameter(8) > 3: # Currently not used
+           self.RiverThreshold = 0.5
         
         #The percent chance that an oasis may appear in desert. A tile must be desert and
         #surrounded on all sides by desert.
@@ -6036,9 +6044,9 @@ def getCustomMapOptionName(argsList):
         elif optionID == 6:
             return "Lake/River placement"
         elif optionID == 7:
-            return "Common lakes"
+            return "Lake amount"
         elif optionID == 8:
-            return "Common rivers"
+            return "River amount"
 
         return u""
 	
@@ -6812,7 +6820,7 @@ def createIce():
                 plot.setFeatureType(featureIce,0)
                 if signadded == 0:
                     CyEngine().addSign(plot, -1, 
-          "l" + str(getParameter(7)) + "r" + str(getParameter(8)) + "." +
+          str(getParameter(7)) + "r" + str(getParameter(8)) + "." +
           str(getParameter(6)) + "." + str(mc.randomSeed))
                     signadded = 1
         iceChance *= iceSlope
