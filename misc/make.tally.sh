@@ -17,6 +17,8 @@ if [ "$SIZE" = "192x128" ] ; then
   COMMAND=TotestraRG32Big.py # 192x128
 fi
 
+echo command is $COMMAND
+
 touch tally
 while : ; do
 	python2 $COMMAND $A | grep 'Biggest is' >> tally
