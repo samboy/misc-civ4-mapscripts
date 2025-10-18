@@ -1,14 +1,20 @@
 #!/bin/sh
 
+TALLYFILE="$1"
+
+if [ -z "$1" ] ; then
+	TALLYFILE=tally
+fi
+
 # SIZE only affects where we look for tallies if tally does not exist
 SIZE=144x96
 #SIZE=192x128
 
-if [ ! -e tally ] ; then
-	xzcat tallies/${SIZE}/*txt.xz | tr -d '\015' > tally
+if [ ! -e $TALLYFILE ] ; then
+	xzcat tallies/${SIZE}/*txt.xz | tr -d '\015' > $TALLYFILE
 fi
 
-grep -F '+' tally | awk '{print $NF}' | awk -F, '{
+grep -F '+' $TALLYFILE | awk '{print $NF}' | awk -F, '{
 	seed=$1
         for(a=2;a<NF;a++) {
 		islandSize = $a
