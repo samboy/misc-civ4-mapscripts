@@ -24,3 +24,9 @@ grep -F '@' $TALLYFILE | awk '{print $NF}' | awk -F, '{
 		}
 	}
 }' | sort -n
+
+# Uncomment to get sorted by biggish island count
+# | tr -d '@' | tr -d '-' | tr -d '+' | awk -F, '
+#{b=0;for(a=2;a<=NF;a++){if($a >= 242){b++}}print b " " $0}
+#' | sort -n
+
