@@ -1370,6 +1370,8 @@ class MapConstants :
             self.randomSeed = 1 # Becomes 0x0000_913b
         elif selectionID == 3: 
             self.randomSeed = 2 # Becomes 0x0001_5258
+        elif selectionID == 4:
+            self.randomSeed = 3 # Decomes 0x0001_1182
         #elif selectionID == 6: # Jungle start
         #    self.randomSeed = 75487
         #elif selectionID == 7: # Caulixtla Jungle start
@@ -1433,8 +1435,11 @@ class PythonRandom :
                 seedValue = "RL0x0000_913b"
                 self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             elif mc.randomSeed == 2:
-		seedValue = "RL0x0001_5258"
-		self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
+		        seedValue = "RL0x0001_5258"
+		        self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
+            elif mc.randomSeed == 3:
+		        seedValue = "RL0x0001_1182"
+		        self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             elif mc.mySeed:
                 seedValue = "RL" + mc.mySeed
                 self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
@@ -6065,7 +6070,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1: # Seed
-            return 4
+            return 5
         elif optionID == 2: # Player bonus resource amount
             return 8
         elif optionID == 3: # Huts
