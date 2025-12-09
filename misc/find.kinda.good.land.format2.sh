@@ -21,6 +21,15 @@ if [ $TALLYFILE = '--help' ] ; then
 	exit 0
 fi
 
+GREP='@'
+
+if [ "$2" = "g" ] ; then
+  GREP='+'
+  FORMAT='x'
+elif [ "$2" = "x" ] ; then
+  FORMAT='x'
+fi
+
 # SIZE only affects where we look for tallies if tally does not exist
 SIZE=144x96
 #SIZE=192x128
@@ -29,18 +38,19 @@ if [ ! -e $TALLYFILE ] ; then
 	xzcat tallies/${SIZE}/*txt.xz | tr -d '\015' > $TALLYFILE
 fi
 
-grep -F '@' $TALLYFILE | awk '{print $NF}' | awk -F, '{
+grep -F "$GREP" $TALLYFILE | awk '{print $NF}' | awk -F, '{
 	seed=$1
         for(a=2;a<NF;a++) {
 		islandSize = $a
 		sub(/@/,"",islandSize)
-		if($a ~ /@/ && (islandSize + 0) > 999) {
+		sub(/\+/,"",islandSize)
+		if($a ~ /'"$GREP"'/ && (islandSize + 0) > 999) {
 			print a - 1 " " islandSize " " $0
 		}
 	}
 }' | sort -n > foo.$$
 
-if [ "$2" = "x" ] ; then
+if [ "$FORMAT" = "x" ] ; then
 	cat foo.$$ | tr -d '@' | tr -d '-' | tr -d '+' | awk -F, '
 		{b=0;for(a=2;a<=NF;a++){if($a >= 242){b++}}print b " " $0}
 	' | sort -n
