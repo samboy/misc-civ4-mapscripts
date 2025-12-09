@@ -6105,13 +6105,15 @@ def getCustomMapOptionDescAt(argsList):
             return "Like Perfect World"
     elif optionID == 1: # Seed (i.e. land size)
         if selectionID == 0:
-            return "Seventy see one (0x0000_70c1)"
+            return "Magolandi (0x0000_70c1)"
         elif selectionID == 1:
             return "Caulixtla"
         elif selectionID == 2:
             return "0x0000_913b"
         elif selectionID == 3:
             return "0x0001_5258" 
+        elif selectionID == 4:
+            return "0x0001_1182"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
             return "None (Player equal to AI)"
