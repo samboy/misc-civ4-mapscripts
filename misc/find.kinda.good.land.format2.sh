@@ -7,7 +7,7 @@ if [ -z "$1" ] ; then
 fi
 
 if [ $TALLYFILE = '--help' ] ; then
-	echo Usage: $0 {tallyfile} {x|g} \(no brackets\)
+	echo Usage: $0 {tallyfile} {x\|g} \(no brackets\)
 	echo Both {tallyfile} and {x} are optional
 	echo if {x} is present, show by number of bigish islands
 	echo Example usage:
