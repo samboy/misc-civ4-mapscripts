@@ -1366,31 +1366,8 @@ class MapConstants :
         #    self.randomSeed = 2997
         if selectionID == 1: # Caulixtla
             self.randomSeed = -2
-        elif selectionID == 2: 
-            self.randomSeed = 1 # Becomes 0x0000_913b
-        elif selectionID == 3: 
-            self.randomSeed = 2 # Becomes 0x0001_5258
-        elif selectionID == 4:
-            self.randomSeed = 3 # Decomes 0x0001_1182
-        #elif selectionID == 6: # Jungle start
-        #    self.randomSeed = 75487
-        #elif selectionID == 7: # Caulixtla Jungle start
-        #    self.randomSeed = -3
-        #elif selectionID != 3: # Anything but "Free form"
-        #    # We choose one of many possible Arabian adventures
-        #    localSeedList = []
-        #    if selectionID == 0: # Large (Epic or Marathon)
-        #        for a in range(len(seedList)):
-        #            if seedList[a][0] >= 1400:
-        #                localSeedList.append(seedList[a])
-        #    elif selectionID == 1: # Small (Normal or Epic)
-        #        for a in range(len(seedList)):
-        #            if seedList[a][0] < 1400:
-        #                localSeedList.append(seedList[a])
-        #    else: # Otherwise, choose any map at random
-        #        localSeedList = seedList
-        #    seedIndex = int(random() * len(localSeedList))
-        #    self.randomSeed = localSeedList[seedIndex][1]
+        elif selectionID > 1: 
+            self.randomSeed = selectionID - 1 # See lines 1403, 6065, and 6105
 
         self.optionsString = "Map Options: \n"
         if self.AllowNewWorld:
@@ -1439,6 +1416,9 @@ class PythonRandom :
 		        self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             elif mc.randomSeed == 3:
 		        seedValue = "RL0x0001_1182"
+		        self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
+            elif mc.randomSeed == 4:
+		        seedValue = "RL0x0001_92bc"
 		        self.seedString = "Fixed seed (Using RG32 rand) for this map is " + seedValue
             elif mc.mySeed:
                 seedValue = "RL" + mc.mySeed
@@ -6070,7 +6050,7 @@ def getNumCustomMapOptionValues(argsList):
         if optionID == 0:
             return 3
         elif optionID == 1: # Seed
-            return 5
+            return 6
         elif optionID == 2: # Player bonus resource amount
             return 8
         elif optionID == 3: # Huts
@@ -6114,6 +6094,8 @@ def getCustomMapOptionDescAt(argsList):
             return "0x0001_5258" 
         elif selectionID == 4:
             return "0x0001_1182"
+        elif selectionID == 5:
+            return "0x0001_92bc (Big land)"
     elif optionID == 2: # Player bonus resource amount
         if selectionID == 0:
             return "None (Player equal to AI)"
