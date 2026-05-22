@@ -1198,7 +1198,7 @@ class PythonRandom :
         if self.usePR:
             seed() #Start with system time
             if(mc.totestra == 0):
-                seedValue = "V" + str(gHMx) + "x" + str(gHMy) + ","
+                seedValue = "V" + str(gHMx) + "x" + str(gHMy) + ";"
                 seedletter="abcdefghijkl7nopqrstuv8xyz" # No wide letters
                 for seedMake in range(5):
                     seedMe = randint(0,25)
@@ -1206,7 +1206,7 @@ class PythonRandom :
                 self.seedString = "Random seed (Using Python rands) for this map is " + seedValue
             else:
                 # This only works for seeds 32-bits in size or smaller
-                seedValue = "V" + str(gHMx) + "x" + str(gHMy) + ",m"
+                seedValue = "V" + str(gHMx) + "x" + str(gHMy) + ";m"
                 seedValue += str(mc.totestra)
                 self.seedString = "Fixed seed (Using Python rands) for this map is " + seedValue
             mc.serviceTag = 0
@@ -6679,9 +6679,7 @@ if __name__ == "__main__":
         print("Also: ./TotestraRG32Big.py {numeric seed} to make map")
         sys.exit(0)
     if(mc.totestra):
-        mySeed = ("0x" +
-            ("%04x" % ((mc.totestra >> 16) & 0xffff)) + "_" +
-            ("%04x" % (mc.totestra & 0xffff)))
+        mySeed = ("V160x112;m" + str(mc.totestra))
     else:
         mySeed = "Unknown"
     mc.initialize()
