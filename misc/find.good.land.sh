@@ -18,8 +18,8 @@ grep -F '+' $TALLYFILE | awk '{print $NF}' | awk -F, '{
 	seed=$1
         for(a=2;a<NF;a++) {
 		islandSize = $a
-		sub(/+/,"",islandSize)
-		if($a ~ /+/) {
+		sub(/\+/,"",islandSize)
+		if($a ~ /\+/) {
 			print "(" islandSize ", '\''" seed "'\'', " a - 1 "),"
 		}
 	}
