@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # gHMx and gHMy need to be divisible by 16; when adjusting, also adjust
-# getGridSize()
+# getGridSize() and around line 6806 (“ADJUST HERE” in both cases)
 # Possible values here:        96 112 128 144 160 176 192
 # In getGridSize, divide by 4: 24  28  32  36  40  44  48
 # gHMx should be bigger than gHMy
@@ -6802,9 +6802,9 @@ if __name__ == "__main__":
         if(tally[area]["Land"] >= 1000 and 
            tally[area]["DesertPercent"] >= 40 and
            tally[area]["Snow"] == 0 and
-           tally[area]["Tundra"] <= 10 and
-           tally[area]["MinY"] > 26 and # 20 for 144x96 26 for 192x128       
-           tally[area]["MaxY"] < 104 # 78 for 144x96 104 for 192x128
+           tally[area]["Tundra"] <= 10 and # ADJUST HERE
+           tally[area]["MinY"] > 23 and # 20 for 144x96 26 for 192x128       
+           tally[area]["MaxY"] < 91 # 78 for 144x96 104 for 192x128
            ):
             tally[area]["IsArabian"] = True
         else:
