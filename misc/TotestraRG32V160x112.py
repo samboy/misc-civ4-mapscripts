@@ -4,7 +4,7 @@
 # Possible values here:        96 112 128 144 160 176 192
 # In getGridSize, divide by 4: 24  28  32  36  40  44  48
 # gHMx should be bigger than gHMy
-gHMx = 176
+gHMx = 160
 gHMy = 112
 ##############################################################################
 
@@ -5954,12 +5954,12 @@ def getBottomLatitude():
 def getGridSize(argsList):
     # Adjust this when changing gHMx and gHMy (ADJUST HERE)
     grid_sizes = {
-                WorldSizeTypes.WORLDSIZE_DUEL:          (11,7),
-                WorldSizeTypes.WORLDSIZE_TINY:          (15,10),
-                WorldSizeTypes.WORLDSIZE_SMALL:         (22,14),
+                WorldSizeTypes.WORLDSIZE_DUEL:          (10,7),
+                WorldSizeTypes.WORLDSIZE_TINY:          (14,10),
+                WorldSizeTypes.WORLDSIZE_SMALL:         (20,14),
                 WorldSizeTypes.WORLDSIZE_STANDARD:      (24,16),
                 WorldSizeTypes.WORLDSIZE_LARGE:         (36,24),
-                WorldSizeTypes.WORLDSIZE_HUGE:          (44,28)
+                WorldSizeTypes.WORLDSIZE_HUGE:          (40,28)
     }
     if (argsList[0] == -1): # (-1,) is passed to function on loads
             return []
