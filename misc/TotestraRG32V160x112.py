@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # gHMx and gHMy need to be divisible by 16; when adjusting, also adjust
-# getGridSize() and around line 6806 (“ADJUST HERE” in both cases)
+# getGridSize() and around line 6806 ("ADJUST HERE" in both cases)
 # Possible values here:        96 112 128 144 160 176 192
 # In getGridSize, divide by 4: 24  28  32  36  40  44  48
 # gHMx should be bigger than gHMy
