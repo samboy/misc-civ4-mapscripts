@@ -875,7 +875,7 @@ class MapConstants :
         mapRString = "Random"
         self.totestra = 0
         if selectionID == 1:
-            self.totestra = 8
+            self.totestra = 605
         elif selectionID == 2:
             self.totestra = 5
         elif selectionID == 3:
