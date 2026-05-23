@@ -36,7 +36,7 @@ SIZE=144x96
 #SIZE=192x128
 
 if [ ! -e $TALLYFILE ] ; then
-	xzcat tallies/${SIZE}/*txt.xz | tr -d '\015' > $TALLYFILE
+	xzcat tallies/hex/${SIZE}/*txt.xz | tr -d '\015' > $TALLYFILE
 fi
 
 grep -F "$GREP" $TALLYFILE | awk '{print $NF}' | awk -F, '{
