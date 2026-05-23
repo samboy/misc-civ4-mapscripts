@@ -6683,7 +6683,7 @@ if __name__ == "__main__":
         print("Also: ./TotestraRG32Big.py {numeric seed} to make map")
         sys.exit(0)
     if(mc.totestra):
-        mySeed = ("V176x112;m" + str(mc.totestra))
+        mySeed = ("V" + str(gHMx) + "x" + str(gHMy) + ";m" + str(mc.totestra))
     else:
         mySeed = "Unknown"
     mc.initialize()
