@@ -6,6 +6,8 @@
 # gHMx should be bigger than gHMy
 gHMx = 176
 gHMy = 112
+# This is used as a running tally
+gMeteorCount = 0
 ##############################################################################
 
 ## Important: I will not accept any merge which does not pass the tests
@@ -3137,6 +3139,7 @@ class PangaeaBreaker :
         self.areaMap.defineAreas(isHmWaterMatch)
 ##        self.areaMap.PrintAreaMap()
         meteorCount = 0
+        global gMeteorCount 
         while not mc.AllowPangeas and self.isPangea() and meteorCount < mc.maximumMeteorCount:
             pangeaDetected = True
             x,y = self.getMeteorStrike()
@@ -3144,6 +3147,7 @@ class PangaeaBreaker :
             self.castMeteorUponTheEarth(x,y)
             meteorThrown = True
             meteorCount += 1
+            gMeteorCount += 1
 ##            hm.printHeightMap()
             self.createDistanceMap()
 ##            self.printDistanceMap()
@@ -6830,6 +6834,7 @@ if __name__ == "__main__":
             IslandList += "-,"
     print("Biggest is " + str(maxLandArea) + 
           " with :"+str(tally[maxLandArea]) + " seed " + str(mySeed) +
+          " Meteors: " + str(gMeteorCount) + 
           " Islands: " + str(IslandList))
     if(maxLandArea >= 0 and tally[maxLandArea]["Tundra"] < 10 and
        tally[maxLandArea]["floodPlains"] > 30 and
